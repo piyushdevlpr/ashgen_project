@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-
+var port = process.env.PORT || 8080;
 app.get("/",function(req,res){
  // res.sendFile(path.join(__dirname+'/login.html'));	
 	res.render("login.ejs");
@@ -13,6 +13,6 @@ app.get("/signin",function(req,res){
 });
 
 
-app.listen(3000,function(){
+app.listen(port,function(){
 	console.log("server running!!!!");
 });
