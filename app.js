@@ -4,9 +4,9 @@ var express     = require("express"),
     mongoose    = require("mongoose"),
     passport    = require("passport"),
     LocalStrategy = require("passport-local"),
-    User        = require("./models/user")
-    
-    
+    User        = require("./models/user"),
+    multer = require("multer"),
+    path = require("path")
  mongoose.Promise = global.Promise;
 
 mongoose.connect('mongodb://localhost/login_ashgen',{useMongoClient:true})
@@ -33,6 +33,42 @@ app.use(function(req, res, next){
    res.locals.currentUser = req.user;
    next();
 });
+app.use(express.static(__dirname + "/uploads"));
+// var upload = multer({dest: 'uploads/'});
+
+var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function(req, file, cb) {
+  	
+    cb(null, file.originalname);
+  }
+});
+
+function fileFilter(req, file, cb){
+  // reject a file
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true);
+    // var ext = file.originalname.substring(file.originalname.lastIndexOf('.'),file.originalname.length);
+    // file.path = file.path+ext;
+  } else {
+    cb(null, false);
+  }
+};
+
+var upload = multer({
+  // storage: storage,
+  // limits: {
+  //   fileSize: 1024 * 1024 * 5
+  // },
+  fileFilter: fileFilter
+});
+
+app.get("/test",function(req,res){
+ // res.sendFile(path.join(__dirname+'/login.html'));	
+	res.render("test.ejs");
+});
 app.get("/login",function(req,res){
  // res.sendFile(path.join(__dirname+'/login.html'));	
 	res.render("login.ejs");
@@ -46,8 +82,9 @@ app.post("/login", passport.authenticate("local",
 app.get("/register",function(req,res){
 	res.render("register.ejs");
 });
-app.post("/register", function(req, res){
-    var newUser = new User({username: req.body.username});
+app.post("/register",upload.single('profileImage'), function(req, res,next){
+
+    var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
     User.register(newUser, req.body.password, function(err, user){
         if(err){
             console.log(err);

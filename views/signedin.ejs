@@ -5,8 +5,12 @@
 </head>
 <body>
 <h2>
-	WELCOME <%= currentUser.username %> !!!!
+	WELCOME "<%= currentUser.username %>" !!!!
 </h2>
+
+<img src = "/<%= currentUser.profileImage%>">
+	
 <a href="/logout">logout</a>
+
 </body>
 </html>
