@@ -4,23 +4,24 @@
   <title>LOGIN</title>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
 </head>
 <body style="background-color: #FF8C00">
 
     <div class="container">    
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
-            <div  >
+            
                        
 
                     <div style="padding-top:30px" class="panel-body" >
 
                       
                             
-                        <form id="loginform" class="form-horizontal" role="form">
+                        <form action="/login" method="POST" id="loginform" class="form-horizontal" role="form">
                                     
                             <div style="margin-bottom: 25px" class="input-group">
                                         <span style="background-color: #FFA500" class="input-group-addon"><i  class=" glyphicon glyphicon-user"></i></span>
-                                        <input style="background-color: #FFA500"  id="login-username" type="text" class="form-control" name="username" value="" placeholder="Username">                                        
+                                        <input style="background-color: #FFA500"  id="login-username" type="text" class="form-control" name="username" placeholder="Username">                                        
                                     </div>
                                 
                             <div  style="margin-bottom: 25px"  class="input-group">
@@ -34,10 +35,11 @@
                                     <!-- Button -->
 
                                     <div  class="text-center">
-                                      <a href="/signin" style="color:white;word-spacing:2px;font-size: 16px"><strong>SIGN IN</strong></a>
-                                      <span style="background-color:#FF8C00;padding: 10px; border-radius:100px;color:white">OR</span>
-                                      <a href="/register" style="color:white;font-size: 16px" ><strong>REGISTER</strong></a>
-
+                                     <!--  <a style="color:white;word-spacing:2px;font-size: 16px"><strong>SIGN IN</strong></a>
+                                       -->
+                                    <button style="background-color: #63E3C0;font-size:16px;border: none;outline:none;color:white;"><strong>LOGIN</strong></button>
+                                    <span style="background-color:#FF8C00;padding: 10px; border-radius:100px;color:white">OR</span>
+                                    <a style="color:white;font-size: 16px" href="/register"><strong>REGISTER</strong></a>
                                     </div>
                                 </div> 
                       
@@ -48,7 +50,7 @@
                         </div>                     
                     </div>  
         </div>
-      </div>
+    
 
 </body>
 </html>
