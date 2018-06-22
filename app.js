@@ -7,17 +7,47 @@ var express     = require("express"),
     User        = require("./models/user"),
     multer = require("multer"),
     path = require("path")
- mongoose.Promise = global.Promise;
+    mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb://localhost/login_ashgen',{useMongoClient:true})
-  .then(() =>  console.log('connection successful'))
-  .catch((err) => console.error(err));
+	mongoose.connect('mongodb://localhost/login_ashgen',{useMongoClient:true})
+  	.then(() =>  console.log('connection successful'))
+  	.catch((err) => console.error(err));
+
+// MULTER CONFIGURATIONS ---
+  	var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function(req, file, cb) {
+  	
+    cb(null, file.originalname);
+  }
+});
+function fileFilter(req, file, cb){
+  // reject a file
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true);
+    // var ext = file.originalname.substring(file.originalname.lastIndexOf('.'),file.originalname.length);
+    // file.path = file.path+ext;
+  } else {
+    cb(null, false);
+  }
+};
+var upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+});
+app.use(express.static(__dirname + "/uploads"));
 
 app.use(bodyParser.urlencoded({extended: true}));
 // app.set("view engine", "ejs");
 // app.use(express.static(__dirname + "/public"));
 
-// PASSPORT CONFIGURATION
+
+// PASSPORT CONFIGURATION------------
 app.use(require("express-session")({
     secret: "ashgen",
     resave: false,
@@ -33,42 +63,9 @@ app.use(function(req, res, next){
    res.locals.currentUser = req.user;
    next();
 });
-app.use(express.static(__dirname + "/uploads"));
-// var upload = multer({dest: 'uploads/'});
 
-var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function(req, file, cb) {
-  	
-    cb(null, file.originalname);
-  }
-});
 
-function fileFilter(req, file, cb){
-  // reject a file
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-    cb(null, true);
-    // var ext = file.originalname.substring(file.originalname.lastIndexOf('.'),file.originalname.length);
-    // file.path = file.path+ext;
-  } else {
-    cb(null, false);
-  }
-};
-
-var upload = multer({
-  // storage: storage,
-  // limits: {
-  //   fileSize: 1024 * 1024 * 5
-  // },
-  fileFilter: fileFilter
-});
-
-app.get("/test",function(req,res){
- // res.sendFile(path.join(__dirname+'/login.html'));	
-	res.render("test.ejs");
-});
+// ---------ROUTES--------------------
 app.get("/login",function(req,res){
  // res.sendFile(path.join(__dirname+'/login.html'));	
 	res.render("login.ejs");
