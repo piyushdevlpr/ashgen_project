@@ -7,9 +7,11 @@ var express     = require("express"),
     User        = require("./models/user"),
     multer = require("multer"),
     path = require("path")
+
+
     mongoose.Promise = global.Promise;
 
-	mongoose.connect('mongodb://localhost/login_ashgen',{useMongoClient:true})
+	mongoose.connect(process.env.DATABASEURL,{useMongoClient:true})
   	.then(() =>  console.log('connection successful'))
   	.catch((err) => console.error(err));
 
@@ -66,6 +68,9 @@ app.use(function(req, res, next){
 
 
 // ---------ROUTES--------------------
+app.get("/",function(req,res){
+	res.redirect("/register");
+});
 app.get("/login",function(req,res){
  // res.sendFile(path.join(__dirname+'/login.html'));	
 	res.render("login.ejs");
