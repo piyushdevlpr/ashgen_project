@@ -1,63 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>REGISTER</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-</head>
-<body style="background-color: #FF8C00">
+    <title>REGISTER</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="stylesheets/register.css">
+       <script src="javascript/register.js">
+        //  function onlyAlphabets() {
+        //     var password = document.f.password1.value;
+        // var confirmPassword = document.f.confpassword.value;
+        //      var regex = /^[a-zA-Z0-9_]+$/;
+        //      if (regex.test(document.f.username.value)&&(password === confirmPassword)) {
 
-    <div class="container">    
-        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
-            <div  >
+        //     //document.getElementById("notification").innerHTML = "Watching.. Everything is Alphabet now";
+        //     return true;
+        //     }  else if(!regex.test(document.f.username.value)){
+        //     // document.getElementById("notification").innerHTML = "Alphabets Only";
+        //     alert("alphanumeric only");
+        //     return false;
+        //     }
+        //     else{
+        //         alert("Passwords do not match.");
+        //     return false;
+        //     }
+        //     function load(){
+        //     document.f.profileImage.value = "/uploads/default.png";
+        //     }}
+
+
+      </script>   
+</head>
+<body onload="load()">
+
+    <div class="form-contain container">    
+        <div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
+    
                        
 
-                    <div style="padding-top:30px" class="panel-body" >
-
+                   
                       
                             
-                        <form action="/register" method="POST" id="loginform" class="form-horizontal" role="form" enctype="multipart/form-data">
+                        <form onsubmit="return onlyAlphabets()" action="/register" name = "f" method="POST" id="loginform" class="form-horizontal" role="form" enctype="multipart/form-data">
                                     
-                            <div style="margin-bottom: 25px" class="input-group">
-                                        <span style="background-color: #FFA500" class="input-group-addon"></span>
-                                        <input style="background-color: #FFA500"  id="login-firstname" type="text" class="form-control" name="username" value="" placeholder="USER NAME">                                        
+                            <div class="margin-bottom input-group">
+                                        <span class="background input-group-addon"></span>
+                                        <input id="login-firstname" type="text" class="background form-control" name="username" value="" placeholder="USER NAME (MAX. LENGTH 6)" maxlength="6" required="true">                                        
                                     </div>
                                 
                            
-                             <div style="margin-bottom: 25px" class="input-group">
-                                        <span style="background-color: #FFA500" class="input-group-addon"></span>
-                                        <input style="background-color: #FFA500"  id="login-email" type="text" class="form-control" name="emailid" value="" placeholder="EMAIL ID">                                        
+                             <div class="margin-bottom input-group">
+                                        <span class="background input-group-addon"></span>
+                                        <input id="login-email" type="text" class="background form-control" name="emailid" value="" placeholder="EMAIL ID">                                        
                                     </div>
                                 
-                            <div  style="margin-bottom: 25px"  class="input-group">
-                                        <span style="background-color: #FFA500" class="input-group-addon"></span>
-                                        <input style="background-color: #FFA500" id="login-pass" type="password" class="form-control" name="password" placeholder="PASSWORD">
+                            <div class="margin-bottom input-group">
+                                        <span class="background input-group-addon"></span>
+                                        <input id="Password" type="password" class="background form-control" name="password1" placeholder="PASSWORD" minlength="6" required="true">
                                     </div>
-
-                            <div  style="margin-bottom: 25px"  class="input-group">
-                                        <span style="background-color: #FFA500" class="input-group-addon"></span>
-                                        <input style="background-color: #FFA500" id="profileImage" type="file" class="form-control" name="profileImage" placeholder="IMAGE">
+                            <div class="margin-bottom input-group">
+                                        <span class="background input-group-addon"></span>
+                                        <input id="ConfirmPassword" type="password" class="background form-control" name="confpassword" placeholder="CONFIRM-PASSWORD" minlength="6" required="true">
+                                    </div>
+                        
+                            <div class="margin-bottom input-group">
+                                        <span class="background input-group-addon">UPLOAD A PROFILE IMAGE :</span>
+                                        <input id="profileImage" type="file" class="background form-control" name="profileImage" placeholder="">
                                     </div>
                              
                     
-                               <div style="margin-left: 2px;margin-right:2px;padding-top:7px;padding-bottom:7px;background-color: #63E3C0; " class="form-group">
+                               <div class="button_s">
                                     <!-- Button -->
 
                                     <div  class="text-center">
-                                      
-                                      <!-- <a href="#" style="color:white;font-size: 16px" ><strong>CREATE ACCOUNT</strong></a> -->
-                                      <button style="background-color: #63E3C0;font-size:16px;border: none;outline:none;color:white;"><strong>CREATE ACCOUNT</strong></button>
-
+                                         <button class = "button"><strong>CREATE ACCOUNT</strong></button>
                                     </div>
                                 </div> 
                       
                             </form>     
-
-
-
                         </div>                     
-                    </div>  
-        </div>
-      </div>
 
+      </div>
 </body>
+
 </html>

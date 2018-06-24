@@ -9,8 +9,9 @@ var express     = require("express"),
     path = require("path")
 
 
-    mongoose.Promise = global.Promise;
 
+    mongoose.Promise = global.Promise;
+//mongodb://localhost/login-ashgen
 	mongoose.connect(process.env.DATABASEURL,{useMongoClient:true})
   	.then(() =>  console.log('connection successful'))
   	.catch((err) => console.error(err));
@@ -26,11 +27,8 @@ var express     = require("express"),
   }
 });
 function fileFilter(req, file, cb){
-  // reject a file
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
     cb(null, true);
-    // var ext = file.originalname.substring(file.originalname.lastIndexOf('.'),file.originalname.length);
-    // file.path = file.path+ext;
   } else {
     cb(null, false);
   }
@@ -46,7 +44,7 @@ app.use(express.static(__dirname + "/uploads"));
 
 app.use(bodyParser.urlencoded({extended: true}));
 // app.set("view engine", "ejs");
-// app.use(express.static(__dirname + "/public"));
+ app.use(express.static(__dirname + "/public"));
 
 
 // PASSPORT CONFIGURATION------------
@@ -85,8 +83,11 @@ app.get("/register",function(req,res){
 	res.render("register.ejs");
 });
 app.post("/register",upload.single('profileImage'), function(req, res,next){
-
+    if (req.file.size===0) {
+      var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: "default.png"});
+  }else{
     var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
+    }
     User.register(newUser, req.body.password, function(err, user){
         if(err){
             console.log(err);
