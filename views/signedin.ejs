@@ -8,8 +8,20 @@
 	WELCOME "<%= currentUser.username %>" !!!!
 </h2>
 
-<img src = "/<%= currentUser.profileImage%>">
-	
+<!-- <img src = "/<%= currentUser.profileImage%>"> -->
+<form method="POST" action="/signedin/<%=currentUser._id%>">
+	<input type="text" name="addfriend">
+	<button>add friend</button>
+</form>
+
+<!--  -->
+<h2>
+	<%= addedFriend %>
+</h2>
+
+<p>
+	To See all your friends <a href="/friends/<%=currentUser._id%>">click here</a>
+</p>
 <a href="/logout">logout</a>
 
 </body>

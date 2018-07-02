@@ -1,5 +1,5 @@
          function onlyAlphabets() {
-            var password = document.f.password1.value;
+            var password = document.f.password.value;
         var confirmPassword = document.f.confpassword.value;
              var regex = /^[a-zA-Z0-9_]+$/;
              if (regex.test(document.f.username.value)&&(password === confirmPassword)) {

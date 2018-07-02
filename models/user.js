@@ -8,14 +8,30 @@ var validateEmail = function(email) {
 var UserSchema = new mongoose.Schema({
     username: String,
     password: String,
+    profileImage: String,
+   
+    friends: [
+      {  
+         name: String,
+         propic: String,
+         message:[
+           {
+            data:String
+           }
+         ]
+         //type: mongoose.Schema.Types.ObjectId,
+         //ref: "Friend"
+      }
+   ],
     email: {
         type: String,
         validate: [validateEmail, 'Please fill a valid email address']
        // match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
-    },
-     profileImage: String
+    }
+     
 });
 
 UserSchema.plugin(passportLocalMongoose)
 
 module.exports = mongoose.model("User", UserSchema);
+
