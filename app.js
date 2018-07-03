@@ -7,7 +7,8 @@ var express     = require("express"),
     User        = require("./models/user"),
     Message        = require("./models/message"),
     searchedFriend = {},
-    
+    whichPage = "one" ;
+    whichPage2 = "six" ;
     frnames = [] ,
    // Friend        = require("./models/friends"),
    // addedFriend = "",
@@ -111,8 +112,17 @@ app.post("/register",upload.single('profileImage'), function(req, res,next){
 });
 app.get("/signedin",function(req,res){
   var addedFriend = "" ;
-	res.render("signedin.ejs",{addedFriend:addedFriend});
+  whichPage2 = "six" ;
+	res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2});
 });
+
+app.get("/signedin/:id",function(req,res){
+  var addedFriend = "" ;
+  whichPage = "two";
+  whichPage2 = "six" ;
+  res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2});
+});
+
 
 app.post("/signedin/:id",function(req,res,next){
   console.log(req.body.addfriend);
@@ -156,7 +166,9 @@ app.post("/signedin/:id",function(req,res,next){
             }else{
               console.log(data);
             var addedFriend = "friend successfully added";
-            res.render("signedin.ejs",{addedFriend:addedFriend});
+            whichPage="two" ;
+            whichPage2 = "six" ;
+            res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2});
             }
            });
          }
@@ -164,7 +176,9 @@ app.post("/signedin/:id",function(req,res,next){
     }
      else{
        var addedFriend = "no such  friend can be added";
-       res.render("signedin.ejs",{addedFriend:addedFriend}) ;
+       whichPage="two" ;
+       whichPage2 = "six" ;
+       res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2}) ;
          }
           });
         }
@@ -193,21 +207,38 @@ app.post("/Sfriends/:id",function(req,res){
       } 
       if(isFriend){
         console.log(searchedFriend);
-       res.render("friends.ejs",{searchedFriend:searchedFriend});
+        whichPage = "three" ;
+        whichPage2 = "six" ;
+       res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2});
         }
         else{
+           whichPage = "three" ;
+           whichPage2 = "six" ;
            console.log(searchedFriend.name);
-          res.render("friends.ejs",{searchedFriend:searchedFriend});
+          res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2});
         }
   });
   
+});
+
+app.get("/searchfriends/:id",function(req,res){
+  // User.findById(req.params.id,function(err,cuser){
+  //   cuser.friends.
+  // });
+  searchedFriend = {} ;
+  whichPage="three";
+  whichPage2 = "six" ;
+  res.render("signedin.ejs",{whichPage:whichPage,searchedFriend:searchedFriend,whichPage2:whichPage2});
 });
 
 app.get("/friends/:id",function(req,res){
   // User.findById(req.params.id,function(err,cuser){
   //   cuser.friends.
   // });
-  res.render("friends.ejs",{searchedFriend:searchedFriend});
+  whichPage = "four" ;
+    whichPage2 = "six" ;
+
+  res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2});
 });
 
 app.get("/logout", function(req, res){
@@ -216,8 +247,9 @@ app.get("/logout", function(req, res){
 });
 
 app.get("/chat/:friendname",function(req,res){
-    
-      res.render("chat.ejs",{friendname:req.params.friendname}) ;
+      whichPage = "one" ;
+      whichPage2 = "five" ;
+      res.render("signedin.ejs",{friendname:req.params.friendname,whichPage2:whichPage2,whichPage:whichPage}) ;
      
   
     

@@ -2,27 +2,145 @@
 <html>
 <head>
 	<title>SIGNED IN</title>
+	<style>
+		#chatbox{
+			height:200px;
+			width: 200px;
+			border: 1px solid ;
+			overflow:auto;
+	}
+	</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 <h2>
 	WELCOME "<%= currentUser.username %>" !!!!
 </h2>
 
-<!-- <img src = "/<%= currentUser.profileImage%>"> -->
+<!-- section-1 -->
+
+<a href="#">My Profile</a>
+<a href="/signedin/<%=currentUser._id%>">Add Friend</a>
+<a href="/searchfriends/<%=currentUser._id%>">Search Friend</a>
+<a href="/friends/<%=currentUser._id%>">My Friends</a>
+	
+<!-- section-2 -->
+
+<% if(whichPage === "one"){ %>
+<h2>
+	SELECT Something
+</h2>
+<% } %>
+
+<% if(whichPage === "two"){ %>
 <form method="POST" action="/signedin/<%=currentUser._id%>">
 	<input type="text" name="addfriend">
 	<button>add friend</button>
 </form>
-
-<!--  -->
 <h2>
 	<%= addedFriend %>
 </h2>
+<% } %>
 
+<% if(whichPage === "three"){ %>
+<form method="POST" action="/Sfriends/<%=currentUser._id%>" >
+	<input type="text" name="searchFriend" placeholder="search friend">
+	<button>SEARCH</button>
+</form>
+<% if(searchedFriend.name === undefined ){ %> 
 <p>
-	To See all your friends <a href="/friends/<%=currentUser._id%>">click here</a>
+	ENTER THE NAME OF A FRIEND IN YOUR FRIEND LIST.
 </p>
+<% }else{ %>
+<h2>
+	   <a href="/chat/<%=searchedFriend.name %>"><%= searchedFriend.name %></a> 
+		<%= searchedFriend.propic %>
+</h2>
+<% } %>
+<% } %>
+
+<% if(whichPage === "four"){ %>
+<% currentUser.friends.forEach(function(f){ %>	
+	<li>
+		<a href="/chat/<%= f.name %>"><%= f.name %></a>
+		<%= f.propic %>
+			
+	</li>
+<% }) %>
+<% } %>
+	
+<!-- section-3 -->
+
+<% if(whichPage2 === "six"){ %>
+<h2>
+	select a friend to chat
+</h2>
+<% currentUser.friends.forEach(function(f){ %>	
+	<li>
+		<a href="/chat/<%= f.name %>"><%= f.name %></a>
+		<%= f.propic %>
+	</li>
+<% }) %>
+<% } %>
+
+<% if(whichPage2 === "five"){ %>
+<h2>
+	WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
+</h2>
+<h2>
+	Chat with <span id="frname"><%= friendname %></span>
+</h2>
+<form id = "getpreviouschats">
+	<input type="submit" value="get previous chats">
+</form>
+<div id="chatbox"></div>
+<form id = "sendmessage">
+	<input type="text" id="message" size="35" required="true" >
+	<input type="submit" value="send" >
+</form>	
+<% } %>
+
 <a href="/logout">logout</a>
 
+	<script>
+	$(document).ready(function(){
+		var socket = io.connect() ;
+		var messageform = $("#sendmessage");
+		var message = $("#message");
+		var chat = $("#chatbox");
+		var frname = $("#frname");
+		var uname = $("#uname");
+		var getpreviouschats = $("#getpreviouschats");
+				// console.log($(frname));
+		$(getpreviouschats).submit(function(e){
+			e.preventDefault();
+			$(getpreviouschats).css("display", "none");
+			socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
+		});
+		socket.on("previous-message",function(data1){
+	   		
+	    	if(data1.from === $(uname).html()){
+	    		    $(getpreviouschats).css("display", "none");
+	   	     		for(var i =0; i<data1.messaged.length ; i++){
+	    			$(chat).append("<span>" + data1.messaged[i].data + "</span><br/>");
+	    		}
+	    	}
+	    });
+		$(messageform).submit(function(e){
+			e.preventDefault();
+			socket.emit("send-message",{to:$(frname).html(),from:$(uname).html(),msg :$(message).val()});
+			$(message).val("");
+		});
+	    socket.on("new-message",function(data1){
+	    	console.log(data1);
+	    	if(data1.from===$(uname).html()||data1.to===$(uname).html()){
+	    	$(chat).append("<span>" + data1.messaged[data1.messaged.length - 1].data + "</span><br/>");
+	    }
+	    });
+       
+	    });
+      
+</script>
 </body>
 </html>
