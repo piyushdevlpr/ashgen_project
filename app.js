@@ -7,6 +7,7 @@ var express     = require("express"),
     User        = require("./models/user"),
     Message        = require("./models/message"),
     searchedFriend = {},
+    addedFriend = "" ,
     whichPage = "one" ;
     whichPage2 = "six" ;
     frnames = [] ,
@@ -21,7 +22,7 @@ var express     = require("express"),
 
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
-	mongoose.connect(process.env.DATABASEURL,{useMongoClient:true})
+	mongoose.connect("mongodb://localhost/login-ashgen",{useMongoClient:true})
   	.then(() =>  console.log('connection successful'))
   	.catch((err) => console.error(err));
 
@@ -113,14 +114,14 @@ app.post("/register",upload.single('profileImage'), function(req, res,next){
 app.get("/signedin",function(req,res){
   var addedFriend = "" ;
   whichPage2 = "six" ;
-	res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2});
+	res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend});
 });
 
 app.get("/signedin/:id",function(req,res){
   var addedFriend = "" ;
   whichPage = "two";
   whichPage2 = "six" ;
-  res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2});
+  res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend});
 });
 
 
@@ -168,7 +169,7 @@ app.post("/signedin/:id",function(req,res,next){
             var addedFriend = "friend successfully added";
             whichPage="two" ;
             whichPage2 = "six" ;
-            res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2});
+            res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend});
             }
            });
          }
@@ -178,7 +179,7 @@ app.post("/signedin/:id",function(req,res,next){
        var addedFriend = "no such  friend can be added";
        whichPage="two" ;
        whichPage2 = "six" ;
-       res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2}) ;
+       res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend}) ;
          }
           });
         }
@@ -209,13 +210,13 @@ app.post("/Sfriends/:id",function(req,res){
         console.log(searchedFriend);
         whichPage = "three" ;
         whichPage2 = "six" ;
-       res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2});
+       res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2,addedFriend:addedFriend});
         }
         else{
            whichPage = "three" ;
            whichPage2 = "six" ;
            console.log(searchedFriend.name);
-          res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2});
+          res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2,addedFriend:addedFriend});
         }
   });
   
@@ -228,17 +229,17 @@ app.get("/searchfriends/:id",function(req,res){
   searchedFriend = {} ;
   whichPage="three";
   whichPage2 = "six" ;
-  res.render("signedin.ejs",{whichPage:whichPage,searchedFriend:searchedFriend,whichPage2:whichPage2});
+  res.render("signedin.ejs",{whichPage:whichPage,searchedFriend:searchedFriend,whichPage2:whichPage2,addedFriend:addedFriend});
 });
 
-app.get("/friends/:id",function(req,res){
+app.get("#friends/:id",function(req,res){
   // User.findById(req.params.id,function(err,cuser){
   //   cuser.friends.
   // });
   whichPage = "four" ;
     whichPage2 = "six" ;
 
-  res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2});
+  res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2,addedFriend:addedFriend});
 });
 
 app.get("/logout", function(req, res){
@@ -249,7 +250,7 @@ app.get("/logout", function(req, res){
 app.get("/chat/:friendname",function(req,res){
       whichPage = "one" ;
       whichPage2 = "five" ;
-      res.render("signedin.ejs",{friendname:req.params.friendname,whichPage2:whichPage2,whichPage:whichPage}) ;
+      res.render("signedin.ejs",{friendname:req.params.friendname,whichPage2:whichPage2,whichPage:whichPage,searchedFriend:searchedFriend,addedFriend:addedFriend}) ;
      
   
     

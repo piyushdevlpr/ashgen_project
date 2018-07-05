@@ -9,6 +9,15 @@
 			border: 1px solid ;
 			overflow:auto;
 	}
+		#friendlist{
+			display: none;
+		}
+		#searchF{
+			display: none;
+		}
+		#addFriend{
+			display: none;
+		}
 	</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -21,33 +30,41 @@
 <!-- section-1 -->
 
 <a href="#">My Profile</a>
-<a href="/signedin/<%=currentUser._id%>">Add Friend</a>
-<a href="/searchfriends/<%=currentUser._id%>">Search Friend</a>
-<a href="/friends/<%=currentUser._id%>">My Friends</a>
+<!-- href="/signedin/<%=currentUser._id%>" -->
+<button id="addFriendButton" >Add Friend</button>
+<!-- href="/searchfriends/<%=currentUser._id%>"
+ --><button id="searchFriendButton" >Search Friend</button>
+<!--  href="#friends/<%=currentUser._id%>" -->
+<button id="friendlistbutton" >My Friends</button>
 	
 <!-- section-2 -->
-
-<% if(whichPage === "one"){ %>
+<% if(whichPage==="one"){ %>
+<div id="defaultext">
 <h2>
 	SELECT Something
 </h2>
+
+</div>
 <% } %>
 
-<% if(whichPage === "two"){ %>
+<div id = "addFriend">
 <form method="POST" action="/signedin/<%=currentUser._id%>">
 	<input type="text" name="addfriend">
 	<button>add friend</button>
 </form>
+
 <h2>
 	<%= addedFriend %>
 </h2>
-<% } %>
+</div>
 
-<% if(whichPage === "three"){ %>
+
+<div id="searchF">
 <form method="POST" action="/Sfriends/<%=currentUser._id%>" >
 	<input type="text" name="searchFriend" placeholder="search friend">
 	<button>SEARCH</button>
 </form>
+
 <% if(searchedFriend.name === undefined ){ %> 
 <p>
 	ENTER THE NAME OF A FRIEND IN YOUR FRIEND LIST.
@@ -58,9 +75,9 @@
 		<%= searchedFriend.propic %>
 </h2>
 <% } %>
-<% } %>
+</div>
+<div id="friendlist">
 
-<% if(whichPage === "four"){ %>
 <% currentUser.friends.forEach(function(f){ %>	
 	<li>
 		<a href="/chat/<%= f.name %>"><%= f.name %></a>
@@ -68,8 +85,8 @@
 			
 	</li>
 <% }) %>
-<% } %>
-	
+
+</div>	
 <!-- section-3 -->
 
 <% if(whichPage2 === "six"){ %>
@@ -110,9 +127,35 @@
 		var message = $("#message");
 		var chat = $("#chatbox");
 		var frname = $("#frname");
+		var searchF = $("#searchF");
+		var searchFriendButton = $("#searchFriendButton");
+		var friendlist = $("#friendlist");
+		var friendlistbutton = $("#friendlistbutton");
+		var addFriendButton = $("#addFriendButton");
+		var addFriend = $("#addFriend");
+		var defaultext = $("#defaultext");
 		var uname = $("#uname");
+
 		var getpreviouschats = $("#getpreviouschats");
 				// console.log($(frname));
+		$(friendlistbutton).click(function(e){
+			$(defaultext).css("display", "none");
+			$(addFriend).css("display", "none");
+			$(searchF).css("display", "none");
+			$(friendlist).css("display", "flex");
+		});
+		$(addFriendButton).click(function(e){
+			$(defaultext).css("display", "none");
+			$(addFriend).css("display", "flex");
+			$(searchF).css("display", "none");
+			$(friendlist).css("display", "none");
+		});
+		$(searchFriendButton).click(function(e){
+			$(defaultext).css("display", "none");
+			$(addFriend).css("display", "none");
+			$(searchF).css("display", "inline");
+			$(friendlist).css("display", "none");
+		});
 		$(getpreviouschats).submit(function(e){
 			e.preventDefault();
 			$(getpreviouschats).css("display", "none");
