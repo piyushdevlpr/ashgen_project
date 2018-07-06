@@ -18,6 +18,9 @@
 		#addFriend{
 			display: none;
 		}
+		#currentUserID{
+			display: none;
+		}
 	</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -25,6 +28,7 @@
 <body>
 <h2>
 	WELCOME "<%= currentUser.username %>" !!!!
+	<span id="currentUserID"><%= currentUser._id %></span>
 </h2>
 
 <!-- section-1 -->
@@ -48,33 +52,25 @@
 <% } %>
 
 <div id = "addFriend">
-<form method="POST" action="/signedin/<%=currentUser._id%>">
-	<input type="text" name="addfriend">
+<form id="addFriendSocket">
+	<input type="text" name="addfriend" id="friendName">
 	<button>add friend</button>
 </form>
 
-<h2>
-	<%= addedFriend %>
-</h2>
-</div>
 
+</div>
+<a href="" id="show-friend">
+	
+</a>
 
 <div id="searchF">
-<form method="POST" action="/Sfriends/<%=currentUser._id%>" >
-	<input type="text" name="searchFriend" placeholder="search friend">
+<form id="searchFform" >
+	<input type="text" name="searchFriend" placeholder="search friend" id="friendtosearch">
 	<button>SEARCH</button>
 </form>
-
-<% if(searchedFriend.name === undefined ){ %> 
-<p>
-	ENTER THE NAME OF A FRIEND IN YOUR FRIEND LIST.
-</p>
-<% }else{ %>
-<h2>
-	   <a href="/chat/<%=searchedFriend.name %>"><%= searchedFriend.name %></a> 
-		<%= searchedFriend.propic %>
-</h2>
-<% } %>
+</div>
+<div id="show-searched-friend">
+	
 </div>
 <div id="friendlist">
 
@@ -156,6 +152,29 @@
 			$(searchF).css("display", "inline");
 			$(friendlist).css("display", "none");
 		});
+		$("#addFriendSocket").submit(function(e){
+			e.preventDefault();
+			socket.emit("add-friend-name",{id:$("#currentUserID").html() ,from:$(uname).html(),friendname :$("#friendName").val()});
+		});
+		socket.on("friend-added",function(data1){
+	    	console.log(data1);
+	    	
+	    	$("#show-friend").append("<span>" + data1 + "</span><br/>");
+	    
+	    });
+	    $("#searchFform").submit(function(e){
+			e.preventDefault();
+			socket.emit("search-friend-name",{id:$("#currentUserID").html() ,from:$(uname).html(),friendname :$("#friendtosearch").val()});
+		});
+		socket.on("friend-searched",function(data1){
+	    	console.log(data1);
+	    	if(data1.name === undefined){
+	    		$("#show-searched-friend").html("<span>Enter a valid name</span><br/>");
+	    	}else{
+	    	$("#show-searched-friend").html( data1.name );
+	    	//$("#show-searched-friend").attr("href", /chat/data1.name );
+	    }
+	    });
 		$(getpreviouschats).submit(function(e){
 			e.preventDefault();
 			$(getpreviouschats).css("display", "none");

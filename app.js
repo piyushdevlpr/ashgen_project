@@ -22,17 +22,17 @@ var express     = require("express"),
 
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
-	mongoose.connect(process.env.DATABASEURL,{useMongoClient:true})
-  	.then(() =>  console.log('connection successful'))
-  	.catch((err) => console.error(err));
+  mongoose.connect(process.env.DATABASEURL,{useMongoClient:true})
+    .then(() =>  console.log('connection successful'))
+    .catch((err) => console.error(err));
 
 // MULTER CONFIGURATIONS ---
-  	var storage = multer.diskStorage({
+    var storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, 'uploads/');
   },
   filename: function(req, file, cb) {
-  	
+    
     cb(null, file.originalname);
   }
 });
@@ -82,11 +82,11 @@ app.use(function(req, res, next){
 
 // ---------ROUTES--------------------
 app.get("/",function(req,res){
-	res.redirect("/register");
+  res.redirect("/register");
 });
 app.get("/login",function(req,res){
- // res.sendFile(path.join(__dirname+'/login.html'));	
-	res.render("login.ejs");
+ // res.sendFile(path.join(__dirname+'/login.html')); 
+  res.render("login.ejs");
 });
 app.post("/login", passport.authenticate("local", 
     {
@@ -95,7 +95,7 @@ app.post("/login", passport.authenticate("local",
     }), function(req, res){
 });
 app.get("/register",function(req,res){
-	res.render("register.ejs");
+  res.render("register.ejs");
 });
 app.post("/register",upload.single('profileImage'), function(req, res,next){
     
@@ -114,7 +114,7 @@ app.post("/register",upload.single('profileImage'), function(req, res,next){
 app.get("/signedin",function(req,res){
   var addedFriend = "" ;
   whichPage2 = "six" ;
-	res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend});
+  res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend});
 });
 
 app.get("/signedin/:id",function(req,res){
@@ -190,35 +190,7 @@ app.post("/Sfriends/:id",function(req,res){
   // User.findById(req.params.id,function(err,cuser){
   //   cuser.friends.
   // });
-  User.findById(req.params.id,function(err,cuser){
-    if(err){
-      console.log(err);
-    }
-    else{
-      var isFriend = false ;
-      searchedFriend = {} ;
-      cuser.friends.forEach(function(f){
-          
-           if(f.name===req.body.searchFriend){
-                
-                isFriend = true ;
-                searchedFriend = f ;
-              } 
-      }) 
-      } 
-      if(isFriend){
-        console.log(searchedFriend);
-        whichPage = "three" ;
-        whichPage2 = "six" ;
-       res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2,addedFriend:addedFriend});
-        }
-        else{
-           whichPage = "three" ;
-           whichPage2 = "six" ;
-           console.log(searchedFriend.name);
-          res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2,addedFriend:addedFriend});
-        }
-  });
+
   
 });
 
@@ -257,7 +229,99 @@ app.get("/chat/:friendname",function(req,res){
 });
 
 io.sockets.on("connection",function(socket){
-  
+    socket.on("add-friend-name",function(data2){
+      User.findOne({ username : data2.friendname},function(err,fuser){
+    if (err) {
+         res.send("fu");
+             }
+    else{
+         User.find({ username : data2.friendname}).count({},function(err,count){
+        if(!err && count!==0){
+           
+           var friend = {"name": fuser.username, "propic":fuser.profileImage} ;
+           
+    User.findByIdAndUpdate(data2.id,
+    {$addToSet: {friends: friend}},
+    function(err, cuser) {
+        if(err){
+           console.log(err);
+        }else{
+             console.log(cuser);
+            var newMessage = new Message({from :cuser.username, to:fuser.username }); 
+            newMessage.save(function(err){
+              if(err){
+                console.log(err);
+              }
+            });
+             var newMessage2 = new Message({from :fuser.username, to:cuser.username }); 
+            newMessage2.save(function(err){
+              if(err){
+                console.log(err);
+              }
+            });
+            var friend2 = {"name": cuser.username, "propic":cuser.profileImage} ;
+           console.log(friend2.message);
+           User.findByIdAndUpdate(fuser._id,
+           {$addToSet: {friends: friend2}},function(err,data){
+            if(err){
+              console.log(err);
+            }else{
+              console.log(data);
+            var addedFriend = "friend successfully added";
+            whichPage="two" ;
+            whichPage2 = "six" ;
+            // res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend});
+            io.emit("friend-added",addedFriend);
+            }
+           });
+         }
+      });
+    }
+     else{
+       var addedFriend = "no such  friend can be added";
+       whichPage="two" ;
+       whichPage2 = "six" ;
+       //res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend}) ;
+       io.emit("friend-added",addedFriend);
+         }
+          });
+        }
+    });
+  });
+
+     socket.on("search-friend-name",function(data2){
+        User.findById(data2.id,function(err,cuser){
+    if(err){
+      console.log(err);
+    }
+    else{
+      var isFriend = false ;
+      searchedFriend = {} ;
+      cuser.friends.forEach(function(f){
+          
+           if(f.name===data2.friendname){
+                
+                isFriend = true ;
+                searchedFriend = f ;
+              } 
+      }) 
+      } 
+      if(isFriend){
+        console.log(searchedFriend.name);
+        whichPage = "three" ;
+        whichPage2 = "six" ;
+        io.emit("friend-searched", searchedFriend);
+        }
+        else{
+           whichPage = "three" ;
+           whichPage2 = "six" ;
+           console.log(searchedFriend.name);
+          io.emit("friend-searched", searchedFriend);
+        }
+  });
+  });
+
+
   socket.on("loaded-message",function(data2){
     Message.findOne({from:data2.from,to:data2.to},function(err,cuser){
         if(err){
@@ -338,7 +402,7 @@ io.sockets.on("connection",function(socket){
 
 
 server.listen(port,function(){
-	console.log("server running!!!!");
+  console.log("server running!!!!");
 });
 
 // https://sheltered-island-82789.herokuapp.com/
