@@ -49,64 +49,35 @@ License URL: http://creativecommons.org/licenses/by/3.0/
       </script>  
 <link href="https://fonts.googleapis.com/css?family=Acme|Russo+One|Bungee+Shade|Monoton|IBM+Plex+Sans+Condensed" rel="stylesheet"> </head>
 <body onload="load()">
-<h1>Register Form</h1>
-<div class="main-agileits">
+<h1>Login Here</h1>
+	<div class="main-agileits">
 	<!--form-stars-here-->
-			
-				
-					<div class="contact-form1">
-										<div class="contact-w3-agileits">
-										
-											
-											<form onsubmit="return onlyAlphabets()" action="/register" name = "f" method="POST" id="loginform" class="form-horizontal" role="form" enctype="multipart/form-data">	
-												<div class="form-sub-w3ls">
-													
-													<input id="login-firstname" type="text" class="background form-control" name="username" value="" placeholder="USER NAME (MAX. LENGTH 6)" maxlength="6" required="true" required="">
-													<div class="icon-agile">
-														<i class="fa fa-user" aria-hidden="true"></i>
-													</div>
-												</div>
-												<div class="form-sub-w3ls">
-													
-													<input id="login-email" type="email" class="background form-control" name="emailid" value="" placeholder="EMAIL ID" required=""> 
-													<div class="icon-agile">
-														<i class="fa fa-envelope-o" aria-hidden="true"></i>
-													</div>
-												</div>
-												<div class="form-sub-w3ls">
-													
-													<input id="Password" type="password" class="background form-control" name="password" placeholder="PASSWORD" minlength="6" required="true">
-													<div class="icon-agile">
-														<i class="fa fa-unlock-alt" aria-hidden="true"></i>
-													</div>
-												</div>
-												<div class="form-sub-w3ls">
-													<input id="ConfirmPassword" type="password" class="background form-control" name="confpassword" placeholder="CONFIRM-PASSWORD" minlength="6" required="true">
-													<div class="icon-agile">
-														<i class="fa fa-unlock-alt" aria-hidden="true"></i>
-													</div>
-												</div>
-												<div class="form-sub-w3ls">
-													
-												
-													<input id="profileImage" type="file" class="background form-control" name="profileImage" placeholder="">
-													<div class="icon-agile">
-														<i class="material-icons">add_a_photo</i>
-													</div>
-												
-												</div>
-											</div>
-											<div class="login-check">
-								 			 <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><p>I Accept Terms & Conditions</p></label>
-											</div>
-										<div class="submit-w3l">
-											<input type="submit" class = "button" value="Register">
-										</div>
-										</form>
-					</div>	
-				</div>
-				
+			<div class="form-w3-agile">
+				<h2 style="font-family: 'IBM Plex Sans Condensed', sans-serif;"> login form</h2>
+				<form action="/login" method="POST" id="loginform" class="form-horizontal" role="form">
+					<div class="form-sub-w3">
+						<input id="login-username" type="text" class="background form-control" name="username" placeholder="Username">     
+					<div class="icon-w3">
+						<i class="fa fa-user" aria-hidden="true"></i>
+					</div>
+					</div>
+					<div class="form-sub-w3">
+						<input id="login-password" type="password" class="background form-control" name="password" placeholder="Password">
+					<div class="icon-w3">
+						<i class="fa fa-unlock-alt" aria-hidden="true"></i>
+					</div>
+					</div>
+					
+					<p class="p-bottom-w3ls">Are you new ?<a class="w3_play_icon1" href="/register">  Register here</a></p>
+					
+					<div class="submit-w3l">
+						<input type="submit" value="Login" class="button">
+					</div>
+				</form>
 			</div>
+	<!--//form-ends-here-->
+	</div>
+
 <!-- copyright -->
 	<div class="copyright w3-agile">
 		<p> © 2017 Credit Login / Register Form . All rights reserved </p>
