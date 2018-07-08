@@ -21,6 +21,12 @@
 		#currentUserID{
 			display: none;
 		}
+		#show-searched-friend{
+			display: none;
+		}
+		#chatwithfriend{
+			display: none;
+		}
 	</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -59,9 +65,9 @@
 
 
 </div>
-<a href="" id="show-friend">
+<div href="" id="show-friend">
 	
-</a>
+</div>
 
 <div id="searchF">
 <form id="searchFform" >
@@ -69,50 +75,39 @@
 	<button>SEARCH</button>
 </form>
 </div>
-<div id="show-searched-friend">
-	
-</div>
+	<div id="show-searched-friend">
+		
+	</div>
+	<button id="showing-searched-friend" class="linkToChat getpreviouschats">
+		
+	</button>
+
 <div id="friendlist">
-
-<% currentUser.friends.forEach(function(f){ %>	
-	<li>
-		<a href="/chat/<%= f.name %>"><%= f.name %></a>
-		<%= f.propic %>
-			
-	</li>
-<% }) %>
-
+	
 </div>	
+
 <!-- section-3 -->
 
-<% if(whichPage2 === "six"){ %>
-<h2>
-	select a friend to chat
-</h2>
-<% currentUser.friends.forEach(function(f){ %>	
-	<li>
-		<a href="/chat/<%= f.name %>"><%= f.name %></a>
-		<%= f.propic %>
-	</li>
-<% }) %>
-<% } %>
 
-<% if(whichPage2 === "five"){ %>
+
+
+<div id = "chatwithfriend">
 <h2>
 	WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
 </h2>
 <h2>
-	Chat with <span id="frname"><%= friendname %></span>
+	Chat with <span id="frname"></span>
 </h2>
-<form id = "getpreviouschats">
+<!-- <form id = "getpreviouschats">
 	<input type="submit" value="get previous chats">
-</form>
+</form> -->
 <div id="chatbox"></div>
 <form id = "sendmessage">
 	<input type="text" id="message" size="35" required="true" >
 	<input type="submit" value="send" >
 </form>	
-<% } %>
+</div>
+
 
 <a href="/logout">logout</a>
 
@@ -132,26 +127,73 @@
 		var defaultext = $("#defaultext");
 		var uname = $("#uname");
 
-		var getpreviouschats = $("#getpreviouschats");
+		var getpreviouschats = $(".getpreviouschats");
 				// console.log($(frname));
 		$(friendlistbutton).click(function(e){
+
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "none");
 			$(searchF).css("display", "none");
 			$(friendlist).css("display", "flex");
+			$("#show-searched-friend").css("display", "none");
+			$("#showing-searched-friend").css("display", "none");
+			$("#show-friend").css("display", "none");
+			$(friendlist).empty();
+			socket.emit("show-friend-list",{id:$("#currentUserID").html() ,from:$(uname).html()});
+		});
+		socket.on("friend-list-emitted",function(data1){
+			//data1.forEach(function(f){
+			for(var i = 0; i<data1.length ; i++){
+				$("#friendlist").append("<button id= " + "'link" + i + "'" + "class='getpreviouschats'>" +  data1[i].name  + "</button>");
+		
+			}
+		// 	$("#friendlist button").click(function(e){
+		// 		$("#frname").html($("#friendlist button").html()) ;
+		// 		//e.preventDefault();
+		// 		console.log("hi");
+		// 		$("#chatwithfriend").css("display","inline");
+		// });
+	
+				
+					$("#friendlist button").click(function(e){
+						$("#frname").html($(this).html()) ;
+						console.log($(this).html());
+						$("#chatwithfriend").css("display","inline");
+						 // $(getpreviouschats).click(function(e){
+							e.preventDefault();
+							//$(getpreviouschats).css("display", "none");
+							socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
+						//});
+				});	
+					
+			
+			 
 		});
 		$(addFriendButton).click(function(e){
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "flex");
 			$(searchF).css("display", "none");
+			$("#show-searched-friend").css("display", "none");
+			$("#showing-searched-friend").css("display", "none");
 			$(friendlist).css("display", "none");
+			$("#show-friend").css("display", "flex");
 		});
 		$(searchFriendButton).click(function(e){
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "none");
 			$(searchF).css("display", "inline");
+			$("#show-friend").css("display", "none");
+			$("#show-searched-friend").css("display", "flex");
+			$("#showing-searched-friend").css("display", "flex");
 			$(friendlist).css("display", "none");
 		});
+		$(".linkToChat").click(function(e){
+			$("#frname").html($(".linkToChat").html()) ;
+			//e.preventDefault();
+			console.log("hi");
+			$("#chatwithfriend").css("display","inline");
+		});
+		
 		$("#addFriendSocket").submit(function(e){
 			e.preventDefault();
 			socket.emit("add-friend-name",{id:$("#currentUserID").html() ,from:$(uname).html(),friendname :$("#friendName").val()});
@@ -159,7 +201,7 @@
 		socket.on("friend-added",function(data1){
 	    	console.log(data1);
 	    	
-	    	$("#show-friend").append("<span>" + data1 + "</span><br/>");
+	    	$("#show-friend").html("<span>" + data1 + "</span><br/>");
 	    
 	    });
 	    $("#searchFform").submit(function(e){
@@ -169,21 +211,27 @@
 		socket.on("friend-searched",function(data1){
 	    	console.log(data1);
 	    	if(data1.name === undefined){
+	    		$("#showing-searched-friend").empty();
+	    		//$("#show-searched-friend").empty();
 	    		$("#show-searched-friend").html("<span>Enter a valid name</span><br/>");
 	    	}else{
-	    	$("#show-searched-friend").html( data1.name );
-	    	//$("#show-searched-friend").attr("href", /chat/data1.name );
+	    		$("#show-searched-friend").empty();
+	    		//$("#showing-searched-friend").empty();
+	    		$("#showing-searched-friend").html( data1.name );
+	    		//$("#show-searched-friend").attr("href", /chat/data1.name );
 	    }
 	    });
-		$(getpreviouschats).submit(function(e){
+	   
+
+		$(getpreviouschats).click(function(e){
 			e.preventDefault();
-			$(getpreviouschats).css("display", "none");
+			//$(getpreviouschats).css("display", "none");
 			socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
 		});
 		socket.on("previous-message",function(data1){
-	   		
+	   		$("#chatbox").empty();
 	    	if(data1.from === $(uname).html()){
-	    		    $(getpreviouschats).css("display", "none");
+	    		   // $(getpreviouschats).css("display", "none");
 	   	     		for(var i =0; i<data1.messaged.length ; i++){
 	    			$(chat).append("<span>" + data1.messaged[i].data + "</span><br/>");
 	    		}

@@ -114,7 +114,7 @@ app.post("/register",upload.single('profileImage'), function(req, res,next){
 app.get("/signedin",function(req,res){
   var addedFriend = "" ;
   whichPage2 = "six" ;
-  res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend});
+  res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,searchedFriend:searchedFriend});
 });
 
 app.get("/signedin/:id",function(req,res){
@@ -229,6 +229,17 @@ app.get("/chat/:friendname",function(req,res){
 });
 
 io.sockets.on("connection",function(socket){
+    socket.on("show-friend-list",function(data2){
+      User.findById( data2.id,function(err,cuser){
+        if(err){
+          console.log(err);
+        }else{
+          io.emit("friend-list-emitted",cuser.friends) ;  
+        }
+          });
+      
+    });
+
     socket.on("add-friend-name",function(data2){
       User.findOne({ username : data2.friendname},function(err,fuser){
     if (err) {
@@ -237,9 +248,18 @@ io.sockets.on("connection",function(socket){
     else{
          User.find({ username : data2.friendname}).count({},function(err,count){
         if(!err && count!==0){
-           
+           var isPresent = false ;
            var friend = {"name": fuser.username, "propic":fuser.profileImage} ;
-           
+           User.findById(data2.id,function(err,cuser2){
+            
+              cuser2.friends.forEach(function(f){
+                if( data2.friendname===f.name){
+                  isPresent = true ;
+                
+                }
+                
+              });
+                  if(!isPresent){
     User.findByIdAndUpdate(data2.id,
     {$addToSet: {friends: friend}},
     function(err, cuser) {
@@ -277,6 +297,14 @@ io.sockets.on("connection",function(socket){
          }
       });
     }
+    else{
+      var addedFriend = "friend exists"; 
+      io.emit("friend-added",addedFriend);
+    }
+           });
+           //console.log(isPresent) ;
+
+  }
      else{
        var addedFriend = "no such  friend can be added";
        whichPage="two" ;
@@ -304,7 +332,7 @@ io.sockets.on("connection",function(socket){
                 isFriend = true ;
                 searchedFriend = f ;
               } 
-      }) 
+      }) ;
       } 
       if(isFriend){
         console.log(searchedFriend.name);
