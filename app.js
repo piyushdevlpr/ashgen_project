@@ -262,7 +262,7 @@ io.sockets.on("connection",function(socket){
         if(err){
           console.log(err);
         }else{
-          io.emit("friend-list-emitted",cuser.friends) ;  
+          io.emit("friend-list-emitted",cuser) ;  
         }
           });
       

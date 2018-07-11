@@ -197,8 +197,10 @@
 		});
 		socket.on("friend-list-emitted",function(data1){
 			//data1.forEach(function(f){
-			for(var i = 0; i<data1.length ; i++){
-				$("#friendlist").append("<button id= " + "'link" + i + "'" + "class='getpreviouschats'>" +  data1[i].name  + "</button>");
+				console.log(data1.friends.length);
+				if(data1.username=== $(uname).html()){
+			for(var i = 0; i<data1.friends.length ; i++){
+				$("#friendlist").append("<button id= " + "'link" + i + "'" + "class='getpreviouschats'>" +  data1.friends[i].name  + "</button>");
 		
 			}
 		
@@ -214,7 +216,7 @@
 							socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
 					
 				});	
-					
+			}		
 			
 			 
 		});
@@ -284,9 +286,10 @@
 			socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
 		});
 		socket.on("previous-message",function(data1){
-	   		$("#chatbox").empty();
-	    	if(data1.from === $(uname).html()){
+	   		
+	    	if(data1.from === $(uname).html() && data1.to === $(frname).html()){
 	    		   // $(getpreviouschats).css("display", "none");
+	    		   $("#chatbox").empty();
 	   	     		for(var i =0; i<data1.messaged.length ; i++){
 	    			$(chat).append("<span>" + data1.messaged[i].data + "</span><br/>");
 	    		}
