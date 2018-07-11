@@ -6,6 +6,7 @@ var express     = require("express"),
     LocalStrategy = require("passport-local"),
     User        = require("./models/user"),
     Message        = require("./models/message"),
+    PublicGroup        = require("./models/publicgroup"),
     searchedFriend = {},
     addedFriend = "" ,
     whichPage = "one" ;
@@ -229,6 +230,33 @@ app.get("/chat/:friendname",function(req,res){
 });
 
 io.sockets.on("connection",function(socket){
+     socket.on("createpubgroup",function(data2){
+          console.log(data2);
+          var userss = {"username": data2.maker };
+                PublicGroup.find({ hashtag : data2.hashtagname}).count({},function(err,count){
+                  
+                    
+                  
+                   if(err || count !== 0){
+                    statement = "group already exists";
+                      io.emit("groupcreated",statement) ; 
+                  }
+                  else{
+                      var newpubgroup = new PublicGroup({groupname :data2.groupname, hashtag:data2.hashtagname,users: userss }); 
+                      newpubgroup.save(function(err){
+                        if(err){
+                            console.log(err);
+                            }
+                      });
+                      statement = "group created";
+                      io.emit("groupcreated",statement) ; 
+                  }
+                });
+              
+              
+           
+    });
+
     socket.on("show-friend-list",function(data2){
       User.findById( data2.id,function(err,cuser){
         if(err){

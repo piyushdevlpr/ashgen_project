@@ -27,6 +27,15 @@
 		#chatwithfriend{
 			display: none;
 		}
+		#createpublicgroup{
+			display: none;
+		}
+		#showpublicgroups{
+			display: none;
+		}
+		#createdgroup{
+			display: none;
+		}
 	</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -46,6 +55,8 @@
  --><button id="searchFriendButton" >Search Friend</button>
 <!--  href="#friends/<%=currentUser._id%>" -->
 <button id="friendlistbutton" >My Friends</button>
+<button id="newpublicgroup" >New Public Group</button>
+<button id="yourpublicgroups" >your public groups</button>
 	
 <!-- section-2 -->
 <% if(whichPage==="one"){ %>
@@ -56,6 +67,22 @@
 
 </div>
 <% } %>
+
+<div id="createpublicgroup">
+	<form id="creategroup">
+		<input type="text" id="grpname" placeholder="group name">
+		<input type="text" id="grpht" placeholder="hashtag">
+		<input type="submit" value="create">
+	</form>	
+</div>
+<div id="createdgroup">
+	
+</div>
+
+<div id="showpublicgroups">
+	
+</div>
+
 
 <div id = "addFriend">
 <form id="addFriendSocket">
@@ -129,8 +156,34 @@
 
 		var getpreviouschats = $(".getpreviouschats");
 				// console.log($(frname));
-		$(friendlistbutton).click(function(e){
+		$("#yourpublicgroups").click(function(e){
+			$(defaultext).css("display", "none");
+			$("#showpublicgroups").css("display","inline");
+			$("#createpublicgroup").css("display","none");
+			$("#createdgroup").css("display","none");
+		});	
+		$("#newpublicgroup").click(function(e){
+			$(defaultext).css("display", "none");
+			$("#showpublicgroups").css("display","none");
+			$("#createpublicgroup").css("display","inline");
+			$("#createdgroup").css("display","inline");
+		});	
+		$("#creategroup").submit(function(e){
+			e.preventDefault();
+			$("#createpublicgroup").css("display","none");
+			
 
+			socket.emit("createpubgroup",{groupname : $("#grpname").val() , hashtagname:$("#grpht").val(), maker:$(uname).html()});
+		});
+		socket.on("groupcreated",function(data1){
+			$("#createdgroup").css("display","inline");
+			console.log(data1);
+			$("#createdgroup").append("<span>"+ data1 + "</span>");
+
+		});
+		$(friendlistbutton).click(function(e){
+			$("#showpublicgroups").css("display","none");
+			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "none");
 			$(searchF).css("display", "none");
@@ -138,6 +191,7 @@
 			$("#show-searched-friend").css("display", "none");
 			$("#showing-searched-friend").css("display", "none");
 			$("#show-friend").css("display", "none");
+			$("#createdgroup").css("display","none");
 			$(friendlist).empty();
 			socket.emit("show-friend-list",{id:$("#currentUserID").html() ,from:$(uname).html()});
 		});
@@ -147,38 +201,38 @@
 				$("#friendlist").append("<button id= " + "'link" + i + "'" + "class='getpreviouschats'>" +  data1[i].name  + "</button>");
 		
 			}
-		// 	$("#friendlist button").click(function(e){
-		// 		$("#frname").html($("#friendlist button").html()) ;
-		// 		//e.preventDefault();
-		// 		console.log("hi");
-		// 		$("#chatwithfriend").css("display","inline");
-		// });
+		
 	
 				
 					$("#friendlist button").click(function(e){
 						$("#frname").html($(this).html()) ;
 						console.log($(this).html());
 						$("#chatwithfriend").css("display","inline");
-						 // $(getpreviouschats).click(function(e){
+					
 							e.preventDefault();
-							//$(getpreviouschats).css("display", "none");
+						
 							socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
-						//});
+					
 				});	
 					
 			
 			 
 		});
 		$(addFriendButton).click(function(e){
+			$("#showpublicgroups").css("display","none");
+			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "flex");
 			$(searchF).css("display", "none");
 			$("#show-searched-friend").css("display", "none");
 			$("#showing-searched-friend").css("display", "none");
 			$(friendlist).css("display", "none");
+			$("#createdgroup").css("display","none");
 			$("#show-friend").css("display", "flex");
 		});
 		$(searchFriendButton).click(function(e){
+			$("#showpublicgroups").css("display","none");
+			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "none");
 			$(searchF).css("display", "inline");
@@ -186,6 +240,7 @@
 			$("#show-searched-friend").css("display", "flex");
 			$("#showing-searched-friend").css("display", "flex");
 			$(friendlist).css("display", "none");
+			$("#createdgroup").css("display","none");
 		});
 		$(".linkToChat").click(function(e){
 			$("#frname").html($(".linkToChat").html()) ;

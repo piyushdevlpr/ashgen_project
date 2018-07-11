@@ -34,7 +34,9 @@ body {
     text-transform: uppercase;
     background:#fff;
 	background-size: cover;
-	background: url(../images/banner1.jpg)no-repeat 0px 0px;
+	/*background: url(../images/banner1.jpg)no-repeat 0px 0px;*/
+	background: orange ;
+	background: linear-gradient(to right,blue,orange);
 }
 h1{
 	font-family: 'Bungee Shade', cursive;
