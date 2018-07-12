@@ -36,7 +36,7 @@ body {
 	background-size: cover;
 	/*--background: url(../images/banner1.jpg)no-repeat 0px 0px;*/
 	background: orange; /* For browsers that do not support gradients */
-    background: linear-gradient(to right,blue, orange); /* Standard syntax (must be last) */
+    background: linear-gradient(to right,rgb(20,39,54), rgb(255,90,42)); /* Standard syntax (must be last) */
 
 }
 h1{
