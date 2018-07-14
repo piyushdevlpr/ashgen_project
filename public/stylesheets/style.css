@@ -34,9 +34,13 @@ body {
     text-transform: uppercase;
     background:#fff;
 	background-size: cover;
-	/*background: url(../images/banner1.jpg)no-repeat 0px 0px;*/
-	background: orange ;
-	background: linear-gradient(to right,blue,orange);
+	/*--background: url(../images/banner1.jpg)no-repeat 0px 0px;*/
+	background: orange; /* For browsers that do not support gradients */
+    background: linear-gradient(to right,orange, black); /* Standard syntax (must be last) */
+
+}
+#particles-js{
+height: 800px;
 }
 h1{
 	font-family: 'Bungee Shade', cursive;
@@ -48,6 +52,15 @@ h2,h3,h4,h5,h6{
 .main-agileits {
     width: 30%;
     margin: 0 auto;
+    position: absolute;
+  left: 31%;
+  right: 31%;
+    align-content: center;
+    z-index: 999;
+     display: inline-block;
+  vertical-align: top;
+   line-height: 1;
+
 }
 .form-w3-agile h2 {
     color: #fff;
@@ -56,6 +69,7 @@ h2,h3,h4,h5,h6{
     text-align: center;
     margin-bottom: 2em;
     letter-spacing: 2px;
+
 }
 .form-w3-agile {
     background: rgba(4, 4, 4, 0.56);
@@ -68,7 +82,7 @@ h1 {
     text-align: center;
     font-size: 36px;
     font-weight: bold;
-    margin: 50px 0;
+    margin: 100px 0;
     color: #ffffff;
     letter-spacing: 4px;
     word-spacing: 4px;
@@ -226,6 +240,11 @@ label p {
     color: #fff;
 	letter-spacing: 1px;
     text-transform: none;
+    
+     vertical-align: middle; 
+     line-height: 1;
+     height: 20px;
+     
 }
 .copyright a {
     color: #e40672;
@@ -252,7 +271,7 @@ label p {
 @media(max-width:1440px){
 	h1 {
 		font-size: 30px;
-		margin: 40px 0;
+		margin: 60px 0;
 		word-spacing: 3px;
 	}
 	.main-agileits {
@@ -283,7 +302,7 @@ label p {
 @media(max-width:1280px){
 	h1 {
 		font-size: 36px;
-		margin: 35px 0;
+		margin: 45px 0;
 		letter-spacing: 3px;
 		font-family: 'Bungee Shade', cursive;
 	}
@@ -298,7 +317,8 @@ label p {
 		margin-top: 0.8em;
 	}
 	.main-agileits {
-		width: 39%;
+		width: 40%;
+		left: 30%;
 	}
 	#small-dialog, #small-dialog1, #small-dialog2 {
 		max-width: 520px;
@@ -309,7 +329,7 @@ label p {
 }
 @media(max-width:1080px){
 	.main-agileits {
-		width: 47%;
+		width: 45%;
 	}
 }
 @media(max-width:1050px){
@@ -333,7 +353,8 @@ label p {
 }
 @media(max-width:900px){
 	.main-agileits {
-		width: 50%;
+		width: 56%;
+		left: 22%;
 	}
 	.form-sub-w3 input[type="password"] {
 		width: 86%;
@@ -400,6 +421,7 @@ label p {
 	}
 	.main-agileits {
 		width: 55%;
+		left: 22.5%;
 	}
 	.form-sub-w3 input[type="password"] {
 		width: 85.5%;
@@ -450,6 +472,7 @@ label p {
 @media(max-width:736px){
 	.main-agileits {
 		width: 58%;
+		left: 20%;
 	}
 	.form-w3-agile h2 {
 		font-size: 17px;
@@ -479,6 +502,8 @@ label p {
 @media(max-width:640px){
 	.main-agileits {
 		width: 65%;
+		    left: 18%;
+
 	}
 	.form-w3-agile {
 		padding: 40px 35px;
@@ -509,7 +534,7 @@ label p {
 }
 @media(max-width:600px){
 	.main-agileits {
-		width: 68%;
+		width: 62%;
 	}
 }
 @media(max-width:568px){
@@ -539,11 +564,15 @@ label p {
 	}
 	.main-agileits {
 		width: 72%;
+		    left: 14%;
+
 	}
 }
 @media(max-width:480px){
 	.main-agileits {
 		width: 78%;
+		    width: 73%;
+
 	}
 	.form-sub-w3 input[type="text"] {
 		font-size:14px;
@@ -594,7 +623,8 @@ label p {
 }
 @media(max-width:414px){
 	.main-agileits {
-		width: 83%;
+		width: 80%;
+		left: 10%;
 	}
 	.form-sub-w3 input[type="text"] {
 		width: 82%;
@@ -636,6 +666,7 @@ label p {
 @media(max-width:384px){
 	.main-agileits {
 		width: 89%;
+		left: 5%;
 	}
 	.copyright p {
 		margin: 30px 29px;

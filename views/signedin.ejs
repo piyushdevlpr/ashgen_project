@@ -258,6 +258,7 @@
 		});
 		socket.on("groupcreated",function(data1){
 			$("#createdgroup").css("display","inline");
+			$("#createdgroup").empty() ;
 			console.log(data1);
 			$("#createdgroup").append("<span>"+ data1 + "</span>");
 
