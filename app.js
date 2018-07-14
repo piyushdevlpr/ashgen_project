@@ -7,6 +7,7 @@ var express     = require("express"),
     User        = require("./models/user"),
     Message        = require("./models/message"),
     PublicGroup        = require("./models/publicgroup"),
+    GroupMessage        = require("./models/groupmessage"),
     searchedFriend = {},
     addedFriend = "" ,
     whichPage = "one" ;
@@ -118,102 +119,102 @@ app.get("/signedin",function(req,res){
   res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,searchedFriend:searchedFriend});
 });
 
-app.get("/signedin/:id",function(req,res){
-  var addedFriend = "" ;
-  whichPage = "two";
-  whichPage2 = "six" ;
-  res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend});
-});
+// app.get("/signedin/:id",function(req,res){
+//   var addedFriend = "" ;
+//   whichPage = "two";
+//   whichPage2 = "six" ;
+//   res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend});
+// });
 
 
-app.post("/signedin/:id",function(req,res,next){
-  console.log(req.body.addfriend);
+// app.post("/signedin/:id",function(req,res,next){
+//   console.log(req.body.addfriend);
       
 
-  User.findOne({ username : req.body.addfriend},function(err,fuser){
-    if (err) {
-         res.send("fu");
-             }
-    else{
-         User.find({ username : req.body.addfriend}).count({},function(err,count){
-        if(!err && count!==0){
+//   User.findOne({ username : req.body.addfriend},function(err,fuser){
+//     if (err) {
+//          res.send("fu");
+//              }
+//     else{
+//          User.find({ username : req.body.addfriend}).count({},function(err,count){
+//         if(!err && count!==0){
            
-           var friend = {"name": fuser.username, "propic":fuser.profileImage} ;
+//            var friend = {"name": fuser.username, "propic":fuser.profileImage} ;
            
-    User.findByIdAndUpdate(req.params.id,
-    {$addToSet: {friends: friend}},
-    function(err, cuser) {
-        if(err){
-           console.log(err);
-        }else{
-             console.log(cuser);
-            var newMessage = new Message({from :cuser.username, to:fuser.username }); 
-            newMessage.save(function(err){
-              if(err){
-                console.log(err);
-              }
-            });
-             var newMessage2 = new Message({from :fuser.username, to:cuser.username }); 
-            newMessage2.save(function(err){
-              if(err){
-                console.log(err);
-              }
-            });
-            var friend2 = {"name": cuser.username, "propic":cuser.profileImage} ;
-           console.log(friend2.message);
-           User.findByIdAndUpdate(fuser._id,
-           {$addToSet: {friends: friend2}},function(err,data){
-            if(err){
-              console.log(err);
-            }else{
-              console.log(data);
-            var addedFriend = "friend successfully added";
-            whichPage="two" ;
-            whichPage2 = "six" ;
-            res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend});
-            }
-           });
-         }
-      });
-    }
-     else{
-       var addedFriend = "no such  friend can be added";
-       whichPage="two" ;
-       whichPage2 = "six" ;
-       res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend}) ;
-         }
-          });
-        }
-    });
-});
+//     User.findByIdAndUpdate(req.params.id,
+//     {$addToSet: {friends: friend}},
+//     function(err, cuser) {
+//         if(err){
+//            console.log(err);
+//         }else{
+//              console.log(cuser);
+//             var newMessage = new Message({from :cuser.username, to:fuser.username }); 
+//             newMessage.save(function(err){
+//               if(err){
+//                 console.log(err);
+//               }
+//             });
+//              var newMessage2 = new Message({from :fuser.username, to:cuser.username }); 
+//             newMessage2.save(function(err){
+//               if(err){
+//                 console.log(err);
+//               }
+//             });
+//             var friend2 = {"name": cuser.username, "propic":cuser.profileImage} ;
+//            console.log(friend2.message);
+//            User.findByIdAndUpdate(fuser._id,
+//            {$addToSet: {friends: friend2}},function(err,data){
+//             if(err){
+//               console.log(err);
+//             }else{
+//               console.log(data);
+//             var addedFriend = "friend successfully added";
+//             whichPage="two" ;
+//             whichPage2 = "six" ;
+//             res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend});
+//             }
+//            });
+//          }
+//       });
+//     }
+//      else{
+//        var addedFriend = "no such  friend can be added";
+//        whichPage="two" ;
+//        whichPage2 = "six" ;
+//        res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend}) ;
+//          }
+//           });
+//         }
+//     });
+// });
 
-app.post("/Sfriends/:id",function(req,res){
-  // User.findById(req.params.id,function(err,cuser){
-  //   cuser.friends.
-  // });
+// app.post("/Sfriends/:id",function(req,res){
+//   // User.findById(req.params.id,function(err,cuser){
+//   //   cuser.friends.
+//   // });
 
   
-});
+// });
 
-app.get("/searchfriends/:id",function(req,res){
-  // User.findById(req.params.id,function(err,cuser){
-  //   cuser.friends.
-  // });
-  searchedFriend = {} ;
-  whichPage="three";
-  whichPage2 = "six" ;
-  res.render("signedin.ejs",{whichPage:whichPage,searchedFriend:searchedFriend,whichPage2:whichPage2,addedFriend:addedFriend});
-});
+// app.get("/searchfriends/:id",function(req,res){
+//   // User.findById(req.params.id,function(err,cuser){
+//   //   cuser.friends.
+//   // });
+//   searchedFriend = {} ;
+//   whichPage="three";
+//   whichPage2 = "six" ;
+//   res.render("signedin.ejs",{whichPage:whichPage,searchedFriend:searchedFriend,whichPage2:whichPage2,addedFriend:addedFriend});
+// });
 
-app.get("#friends/:id",function(req,res){
-  // User.findById(req.params.id,function(err,cuser){
-  //   cuser.friends.
-  // });
-  whichPage = "four" ;
-    whichPage2 = "six" ;
+// app.get("#friends/:id",function(req,res){
+//   // User.findById(req.params.id,function(err,cuser){
+//   //   cuser.friends.
+//   // });
+//   whichPage = "four" ;
+//     whichPage2 = "six" ;
 
-  res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2,addedFriend:addedFriend});
-});
+//   res.render("signedin.ejs",{searchedFriend:searchedFriend,whichPage:whichPage,whichPage2:whichPage2,addedFriend:addedFriend});
+// });
 
 app.get("/logout", function(req, res){
    req.logout();
@@ -230,6 +231,147 @@ app.get("/chat/:friendname",function(req,res){
 });
 
 io.sockets.on("connection",function(socket){
+       socket.on("remove-member",function(data2){
+        var grphashtag = {"hashname": data2.grpname};
+          var grouphashtag = {"username": data2.membername} ;
+          var isPresent = false ;
+          PublicGroup.findOne({hashtag: data2.grpname},function(err,cgroup){
+              if(err){
+                console.log(err);
+              }else{
+                cgroup.users.forEach(function(f){
+                    if(f.username === data2.membername){
+                      console.log(f.username) ;
+                      isPresent = true ;
+                    }
+                });
+                if(!isPresent){
+           // console.log(isPresent) ;
+            io.emit("member-removed","member does not exist") ;
+          }else {
+         PublicGroup.findOneAndUpdate({hashtag: data2.grpname},{$pull: {users: grouphashtag,subadmins:grouphashtag}},
+                      function(err, cuser) {
+                        if(err){console.log(err);}
+                        else{
+                           User.findOneAndUpdate({ username : data2.membername},{$pull: {publicgrp: grphashtag}},function(err,fuser){
+                           if(err){
+                          console.log(err);
+                          }else{
+                              console.log(fuser) ;
+                                   
+                                    var statement = "member removed" ;
+                                    io.emit("member-removed",statement);
+                              
+                                    // var statement = "member does not exist" ;
+                                    // io.emit("member-removed",statement);
+                                  }
+                      
+                      });
+                
+                          
+                        }
+         });
+       }
+              }
+          });
+          //console.log(isPresent) ;
+          
+       });
+         socket.on("remove-subadmin",function(data2){
+          var grouphashtag = {"username": data2.membername} ;
+          var isPresent = false ;
+          PublicGroup.findOne({hashtag: data2.grpname},function(err,cgroup){
+              cgroup.subadmins.forEach(function(f){
+                if(f.username === data2.membername){
+                    isPresent = true ;
+                }
+              });
+              if(isPresent){
+                  PublicGroup.findOneAndUpdate({hashtag:data2.grpname},{$pull: {subadmins: grouphashtag}},
+                      function(err, cuser) {
+                        if(err){
+                          console.log(err);
+                        }else{
+                          io.emit("subadmin-removed","member removed as a subadmin");
+                        }
+                      });
+              }else{
+                  io.emit("subadmin-removed", "no such subadmin exists");
+              }
+          });   
+          
+       });
+      socket.on("add-member",function(data2){
+          User.find({ username : data2.membername}).count({},function(err,count){
+              if(count===0){
+                var statement = "no such user" ;
+                io.emit("add-member-result",statement) ;
+              }
+              else{
+                var grphashtag = {"hashname": data2.grpname};
+                 User.findOne({ username : data2.membername},function(err,cuser){
+                  User.findByIdAndUpdate(cuser._id,{$addToSet: {publicgrp: grphashtag}},
+                      function(err, cuser) {if(err){
+                        console.log(err);
+                      }
+                      });
+                 });
+                var grouphashtag = {"username": data2.membername} ;
+                PublicGroup.findOne({hashtag : data2.grpname},function(err,cgroup){
+                  var id = cgroup._id ;
+                  PublicGroup.findByIdAndUpdate(id,{$addToSet: {users: grouphashtag}},
+                      function(err, cuser) {
+                        if(err){
+                          console.log(err);
+                        }
+                        else{
+                          var statement = "member added succesfully";
+                          io.emit("add-member-result",statement);
+                        }
+                      });
+                });
+              }
+          });
+      });
+
+       socket.on("add-subadmin",function(data2){
+          var grouphashtag = {"username": data2.membername} ;
+          var isPresent = false ;
+          PublicGroup.findOne({hashtag: data2.grpname},function(err,cgroup){
+              cgroup.users.forEach(function(f){
+                if(f.username === data2.membername){
+                    isPresent = true ;
+                }
+              });
+              if(isPresent){
+                  PublicGroup.findOneAndUpdate({hashtag:data2.grpname},{$addToSet: {subadmins: grouphashtag}},
+                      function(err, cuser) {
+                        if(err){
+                          console.log(err);
+                        }else{
+                          io.emit("subadmin","member made subadmin");
+                        }
+                      });
+              }else{
+                  io.emit("subadmin", "no such member exists");
+              }
+          });
+      });
+        socket.on("settings-to-show",function(data2){
+          PublicGroup.findOne({hashtag:data2},function(err,cgroup){
+              io.emit("settings-emitted",cgroup);
+          });
+        });
+      socket.on("clickedpublicgroups",function(data2){
+          User.findById(data2.id,function(err,cuser){
+              if(err){
+                console.log(err);
+              }
+              else{
+                io.emit("herearethegroups",cuser);
+              }
+          });
+      });
      socket.on("createpubgroup",function(data2){
           console.log(data2);
           var userss = {"username": data2.maker };
@@ -240,10 +382,25 @@ io.sockets.on("connection",function(socket){
                    if(err || count !== 0){
                     statement = "group already exists";
                       io.emit("groupcreated",statement) ; 
-                  }
+                  } 
                   else{
-                      var newpubgroup = new PublicGroup({groupname :data2.groupname, hashtag:data2.hashtagname,users: userss }); 
+                      grouphashtag = {"hashname" :data2.hashtagname};
+                      User.findByIdAndUpdate(data2.id,
+                      {$addToSet: {publicgrp: grouphashtag}},
+                      function(err, cuser) {
+                        if(err){
+                          console.log(err);
+                        }
+
+                      });
+                      var newpubgroup = new PublicGroup({groupname :data2.groupname, hashtag:data2.hashtagname,admin:data2.maker,users: userss }); 
                       newpubgroup.save(function(err){
+                        if(err){
+                            console.log(err);
+                            }
+                      });
+                      var newgroupmessage = new GroupMessage({to : data2.hashtagname});
+                      newgroupmessage.save(function(err){
                         if(err){
                             console.log(err);
                             }
@@ -379,6 +536,18 @@ io.sockets.on("connection",function(socket){
 
 
   socket.on("loaded-message",function(data2){
+             User.findOne({username:data2.from},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+              var messagefrom = {"users":data2.to};
+              User.findByIdAndUpdate(fuser._id,{$pull:{newmessages:messagefrom}},{new:true},
+                function(err,cuser){
+                  if(err){console.log(err);}
+                
+                }
+                );
+            }
+         });
     Message.findOne({from:data2.from,to:data2.to},function(err,cuser){
         if(err){
           console.log(err);
@@ -388,12 +557,45 @@ io.sockets.on("connection",function(socket){
       });
   });
 
+ socket.on("loaded-message-group",function(data2){
+     GroupMessage.findOne({to:data2.to},function(err,cuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(cuser);
+          io.emit("previous-group-message",cuser);
+        }
+      });
+  });
+
+  socket.on("userloggedin",function(data2){
+     User.findOne({username:data2},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+              console.log(fuser);
+              io.emit("newmessagefrom",fuser);
+            }
+         });
+  });
   socket.on("send-message",function(data1){
     // console.log(data);
     //  socket.frname = data.to ;
     //  frnames.push(socket.frname);
     // console.log(data.from);
          console.log(data1.msg);
+         var messagefrom = {"users":data1.from};
+         User.findOne({username:data1.to},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+              User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
+                function(err,cuser){
+                  if(err){console.log(err);}
+           
+                }
+                );
+            }
+         });
+
              Message.findOne({from:data1.to,to:data1.from},function(err,cuser){
 
         if(err){
@@ -439,7 +641,38 @@ io.sockets.on("connection",function(socket){
      // });         
 
        });
-     
+      
+
+       socket.on("send-message-grp",function(data1){
+
+    PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
+      if(err){
+        console.log(err);
+      }
+      else{
+     GroupMessage.findOne({to:data1.to},function(err,cuser){
+
+        if(err){
+          console.log(err);
+        }else{
+              ms = { "data": data1.from + " : " + data1.msg} ;
+              
+              GroupMessage.findOneAndUpdate({_id : cuser._id},{$push: { messaged : ms}},{new:true},function(err,duser){
+                if(err){
+                  console.log(err);
+                }
+                // else{
+                    console.log(cgroup);
+                   io.emit("new-message-grp",{getmsg:duser,getusers:cgroup});
+                // }
+
+              });
+            }
+          });
+
+           }
+      });
+       });     
   });
 
 

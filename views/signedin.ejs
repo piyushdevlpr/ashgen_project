@@ -9,6 +9,12 @@
 			border: 1px solid ;
 			overflow:auto;
 	}
+		#chatboxgrp{
+			height:200px;
+			width: 200px;
+			border: 1px solid ;
+			overflow:auto;
+	}
 		#friendlist{
 			display: none;
 		}
@@ -34,6 +40,15 @@
 			display: none;
 		}
 		#createdgroup{
+			display: none;
+		}
+		#publicgroupsettings{
+			display: none;
+		}
+		#showing-result{
+			display: none;
+		}
+		#chatwithgroup{
 			display: none;
 		}
 	</style>
@@ -64,7 +79,7 @@
 <h2>
 	SELECT Something
 </h2>
-
+	
 </div>
 <% } %>
 
@@ -83,6 +98,28 @@
 	
 </div>
 
+<div id="publicgroupsettings">
+   <form id="addmember">
+   		<input type="text" id="addmembername">
+   		<input type="submit" value="addmember">
+   </form><br>
+   <form id="removemember">
+   	   	<input type="text" id="removedmembername">
+   		<input type="submit" value="removemember">
+   </form><br>
+   <form id="addsubadmin">
+   	   	<input type="text" id="addsubadminname">
+   		<input type="submit" value="addsubadmin">
+   </form><br>
+   <form id="removesubadmin">
+   	   	<input type="text" id="removesubadminname">
+   		<input type="submit" value="removesubadmin">
+   </form><br>
+<div id="showing-result">
+	
+</div>
+<!-- 	<button id="removesubadmin"></button>-->
+</div>
 
 <div id = "addFriend">
 <form id="addFriendSocket">
@@ -115,7 +152,22 @@
 
 <!-- section-3 -->
 
-
+<div id = "chatwithgroup">
+<h2>
+	WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
+</h2>
+<h2>
+	Chat with <span id="grname"></span>
+</h2>
+<!-- <form id = "getpreviouschats">
+	<input type="submit" value="get previous chats">
+</form> -->
+<div id="chatboxgrp"></div>
+<form id = "sendmessagegrp">
+	<input type="text" id="messagegrp" size="35" required="true" >
+	<input type="submit" value="send" >
+</form>	
+</div>
 
 
 <div id = "chatwithfriend">
@@ -153,32 +205,163 @@
 		var addFriend = $("#addFriend");
 		var defaultext = $("#defaultext");
 		var uname = $("#uname");
-
+		var messagesent = false ;
+		var userlogin = true ;
 		var getpreviouschats = $(".getpreviouschats");
 				// console.log($(frname));
+		socket.emit("userloggedin",$(uname).html());
+		socket.on("newmessagefrom",function(data2){
+			console.log(data2.newmessages);
+			if(data2.username=== $(uname).html()){
+			data2.newmessages.forEach(function(f){
+				$(defaultext).append("<span>"+ f.users + "</span>");
+			});
+			}
+		});
 		$("#yourpublicgroups").click(function(e){
 			$(defaultext).css("display", "none");
-			$("#showpublicgroups").css("display","inline");
+			$(defaultext).css("display", "none");
+			$("#publicgroupsettings").css("display","none");
+			$(addFriend).css("display", "none");
+			$(searchF).css("display", "none");
+			$(friendlist).css("display", "none");
+			$("#show-searched-friend").css("display", "none");
+			$("#showing-searched-friend").css("display", "none");
+			$("#show-friend").css("display", "none");
+			$("#showpublicgroups").css("display","flex");
 			$("#createpublicgroup").css("display","none");
 			$("#createdgroup").css("display","none");
+			$("#showing-result").css("display","none");
 		});	
 		$("#newpublicgroup").click(function(e){
 			$(defaultext).css("display", "none");
+				$("#showing-result").css("display","none");
+			$("#publicgroupsettings").css("display","none");
+			$(defaultext).css("display", "none");
+			$(addFriend).css("display", "none");
+			$(searchF).css("display", "none");
+			$(friendlist).css("display", "none");
+			$("#show-searched-friend").css("display", "none");
+			$("#showing-searched-friend").css("display", "none");
+			$("#show-friend").css("display", "none");
 			$("#showpublicgroups").css("display","none");
-			$("#createpublicgroup").css("display","inline");
-			$("#createdgroup").css("display","inline");
+			$("#createpublicgroup").css("display","flex");
+			$("#createdgroup").css("display","flex");
 		});	
+
 		$("#creategroup").submit(function(e){
 			e.preventDefault();
 			$("#createpublicgroup").css("display","none");
 			
 
-			socket.emit("createpubgroup",{groupname : $("#grpname").val() , hashtagname:$("#grpht").val(), maker:$(uname).html()});
+			socket.emit("createpubgroup",{id:$("#currentUserID").html() ,groupname : $("#grpname").val() , hashtagname:$("#grpht").val(), maker:$(uname).html()});
 		});
 		socket.on("groupcreated",function(data1){
 			$("#createdgroup").css("display","inline");
 			console.log(data1);
 			$("#createdgroup").append("<span>"+ data1 + "</span>");
+
+		});
+		$("#yourpublicgroups").click(function(e){
+			e.preventDefault();
+			$("#showpublicgroups").empty();
+			socket.emit("clickedpublicgroups",{id:$("#currentUserID").html() });
+		});
+		socket.on("herearethegroups",function(data1){
+			if(data1.username=== $(uname).html()){
+			for(var i = 0; i<data1.publicgrp.length ; i++){
+				$("#showpublicgroups").append("<button id= " + "'grouplink" + i + "'" + "class='getpreviouschatsofgrp'>" +  data1.publicgrp[i].hashname  + "</button>");
+		
+			}
+		
+						$("#showpublicgroups button").click(function(e){
+								$("#grname").html($(this).html()) ;
+						 		console.log($(this).html());
+						 		$("#chatwithfriend").css("display","none");
+				 				$("#chatwithgroup").css("display","inline");
+							var grp = $(this).html();
+							$("#publicgroupsettings").css("display","flex");
+							$("#showpublicgroups").css("display","none");
+							socket.emit("loaded-message-group",{to: grp,from:$(uname).html()});
+							socket.on("previous-group-message",function(data1){
+								console.log(data1);
+								if( data1.to === grp){
+	    		   
+	    					   $("#chatboxgrp").empty();
+	   	     					for(var i =0; i<data1.messaged.length ; i++){
+	    							$("#chatboxgrp").append("<span>" + data1.messaged[i].data + "</span><br/>");
+	    						}
+	    					}
+						});
+							socket.emit("settings-to-show",grp);
+							socket.on("settings-emitted",function(data1){
+							var issubadmin = false ;
+							if($(uname).html()!== data1.admin){
+							data1.subadmins.forEach(function(f){
+									if($(uname).html() === f.username){
+											issubadmin = true ;
+									}
+								});
+							if(issubadmin){
+									$("#removesubadmin").css("display","none");
+							}else{
+								$("#removesubadmin").css("display","none");
+								$("#addsubadmin").css("display","none");
+							}
+							}
+										$("#addmember").submit(function(e){
+									e.preventDefault();
+									console.log(grp);
+									socket.emit("add-member",{grpname : grp , membername : $("#addmembername").val() });
+								});
+									$("#removemember").submit(function(e){
+									e.preventDefault();
+									socket.emit("remove-member",{membername:$("#removedmembername").val(),grpname: grp });
+								});
+									$("#addsubadmin").submit(function(e){
+									e.preventDefault();
+									socket.emit("add-subadmin",{membername:$("#addsubadminname").val(),grpname: grp });
+								});
+								$("#removesubadmin").submit(function(e){
+									e.preventDefault();
+									socket.emit("remove-subadmin",{membername:$("#removesubadminname").val(),grpname: grp });
+								});	
+
+							});
+			
+
+							 
+							
+
+										
+					
+				});
+
+
+			}		
+		});
+
+		socket.on("subadmin",function(data1){
+				$("#showing-result").empty();
+				$("#showing-result").css("display","flex");
+				$("#showing-result").append("<span>"+ data1 + "</span>");
+		});
+		socket.on("subadmin-removed",function(data1){
+				$("#showing-result").empty();
+				$("#showing-result").css("display","flex");
+				$("#showing-result").append("<span>"+ data1 + "</span>");
+		});
+		socket.on("add-member-result",function(data1){
+				$("#showing-result").empty();
+				$("#showing-result").css("display","flex");
+				$("#showing-result").append("<span>"+ data1 + "</span>");
+
+		});
+		socket.on("member-removed",function(data1){
+				$("#showing-result").empty();
+				$("#showing-result").css("display","flex");
+				$("#showing-result").append("<span>"+ data1 + "</span>");
+				console.log(data1);
 
 		});
 		$(friendlistbutton).click(function(e){
@@ -192,7 +375,9 @@
 			$("#showing-searched-friend").css("display", "none");
 			$("#show-friend").css("display", "none");
 			$("#createdgroup").css("display","none");
+			$("#publicgroupsettings").css("display","none");
 			$(friendlist).empty();
+				$("#showing-result").css("display","none");
 			socket.emit("show-friend-list",{id:$("#currentUserID").html() ,from:$(uname).html()});
 		});
 		socket.on("friend-list-emitted",function(data1){
@@ -205,9 +390,10 @@
 			}
 		
 	
-				
+					
 					$("#friendlist button").click(function(e){
 						$("#frname").html($(this).html()) ;
+						$("#chatwithgroup").css("display","none");
 						console.log($(this).html());
 						$("#chatwithfriend").css("display","inline");
 					
@@ -229,8 +415,10 @@
 			$("#show-searched-friend").css("display", "none");
 			$("#showing-searched-friend").css("display", "none");
 			$(friendlist).css("display", "none");
+				$("#showing-result").css("display","none");
 			$("#createdgroup").css("display","none");
 			$("#show-friend").css("display", "flex");
+			$("#publicgroupsettings").css("display","none");
 		});
 		$(searchFriendButton).click(function(e){
 			$("#showpublicgroups").css("display","none");
@@ -243,6 +431,8 @@
 			$("#showing-searched-friend").css("display", "flex");
 			$(friendlist).css("display", "none");
 			$("#createdgroup").css("display","none");
+				$("#showing-result").css("display","none");
+			$("#publicgroupsettings").css("display","none");
 		});
 		$(".linkToChat").click(function(e){
 			$("#frname").html($(".linkToChat").html()) ;
@@ -285,6 +475,9 @@
 			//$(getpreviouschats).css("display", "none");
 			socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
 		});
+
+
+
 		socket.on("previous-message",function(data1){
 	   		
 	    	if(data1.from === $(uname).html() && data1.to === $(frname).html()){
@@ -302,13 +495,47 @@
 		});
 	    socket.on("new-message",function(data1){
 	    	console.log(data1);
+	    	
 	    	if(data1.from===$(uname).html()||data1.to===$(uname).html()){
+	    	messagesent = true ;
 	    	$(chat).append("<span>" + data1.messaged[data1.messaged.length - 1].data + "</span><br/>");
 	    }
 	    });
        
+
+  //      		$(getpreviouschats).click(function(e){
+		// 	e.preventDefault();
+			
+		// 	socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
+		// });
+		// socket.on("previous-message",function(data1){
+	   		
+	 //    	if(data1.from === $(uname).html() && data1.to === $(frname).html()){
+	 //    		   // $(getpreviouschats).css("display", "none");
+	 //    		   $("#chatbox").empty();
+	 //   	     		for(var i =0; i<data1.messaged.length ; i++){
+	 //    			$(chat).append("<span>" + data1.messaged[i].data + "</span><br/>");
+	 //    		}
+	 //    	}
+	 //    });
+		$("#sendmessagegrp").submit(function(e){
+			e.preventDefault();
+			socket.emit("send-message-grp",{to:$("#grname").html(),from:$(uname).html(),msg :$("#messagegrp").val()});
+			$("#messagegrp").val("");
+		});
+	    socket.on("new-message-grp",function(data1){
+	    	console.log(data1);
+	    	data1.getusers.users.forEach(function(f){
+	          if(f.username===$(uname).html()){
+	    	  $("#chatboxgrp").append("<span>" + data1.getmsg.messaged[data1.getmsg.messaged.length - 1].data + "</span><br/>");
+	    }
+	    	});
+	    
+	    });
 	    });
       
+
+
 </script>
 </body>
 </html>

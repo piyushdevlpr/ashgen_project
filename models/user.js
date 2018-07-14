@@ -9,7 +9,16 @@ var UserSchema = new mongoose.Schema({
     username: String,
     password: String,
     profileImage: String,
-   
+    publicgrp : [
+      {
+        hashname:String
+      }
+    ],
+    newmessages: [
+    {
+      users:String
+    }
+    ],
     friends: [
       {  
          name: String,
