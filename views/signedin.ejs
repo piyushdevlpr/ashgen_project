@@ -102,19 +102,13 @@
    <form id="addmember">
    		<input type="text" id="addmembername">
    		<input type="submit" value="addmember">
-   </form><br>
-   <form id="removemember">
-   	   	<input type="text" id="removedmembername">
-   		<input type="submit" value="removemember">
-   </form><br>
-   <form id="addsubadmin">
-   	   	<input type="text" id="addsubadminname">
-   		<input type="submit" value="addsubadmin">
-   </form><br>
-   <form id="removesubadmin">
-   	   	<input type="text" id="removesubadminname">
-   		<input type="submit" value="removesubadmin">
-   </form><br>
+   </form>
+
+<div id="othersettingsselect">
+</div>
+<div id= "othersettings">
+	
+</div>
 <div id="showing-result">
 	
 </div>
@@ -276,12 +270,14 @@
 			}
 		
 						$("#showpublicgroups button").click(function(e){
+								
 								$("#grname").html($(this).html()) ;
 						 		console.log($(this).html());
 						 		$("#chatwithfriend").css("display","none");
 				 				$("#chatwithgroup").css("display","inline");
 							var grp = $(this).html();
 							$("#publicgroupsettings").css("display","flex");
+
 							$("#showpublicgroups").css("display","none");
 							socket.emit("loaded-message-group",{to: grp,from:$(uname).html()});
 							socket.on("previous-group-message",function(data1){
@@ -294,41 +290,120 @@
 	    						}
 	    					}
 						});
-							socket.emit("settings-to-show",grp);
-							socket.on("settings-emitted",function(data1){
-							var issubadmin = false ;
-							if($(uname).html()!== data1.admin){
-							data1.subadmins.forEach(function(f){
+							$("#addmember").submit(function(e){
+									e.preventDefault();
+									console.log(grp);
+									$("#othersettings").empty();
+									socket.emit("add-member",{grpname : grp , membername : $("#addmembername").val() });
+									socket.emit("member-names",grp);
+
+								});
+							socket.emit("member-names",grp);
+							socket.on("names-here",function(data1){
+							$("#othersettings").empty();
+								var issubadmin = false ;
+								var isadmin = false ;
+								if($(uname).html() === data1.admin){
+									isadmin = true ;
+								}
+								if($(uname).html() !== data1.admin){
+									data1.subadmins.forEach(function(f){
 									if($(uname).html() === f.username){
 											issubadmin = true ;
 									}
 								});
-							if(issubadmin){
-									$("#removesubadmin").css("display","none");
-							}else{
-								$("#removesubadmin").css("display","none");
-								$("#addsubadmin").css("display","none");
-							}
-							}
-										$("#addmember").submit(function(e){
-									e.preventDefault();
-									console.log(grp);
-									socket.emit("add-member",{grpname : grp , membername : $("#addmembername").val() });
-								});
-									$("#removemember").submit(function(e){
-									e.preventDefault();
-									socket.emit("remove-member",{membername:$("#removedmembername").val(),grpname: grp });
-								});
-									$("#addsubadmin").submit(function(e){
-									e.preventDefault();
-									socket.emit("add-subadmin",{membername:$("#addsubadminname").val(),grpname: grp });
-								});
-								$("#removesubadmin").submit(function(e){
-									e.preventDefault();
-									socket.emit("remove-subadmin",{membername:$("#removesubadminname").val(),grpname: grp });
-								});	
+								}
+								console.log(issubadmin) ;
+								data1.users.forEach(function(f){
 
+									if(f.username !== data1.admin && f.username !== $(uname).html()){
+									$("#othersettings").append("<button>"+f.username+"</button></br>");
+								}
 							});
+								$("#othersettings button").click(function(e){
+									var ussser = $(this).html();
+									if(issubadmin){
+										
+										$("#othersettingsselect").append("<button id = 'addsubadminname'> addsubadmin </button>");
+										$("#othersettingsselect").append("<button id = 'removedmembername'> removemember </button>");
+									$("#removedmembername").click(function(e){
+									$("#othersettingsselect").empty() ;
+									$("#othersettings").empty();
+								
+									
+									socket.emit("remove-member",{membername:ussser,grpname: grp });
+									socket.emit("member-names",grp);
+										});
+									$("#addsubadminname").click(function(e){
+									e.preventDefault();
+										$("#othersettingsselect").empty() ;
+									socket.emit("add-subadmin",{membername:ussser,grpname: grp });
+										});
+									}
+									if(isadmin){
+										$("#othersettingsselect").empty() ;
+										$("#othersettingsselect").append("<button id = 'addsubadminname'> addsubadmin </button>");
+										$("#othersettingsselect").append("<button id = 'removedmembername'> removemember </button>");
+										$("#othersettingsselect").append("<button id = 'removesubadminname'> removesubadmin </button>");
+									$("#removedmembername").click(function(e){
+									e.preventDefault();
+									$("#othersettingsselect").empty() ;
+									$("#othersettings").empty();
+									
+									socket.emit("remove-member",{membername:ussser,grpname: grp });
+									socket.emit("member-names",grp);
+										});
+									$("#addsubadminname").click(function(e){
+									e.preventDefault();
+									$("#othersettingsselect").empty() ;
+									socket.emit("add-subadmin",{membername:ussser,grpname: grp });
+										});
+									$("#removesubadminname").click(function(e){
+									e.preventDefault();
+									$("#othersettingsselect").empty() ;
+									socket.emit("remove-subadmin",{membername:ussser,grpname: grp });
+								});	
+									}
+
+								});
+								
+	
+							});
+							// socket.emit("settings-to-show",grp);
+							// socket.on("settings-emitted",function(data1){
+							// var issubadmin = false ;
+							// if($(uname).html()!== data1.admin){
+							// data1.subadmins.forEach(function(f){
+							// 		if($(uname).html() === f.username){
+							// 				issubadmin = true ;
+							// 		}
+							// 	});
+							// if(issubadmin){
+							// 		$("#removesubadmin").css("display","none");
+							// }else{
+							// 	$("#removesubadmin").css("display","none");
+							// 	$("#addsubadmin").css("display","none");
+							// }
+							// }
+							// 			$("#addmember").submit(function(e){
+							// 		e.preventDefault();
+							// 		console.log(grp);
+							// 		socket.emit("add-member",{grpname : grp , membername : $("#addmembername").val() });
+							// 	});
+							// 		$("#removemember").click(function(e){
+							// 		e.preventDefault();
+							// 		socket.emit("remove-member",{membername:$("#member-name").html(),grpname: grp });
+							// 	});
+							// 		$("#addsubadmin").click(function(e){
+							// 		e.preventDefault();
+							// 		socket.emit("add-subadmin",{membername:$("#member-name").html(),grpname: grp });
+							// 	});
+							// 	$("#removesubadmin").click(function(e){
+							// 		e.preventDefault();
+							// 		socket.emit("remove-subadmin",{membername:$("#member-name").html(),grpname: grp });
+							// 	});	
+
+							// });
 			
 
 							 

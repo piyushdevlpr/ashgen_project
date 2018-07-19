@@ -556,7 +556,17 @@ io.sockets.on("connection",function(socket){
         }
       });
   });
-
+  socket.on("member-names",function(data2){
+     console.log(data2);
+      PublicGroup.findOne({hashtag:data2},function(err,cgroup){
+          if(err){
+            console.log(err);
+          }
+          else{
+            io.emit("names-here",cgroup);
+          }
+      });
+  });
  socket.on("loaded-message-group",function(data2){
      GroupMessage.findOne({to:data2.to},function(err,cuser){
         if(err){
