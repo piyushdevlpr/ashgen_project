@@ -572,7 +572,7 @@
 	    socket.on("new-message",function(data1){
 	    	console.log(data1);
 	    	
-	    	if(data1.from===$(uname).html()||data1.to===$(uname).html()){
+	    	if(data1.from===$(uname).html()||(data1.to===$(uname).html() && data1.from===$(frname).html())){
 	    	messagesent = true ;
 	    	$(chat).append("<span>" + data1.messaged[data1.messaged.length - 1].data + "</span><br/>");
 	    }
