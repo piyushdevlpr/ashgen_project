@@ -59,7 +59,7 @@
 <body>
 
  <% if( currentUser === undefined){ %>
-    <h2> hi </h2>
+    <a href="/login">Please login first </a>
   <% }else { %>
   	<h2>WELCOME "<%= currentUser.username %>" !!!! </h2>
 	<span id="currentUserID"><%= currentUser._id %></span>
