@@ -143,7 +143,9 @@ io.sockets.on("connection",function(socket){
                 });
                 if(!isPresent){
            // console.log(isPresent) ;
-            io.emit("member-removed","member does not exist") ;
+           var statement = "member does not exist";
+                          var output = {"user": data2.user , "state":statement};
+            io.emit("member-removed",output) ;
           }else {
          PublicGroup.findOneAndUpdate({hashtag: data2.grpname},{$pull: {users: grouphashtag,subadmins:grouphashtag}},
                       function(err, cuser) {
@@ -155,11 +157,11 @@ io.sockets.on("connection",function(socket){
                           }else{
                               console.log(fuser) ;
                                    
-                                    var statement = "member removed" ;
-                                    io.emit("member-removed",statement);
+                                    var statement = "member does not exist";
+                          var output = {"user": data2.user , "state":statement};
+                                    io.emit("member-removed",output);
                               
-                                    // var statement = "member does not exist" ;
-                                    // io.emit("member-removed",statement);
+                    
                                   }
                       
                       });
@@ -188,11 +190,16 @@ io.sockets.on("connection",function(socket){
                         if(err){
                           console.log(err);
                         }else{
-                          io.emit("subadmin-removed","member removed as a subadmin");
+                          var statement = "member removed as a subadmin";
+                          var output = {"user": data2.user , "state":statement};
+
+                          io.emit("subadmin-removed",output);
                         }
                       });
               }else{
-                  io.emit("subadmin-removed", "no such subadmin exists");
+                 var statement = "no such subadmin exists";
+                          var output = {"user": data2.user , "state":statement};
+                  io.emit("subadmin-removed", output);
               }
           });   
           
@@ -239,13 +246,15 @@ io.sockets.on("connection",function(socket){
                         }
                         else{
                           var statement = "member added succesfully";
-                          io.emit("add-member-result",statement);
+                          var output = {"user": data2.user , "state":statement};
+                          io.emit("add-member-result",output);
                         }
                       });
                 }
                 else{
                   var statement = "member already present";
-                          io.emit("add-member-result",statement);
+                  var output = {"user": data2.user , "state":statement};
+                          io.emit("add-member-result",output);
                 }
                 });
               }
@@ -267,11 +276,15 @@ io.sockets.on("connection",function(socket){
                         if(err){
                           console.log(err);
                         }else{
-                          io.emit("subadmin","member made subadmin");
+                          var statement = "member made subadmin" ;
+                          var output = {"user":data2.user , "state":statement};
+                          io.emit("subadmin",output);
                         }
                       });
               }else{
-                  io.emit("subadmin", "no such member exists");
+                  var statement = "no such member exists" ;
+                  var output = {"user":data2.user , "state":statement};
+                  io.emit("subadmin", output );
               }
           });
       });
@@ -293,13 +306,15 @@ io.sockets.on("connection",function(socket){
      socket.on("createpubgroup",function(data2){
           console.log(data2);
           var userss = {"username": data2.maker };
+          var output = {"name":data2.maker , "state":""} ;
                 PublicGroup.find({ hashtag : data2.hashtagname}).count({},function(err,count){
                   
                     
                   
                    if(err || count !== 0){
                     statement = "group already exists";
-                      io.emit("groupcreated",statement) ; 
+                    output = {"name":data2.maker , "state":statement} ;
+                      io.emit("groupcreated",output) ; 
                   } 
                   else{
                       grouphashtag = {"hashname" :data2.hashtagname};
@@ -324,7 +339,9 @@ io.sockets.on("connection",function(socket){
                             }
                       });
                       statement = "group created";
-                      io.emit("groupcreated",statement) ; 
+                      output = {"name":data2.maker , "state":statement} ;
+
+                      io.emit("groupcreated",output) ; 
                   }
                 });
               
@@ -461,9 +478,10 @@ io.sockets.on("connection",function(socket){
               User.findByIdAndUpdate(fuser._id,{$pull:{newmessages:messagefrom}},{new:true},
                 function(err,cuser){
                   if(err){console.log(err);}
-                
-                }
-                );
+                  else{
+                    io.emit("newmessagefrom",cuser) ;
+                  }
+              });
             }
          });
     Message.findOne({from:data2.from,to:data2.to},function(err,cuser){
@@ -486,6 +504,19 @@ io.sockets.on("connection",function(socket){
       });
   });
  socket.on("loaded-message-group",function(data2){
+   User.findOne({username:data2.from},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+              var messagefrom = {"users":data2.to};
+              User.findByIdAndUpdate(fuser._id,{$pull:{newmessages:messagefrom}},{new:true},
+                function(err,cuser){
+                  if(err){console.log(err);}
+                  else{
+                    io.emit("newmessagefrom",cuser) ;
+                  }
+              });
+            }
+         });
      GroupMessage.findOne({to:data2.to},function(err,cuser){
         if(err){
           console.log(err);
@@ -515,13 +546,24 @@ io.sockets.on("connection",function(socket){
          User.findOne({username:data1.to},function(err,fuser){
             if(err){console.log(err);}
             else{
+              var isPresent  = false ;
+              fuser.newmessages.forEach(function(f){
+                if(data1.from === f.users){
+                  isPresent = true ;
+                }
+              });
+              console.log(isPresent) ;
+              if(!isPresent){
               User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
                 function(err,cuser){
                   if(err){console.log(err);}
-           
+                  else{
+                    io.emit("newmessagefrom",cuser) ;
+                  }
                 }
                 );
             }
+          }
          });
 
              Message.findOne({from:data1.to,to:data1.from},function(err,cuser){
@@ -572,12 +614,41 @@ io.sockets.on("connection",function(socket){
       
 
        socket.on("send-message-grp",function(data1){
-
+    var messagefrom = {"users":data1.to};
     PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
       if(err){
         console.log(err);
       }
       else{
+        cgroup.users.forEach(function(f){
+          if(f.username !== data1.from){
+
+         User.findOne({username:f.username},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+              var isPresent  = false ;
+              fuser.newmessages.forEach(function(g){
+                if(data1.to === g.users){
+                  isPresent = true ;
+                }
+              });
+              console.log(isPresent) ;
+              if(!isPresent){
+          
+              User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
+                function(err,cuser){
+                  if(err){console.log(err);}
+                  else{
+                    io.emit("newmessagefrom",cuser) ;
+                  }
+                }
+                );
+            }
+          }
+         });
+          
+          }
+        });
      GroupMessage.findOne({to:data1.to},function(err,cuser){
 
         if(err){

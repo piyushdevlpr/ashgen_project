@@ -54,24 +54,95 @@
 	</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-<h2>
-	WELCOME "<%= currentUser.username %>" !!!!
+
+ <% if( currentUser === undefined){ %>
+    <h2> hi </h2>
+  <% }else { %>
+  	<h2>WELCOME "<%= currentUser.username %>" !!!! </h2>
 	<span id="currentUserID"><%= currentUser._id %></span>
-</h2>
+	 
+
 
 <!-- section-1 -->
+ 
+<div class="main-wrapper fullwidth">
+        <div class="full-page-wrapper fullwidth">
+            <div class="container-fluid">
+                <div class="top-boxes-wrap">
+                    <div class="chat-boxes-wrap">
+                        <div class="first-box-wrap">
+                            <div class="user-image-wrap">
+                                <img class="user-image" src="/<%=currentUser.profileImage%>" alt="img">
+                            </div>
+                            <ul class="usr-options">
+                                <li>
+                                    <a href="">
+                                        <span class="fa fa-user"></span>
+                                        Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <button id="friendlistbutton" >
+                                        <span class="fa fa-user"></span>
+                                        My Friends
+                                   </button>
+                                </li>
+                                 <li>
+                                    <button id="yourpublicgroups" >
+                                        <span class="fa fa-user"></span>
+                                       My Groups
+                                    </button>
+                                </li>
+                                <li>
+                                    <button id="addFriendButton" >
+                                        <span class="fa fa-user"></span>
+                                       Add Friends
+                                    </button>
+                                </li>
+                                <li>
+                                   <button id="newpublicgroup" >
+                                        <span class="fa fa-user"></span>
+                                      New Public Group
+                                      </button>
+                                </li>
+                                <li>
+                                    <button id="searchFriendButton" >
+                                        <span class="fa fa-user"></span>
+                                       Search Friends
+                                   </button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="second-box-wrap">
+                            <!-- Insert the code for search friend-->
+                        </div>
+                        <div class="third-box-wrap">
 
-<a href="#">My Profile</a>
-<!-- href="/signedin/<%=currentUser._id%>" -->
-<button id="addFriendButton" >Add Friend</button>
-<!-- href="/searchfriends/<%=currentUser._id%>"
- --><button id="searchFriendButton" >Search Friend</button>
-<!--  href="#friends/<%=currentUser._id%>" -->
-<button id="friendlistbutton" >My Friends</button>
-<button id="newpublicgroup" >New Public Group</button>
-<button id="yourpublicgroups" >your public groups</button>
+                        </div>
+                    </div>
+                    <div class="sidebar-section-wrap">
+
+                    </div>
+                </div>
+                <div class="bottom-boxes-wrap">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
 	
 <!-- section-2 -->
 <% if(whichPage==="one"){ %>
@@ -82,7 +153,10 @@
 	
 </div>
 <% } %>
-
+<h2>You have new messages from :</h2>
+<div id="newmess">
+	
+</div>
 <div id="createpublicgroup">
 	<form id="creategroup">
 		<input type="text" id="grpname" placeholder="group name">
@@ -183,8 +257,9 @@
 
 
 <a href="/logout">logout</a>
-
+<% } %>
 	<script>
+	
 	$(document).ready(function(){
 		var socket = io.connect() ;
 		var messageform = $("#sendmessage");
@@ -205,10 +280,12 @@
 				// console.log($(frname));
 		socket.emit("userloggedin",$(uname).html());
 		socket.on("newmessagefrom",function(data2){
-			console.log(data2.newmessages);
+			
 			if(data2.username=== $(uname).html()){
+				console.log(data2.newmessages);
+				$("#newmess").empty() ;
 			data2.newmessages.forEach(function(f){
-				$(defaultext).append("<span>"+ f.users + "</span>");
+				$("#newmess").append("<span>"+ f.users + "</span>");
 			});
 			}
 		});
@@ -251,11 +328,12 @@
 			socket.emit("createpubgroup",{id:$("#currentUserID").html() ,groupname : $("#grpname").val() , hashtagname:$("#grpht").val(), maker:$(uname).html()});
 		});
 		socket.on("groupcreated",function(data1){
+			if(data1.name === $(uname).html()){
 			$("#createdgroup").css("display","inline");
 			$("#createdgroup").empty() ;
 			console.log(data1);
-			$("#createdgroup").append("<span>"+ data1 + "</span>");
-
+			$("#createdgroup").append("<span>"+ data1.state + "</span>");
+		}
 		});
 		$("#yourpublicgroups").click(function(e){
 			e.preventDefault();
@@ -294,7 +372,7 @@
 									e.preventDefault();
 									console.log(grp);
 									$("#othersettings").empty();
-									socket.emit("add-member",{grpname : grp , membername : $("#addmembername").val() });
+									socket.emit("add-member",{grpname : grp ,user:$(uname).html(), membername : $("#addmembername").val() });
 									socket.emit("member-names",grp);
 
 								});
@@ -331,13 +409,13 @@
 									$("#othersettings").empty();
 								
 									
-									socket.emit("remove-member",{membername:ussser,grpname: grp });
+									socket.emit("remove-member",{membername:ussser,user:$(uname).html(),grpname: grp });
 									socket.emit("member-names",grp);
 										});
 									$("#addsubadminname").click(function(e){
 									e.preventDefault();
 										$("#othersettingsselect").empty() ;
-									socket.emit("add-subadmin",{membername:ussser,grpname: grp });
+									socket.emit("add-subadmin",{membername:ussser,user:$(uname).html(),grpname: grp });
 										});
 									}
 									if(isadmin){
@@ -350,18 +428,18 @@
 									$("#othersettingsselect").empty() ;
 									$("#othersettings").empty();
 									
-									socket.emit("remove-member",{membername:ussser,grpname: grp });
+									socket.emit("remove-member",{membername:ussser,user:$(uname).html(),grpname: grp });
 									socket.emit("member-names",grp);
 										});
 									$("#addsubadminname").click(function(e){
 									e.preventDefault();
 									$("#othersettingsselect").empty() ;
-									socket.emit("add-subadmin",{membername:ussser,grpname: grp });
+									socket.emit("add-subadmin",{membername:ussser,user:$(uname).html(),grpname: grp });
 										});
 									$("#removesubadminname").click(function(e){
 									e.preventDefault();
 									$("#othersettingsselect").empty() ;
-									socket.emit("remove-subadmin",{membername:ussser,grpname: grp });
+									socket.emit("remove-subadmin",{membername:ussser,user:$(uname).html(),grpname: grp });
 								});	
 									}
 
@@ -369,41 +447,7 @@
 								
 	
 							});
-							// socket.emit("settings-to-show",grp);
-							// socket.on("settings-emitted",function(data1){
-							// var issubadmin = false ;
-							// if($(uname).html()!== data1.admin){
-							// data1.subadmins.forEach(function(f){
-							// 		if($(uname).html() === f.username){
-							// 				issubadmin = true ;
-							// 		}
-							// 	});
-							// if(issubadmin){
-							// 		$("#removesubadmin").css("display","none");
-							// }else{
-							// 	$("#removesubadmin").css("display","none");
-							// 	$("#addsubadmin").css("display","none");
-							// }
-							// }
-							// 			$("#addmember").submit(function(e){
-							// 		e.preventDefault();
-							// 		console.log(grp);
-							// 		socket.emit("add-member",{grpname : grp , membername : $("#addmembername").val() });
-							// 	});
-							// 		$("#removemember").click(function(e){
-							// 		e.preventDefault();
-							// 		socket.emit("remove-member",{membername:$("#member-name").html(),grpname: grp });
-							// 	});
-							// 		$("#addsubadmin").click(function(e){
-							// 		e.preventDefault();
-							// 		socket.emit("add-subadmin",{membername:$("#member-name").html(),grpname: grp });
-							// 	});
-							// 	$("#removesubadmin").click(function(e){
-							// 		e.preventDefault();
-							// 		socket.emit("remove-subadmin",{membername:$("#member-name").html(),grpname: grp });
-							// 	});	
-
-							// });
+		
 			
 
 							 
@@ -418,27 +462,31 @@
 		});
 
 		socket.on("subadmin",function(data1){
+			if(data1.user === $(uname).html()){
 				$("#showing-result").empty();
 				$("#showing-result").css("display","flex");
-				$("#showing-result").append("<span>"+ data1 + "</span>");
-		});
+				$("#showing-result").append("<span>"+ data1.state + "</span>");
+		}});
 		socket.on("subadmin-removed",function(data1){
+			if(data1.user === $(uname).html()){
 				$("#showing-result").empty();
 				$("#showing-result").css("display","flex");
-				$("#showing-result").append("<span>"+ data1 + "</span>");
-		});
+				$("#showing-result").append("<span>"+ data1.state + "</span>");
+		}});
 		socket.on("add-member-result",function(data1){
+			if(data1.user === $(uname).html()){
 				$("#showing-result").empty();
 				$("#showing-result").css("display","flex");
-				$("#showing-result").append("<span>"+ data1 + "</span>");
+				$("#showing-result").append("<span>"+ data1.state + "</span>");
 
-		});
+		}});
 		socket.on("member-removed",function(data1){
+			if(data1.user === $(uname).html()){
 				$("#showing-result").empty();
 				$("#showing-result").css("display","flex");
-				$("#showing-result").append("<span>"+ data1 + "</span>");
+				$("#showing-result").append("<span>"+ data1.state + "</span>");
 				console.log(data1);
-
+}
 		});
 		$(friendlistbutton).click(function(e){
 			$("#showpublicgroups").css("display","none");
@@ -550,6 +598,7 @@
 			e.preventDefault();
 			//$(getpreviouschats).css("display", "none");
 			socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
+
 		});
 
 
@@ -608,7 +657,7 @@
 	    	});
 	    
 	    });
-	    });
+	    });    
       
 
 
