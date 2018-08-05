@@ -566,7 +566,7 @@ io.sockets.on("connection",function(socket){
           }
          });
 
-             Message.findOne({from:data1.to,to:data1.from},function(err,cuser){
+ Message.findOne({from:data1.to,to:data1.from},function(err,cuser){
 
         if(err){
           console.log(err);
@@ -599,8 +599,7 @@ io.sockets.on("connection",function(socket){
 
               });
             }
-          });
-
+});
      // Message.findOne({from:data1.from,to:data1.to},function(err,kuser){
      //      if(err){
      //      console.log(err);

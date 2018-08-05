@@ -3,12 +3,12 @@
 <head>
 	<title>SIGNED IN</title>
 	<style>
-		#chatbox{
+	/*	#chatbox{
 			height:200px;
 			width: 200px;
 			border: 1px solid ;
 			overflow:auto;
-	}
+	}*/
 		#chatboxgrp{
 			height:200px;
 			width: 200px;
@@ -54,96 +54,143 @@
 	</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
-</head>
-<body>
 
- <% if( currentUser === undefined){ %>
-    <a href="/login">Please login first </a>
-  <% }else { %>
-  	<h2>WELCOME "<%= currentUser.username %>" !!!! </h2>
-	<span id="currentUserID"><%= currentUser._id %></span>
+ <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300i,400,500,700,900" rel="stylesheet">
+        <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
+
+        <link rel="stylesheet" href="stylesheets/chat-css.css">  
+
+</head>
+
+
+ 
 	 
 
 
 <!-- section-1 -->
  
-<div class="main-wrapper fullwidth">
-        <div class="full-page-wrapper fullwidth">
-            <div class="container-fluid">
-                <div class="top-boxes-wrap">
-                    <div class="chat-boxes-wrap">
-                        <div class="first-box-wrap">
-                            <div class="user-image-wrap">
-                                <img class="user-image" src="/<%=currentUser.profileImage%>" alt="img">
+<body class="chat-main-page-wrap">
+	<% if( currentUser === undefined){ %>
+    <a href="/login">Please login first </a>
+  <% }else { %>
+  	<!-- <h2>WELCOME "<%= currentUser.username %>" !!!! </h2> -->
+		<span id="currentUserID"><%= currentUser._id %></span>
+          <div class="main-wrapper fullwidth">
+            <div class="full-page-wrapper fullwidth">
+                <div class="container-fluid">
+                    <div class="top-boxes-wrap">
+                        <div class="chats-sections row">
+                            <div class="profile-menu-section col-sm-3">
+                                <div class="current-user-profile fullwidth">  
+                                    <div class="row current-user-profile-inner align-items-center">
+                                        <div class="user-profile-img col-sm-4">
+                             
+                                <img class="round-image-current-user" src="/<%=currentUser.profileImage%>" alt="user-img"/>
+                                        </div>
+                                        <div class="user-info col-sm-8 pad-left-0">
+                                            <p><%= currentUser.username %></p>
+                                            <p class="status">Hey There!! I am available</p>
+                                        </div>
+                                        <a class="user-profile-link" href="javascript:void(0);"></a>
+                                    </div>
+                            
+<div class="profile-options-wrap fullwidth">
+                                        <ul class="profile-options-wrap-inner">
+                                            <li>
+                                                <a href="">
+                                                    <span class="fa fa-user-o">
+
+                                                    </span>
+                                                    <p class="profile-option-text">My Profile</p>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                
+                                                 
+                                  			    <button id="addFriendButton" >
+                                    		       <span class="fa fa-user-plus"></span>
+
+                                    			   <p class="profile-option-text">Add Friends</p>
+                                    			</button>
+                                			
+                                            </li>
+
+                                            <li>
+                                            	<button id="friendlistbutton" >
+                                       			 	<span class="fa fa-female"></span>
+                                        			<p class="profile-option-text">My Friends</p>
+                                   				</button>
+                                               
+                                            </li>
+                                            <li>
+                                                
+                                                	 
+                                   					    <button id="yourpublicgroups" >
+                                        					<span class="fa fa-cubes"></span>
+                                      						<p class="profile-option-text">My Groups</p>
+                                    					</button>
+                                					
+                                                    
+                                                    
+                                               
+                                            </li>
+                                            <li>
+                                            		 <button id="searchFriendButton" >
+                                       					 <span class="fa fa-search"></span>
+                                      					 <p class="profile-option-text">Search Friends</p>
+                                  					 </button>
+                                               
+                                            </li>
+                                         <!--    <li>
+                                                <a href="">
+                                                    <span class="fa fa-random">
+
+                                                    </span>
+                                                    <p class="profile-option-text">Search Random</p>
+                                                </a>
+                                            </li> -->
+
+                                            <li>
+                                            	<button id="newpublicgroup" >
+                                      				  <span class="fa fa-user"></span>
+                                      				<p class="profile-option-text">Create Public Groups</p>
+                                     			 </button>
+                                                
+                                            </li>
+                                           <!--  <li>
+                                                <a href="">
+                                                    <span class="fa fa-clone">
+
+                                                    </span>
+                                                    <p class="profile-option-text">Create Private Groups</p>
+                                                </a>
+                                            </li> -->
+                                            <li>
+                                                <a href="">
+                                                    <span class="fa fa-superpowers">
+
+                                                    </span>
+                                                    <p class="profile-option-text">About</p>
+                                                </a>
+                                            </li>   
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                            <ul class="usr-options">
-                                <li>
-                                    <a href="">
-                                        <span class="fa fa-user"></span>
-                                        Profile
-                                    </a>
-                                </li>
-                                <li>
-                                    <button id="friendlistbutton" >
-                                        <span class="fa fa-user"></span>
-                                        My Friends
-                                   </button>
-                                </li>
-                                 <li>
-                                    <button id="yourpublicgroups" >
-                                        <span class="fa fa-user"></span>
-                                       My Groups
-                                    </button>
-                                </li>
-                                <li>
-                                    <button id="addFriendButton" >
-                                        <span class="fa fa-user"></span>
-                                       Add Friends
-                                    </button>
-                                </li>
-                                <li>
-                                   <button id="newpublicgroup" >
-                                        <span class="fa fa-user"></span>
-                                      New Public Group
-                                      </button>
-                                </li>
-                                <li>
-                                    <button id="searchFriendButton" >
-                                        <span class="fa fa-user"></span>
-                                       Search Friends
-                                   </button>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="second-box-wrap">
-                            <!-- Insert the code for search friend-->
-                        </div>
-                        <div class="third-box-wrap">
-
-                        </div>
-                    </div>
-                    <div class="sidebar-section-wrap">
-
-                    </div>
-                </div>
-                <div class="bottom-boxes-wrap">
-                </div>
-            </div>
-        </div>
-    </div>
 
 
-
-
-
-
-
-
-
-
-
-	
+                            
+                             
+                              
+                                
+                               
+                               
 <!-- section-2 -->
 <% if(whichPage==="one"){ %>
 <div id="defaultext">
@@ -201,12 +248,15 @@
 	
 </div>
 
-<div id="searchF">
-<form id="searchFform" >
-	<input type="text" name="searchFriend" placeholder="search friend" id="friendtosearch">
-	<button>SEARCH</button>
-</form>
-</div>
+<div class="search-and-chat-section col-sm-4">
+                                <div id="searchF">
+                                    <form id="searchFform">
+                                        <input name="searchFriend" placeholder="search friend" id="friendtosearch" type="text">
+                                        <button>SEARCH</button>
+                                    </form>
+                                </div>
+ </div>
+
 	<div id="show-searched-friend">
 		
 	</div>
@@ -238,26 +288,46 @@
 </div>
 
 
-<div id = "chatwithfriend">
-<h2>
-	WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
-</h2>
-<h2>
-	Chat with <span id="frname"></span>
-</h2>
-<!-- <form id = "getpreviouschats">
-	<input type="submit" value="get previous chats">
-</form> -->
-<div id="chatbox"></div>
-<form id = "sendmessage">
-	<input type="text" id="message" size="35" required="true" >
-	<input type="submit" value="send" >
-</form>	
-</div>
+<div class="real-message-section col-sm-5" id="chatwithfriend">
+	                                <h2>
+										WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
+									</h2>
+									<h2>
+										Chat with <span id="frname"></span>
+									</h2>
+                            <div class="messages-wrap">
+                                    <ul class="messages-wrap-inner" id="chatbox" >
+                                        
+                                         
+                                   
+                                    </ul>
+                            </div>
+                                <div class="real-message-wrap">
+                                    <form id="sendmessage">
+                                        <input id="message"  placeholder="Type a message.." required="required" type="text">
+                                        <input class="hidden" value="send" type="submit">
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ads-sections">
+                        </div>
+                    </div>
+                    <div class="bottom-boxes-wrap">
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 <a href="/logout">logout</a>
 <% } %>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
 	<script>
 	
 	$(document).ready(function(){
@@ -609,7 +679,12 @@
 	    		   // $(getpreviouschats).css("display", "none");
 	    		   $("#chatbox").empty();
 	   	     		for(var i =0; i<data1.messaged.length ; i++){
-	    			$(chat).append("<span>" + data1.messaged[i].data + "</span><br/>");
+	   	     			if(data1.messaged[i].data.search($(uname).html()) > -1){
+	    			$(chat).append("<li class='own-msgs'><span>" + data1.messaged[i].data.substr(8) +"</span></li>" );
+	    		}
+	    		else{
+	    			$(chat).append("<li class='grey-bg'><span>" + data1.messaged[i].data.substr(8) +"</span></li>" );
+	    		}
 	    		}
 	    	}
 	    });
@@ -621,9 +696,13 @@
 	    socket.on("new-message",function(data1){
 	    	console.log(data1);
 	    	
-	    	if(data1.from===$(uname).html()||(data1.to===$(uname).html() && data1.from===$(frname).html())){
-	    	messagesent = true ;
-	    	$(chat).append("<span>" + data1.messaged[data1.messaged.length - 1].data + "</span><br/>");
+	    	if(data1.from===$(uname).html()){
+	    		
+	    		$(chat).append("<li class='own-msgs'><span>" + data1.messaged[data1.messaged.length - 1].data +"</span></li>" );
+	    	}
+	    	else if((data1.to===$(uname).html() && data1.from===$(frname).html())){
+	    		
+	    		$(chat).append("<li class='grey-bg'><span>" + data1.messaged[data1.messaged.length - 1].data +"</span></li>" );
 	    }
 	    });
        

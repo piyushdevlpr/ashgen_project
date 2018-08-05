@@ -1,0 +1,269 @@
+/************Reset Css***********/
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+/****************Main Chat Page Wrapper******************/
+body{
+    font-family: 'Roboto', sans-serif;
+}
+img{
+    max-width:100%;
+}
+.fullwidth{
+    float:left;
+    width:100%;
+}
+p{
+    font-size: 14px;
+    line-height:20px;
+    font-weight:500;
+    color:#333;
+}
+a:hover{
+    text-decoration: none;
+}
+.pad-left-0{
+    padding-left:0px;
+}
+.round-image-current-user{
+    max-height: 60px;
+    max-width: 100%;
+    border-radius: 50%;
+}
+.chat-main-page-wrap {
+    background: #f5f5f5;
+    height: 100vh;
+    overflow: hidden;
+}
+.top-boxes-wrap {
+    height: 80vh;
+}
+.bottom-boxes-wrap {
+    height: 20vh;
+}
+.chats-sections {
+    float: left;
+    width: 80%;
+    border: 1px solid #e1e1e1;
+}
+.profile-menu-section {
+    border-right: 1px solid #dbdbdb;
+
+}
+.current-user-profile{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dbdbdb; 
+}
+.current-user-profile-inner{
+    position: relative;
+    padding-bottom: 10px;
+    border-bottom:1px solid #ccc;
+}
+.profile-menu-section.col-sm-3 {
+    padding-right: 0px;
+    overflow-x: hidden;
+}
+.profile-options-wrap {
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+.current-user-profile .user-profile-link {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
+.ads-sections {
+    width: 19%;
+    float: left;
+    border: 1px solid #e0e0e0;
+    margin-left: 10px;
+}
+.profile-options-wrap-inner li .fa {
+    display: inline-block;
+    vertical-align: middle;
+    color: #FF4F56;
+    font-size: 24px;
+    min-width: 35px;
+}
+.profile-options-wrap-inner li .profile-option-text {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+    color: #999797;
+    padding-left: 10px;
+
+}
+.profile-options-wrap-inner li {
+    border-bottom: 1px solid #d5d5d5;
+    padding: 15px 0px;
+}
+.search-and-chat-section {
+    border-right: 1px solid #d5d5d5;
+}
+#searchF button{
+    position: relative;
+    text-align: center;
+    height: 40px;
+    border:1px solid #ff4f56;
+    background:#ff4f56;
+    color:#fff;
+    margin-left: -4px;
+}
+#searchF button::before {
+
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 0;
+    border-width: 8px 8px 8px 8px;
+    border-color: transparent #ff4f56 transparent transparent;
+    border-style: solid;
+    left: -17px;
+    top: 50%;
+    transform: translateY(-50%);
+
+}
+.chat-users-list {
+    max-height: 65vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-right: -15px;
+}
+#searchF input {
+    height: 40px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: inline-block;
+    vertical-align: top;
+    text-transform: capitalize;
+
+}
+#searchF {
+    border-bottom: 1px solid #d5d5d5;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 21px;
+    padding-bottom: 21px;
+    text-align: center;
+}
+.last-msg {
+    color: #999797;
+}
+.real-message-wrap {
+    
+    position: absolute;
+bottom: 0;
+left: 0;
+right: 0;
+}
+.chat-users-list-wrap li {
+
+    padding: 10px 0px;
+    border-bottom: 1px solid #ccc;
+
+}
+.messages-wrap-inner li span{
+    display: block;
+    background: #f2a5a8;
+    color: #333;
+    margin: 10px 5px;
+    padding: 5px;
+    border-radius: 8px;
+    max-width: 65%;
+    
+}
+.own-msgs span{
+   margin-left: auto !important;
+}
+.messages-wrap-inner li.grey-bg span{
+    background: #d7d7d7;
+}
+.chat-user-img img {
+
+    border-radius: 50%;
+    height: 100%;
+
+}
+.hidden {
+    display: none;
+}
+#sendmessage {
+    width: 100%;
+    position: relative;
+}
+#message {
+    width: 100%;
+    height: 40px;
+    padding:5px 5px;
+}
+.real-message-section{
+    padding-left: 0px;
+    padding-right: 0px;
+    position: relative;
+}
+#sendmessage input[type="submit"] {
+    padding: 5px 20px;
+    height: 40px;
+    text-transform: uppercase;
+    color: #fff;
+    background: #ff4f56;
+    border: 1px solid #ff4f56;
+    margin-left: -4px;
+    position: absolute;
+    right: 0;
+}
+.messages-wrap {
+    max-height: 80vh;
+    overflow-y: auto;
+}
