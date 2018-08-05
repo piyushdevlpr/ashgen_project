@@ -192,19 +192,26 @@
                                
                                
 <!-- section-2 -->
-<% if(whichPage==="one"){ %>
-<div id="defaultext">
-<h2>
-	SELECT Something
-</h2>
-	
-</div>
-<% } %>
-<h2>You have new messages from :</h2>
-<div id="newmess">
-	
-</div>
-<div id="createpublicgroup">
+<div class="search-and-chat-section col-sm-4">
+								<% if(whichPage==="one"){ %>
+									<div id="defaultext">
+									<h2>
+										SELECT Something
+									</h2>
+										
+									</div>
+									<% } %>
+									<h2>You have new messages from :</h2>
+									<div id="newmess">
+										
+									</div>
+                                <div id="searchF">
+                                    <form id="searchFform">
+                                        <input name="searchFriend" placeholder="search friend" id="friendtosearch" type="text">
+                                        <button>SEARCH</button>
+                                    </form>
+                                </div>
+                                <div id="createpublicgroup">
 	<form id="creategroup">
 		<input type="text" id="grpname" placeholder="group name">
 		<input type="text" id="grpht" placeholder="hashtag">
@@ -248,14 +255,7 @@
 	
 </div>
 
-<div class="search-and-chat-section col-sm-4">
-                                <div id="searchF">
-                                    <form id="searchFform">
-                                        <input name="searchFriend" placeholder="search friend" id="friendtosearch" type="text">
-                                        <button>SEARCH</button>
-                                    </form>
-                                </div>
- </div>
+
 
 	<div id="show-searched-friend">
 		
@@ -267,6 +267,92 @@
 <div id="friendlist">
 	
 </div>	
+
+                                <div class="chat-users-list">
+                                    <ul class="chat-users-list-wrap">
+                                        <li>
+                                            <div class="row current-chat-usr-wrap align-items-center">
+                                                <div class="chat-user-img col-sm-3">
+                                                    <img src="img/user-img.jpg" alt="userimg"/>
+                                                </div>
+                                                <div class="last-chat-detail col-sm-7 pad-left-0">
+                                                    <p class="user-chatting-with-wrap">Piyush</p>
+                                                    <p class="last-msg">??</p>
+                                                </div>
+                                            </div>  
+                                        </li>
+                                        <li>
+                                            <div class="row current-chat-usr-wrap align-items-center">
+                                                <div class="chat-user-img col-sm-3">
+                                                    <img src="img/user-img.jpg" alt="userimg"/>
+                                                </div>
+                                                <div class="last-chat-detail col-sm-7 pad-left-0">
+                                                    <p class="user-chatting-with-wrap">Piyush</p>
+                                                    <p class="last-msg">??</p>
+                                                </div>
+                                            </div>  
+                                        </li>
+                                        <li>
+                                            <div class="row current-chat-usr-wrap align-items-center">
+                                                <div class="chat-user-img col-sm-3">
+                                                    <img src="img/user-img.jpg" alt="userimg"/>
+                                                </div>
+                                                <div class="last-chat-detail col-sm-7 pad-left-0">
+                                                    <p class="user-chatting-with-wrap">Priya</p>
+                                                    <p class="last-msg">??</p>
+                                                </div>
+                                            </div>  
+                                        </li>
+                                        <li>
+                                            <div class="row current-chat-usr-wrap align-items-center">
+                                                <div class="chat-user-img col-sm-3">
+                                                    <img src="img/user-img.jpg" alt="userimg"/>
+                                                </div>
+                                                <div class="last-chat-detail col-sm-7 pad-left-0">
+                                                    <p class="user-chatting-with-wrap">Jass</p>
+                                                    <p class="last-msg">??</p>
+                                                </div>
+                                            </div>  
+                                        </li>
+                                        <li>
+                                            <div class="row current-chat-usr-wrap align-items-center">
+                                                <div class="chat-user-img col-sm-3">
+                                                    <img src="img/user-img.jpg" alt="userimg"/>
+                                                </div>
+                                                <div class="last-chat-detail col-sm-7 pad-left-0">
+                                                    <p class="user-chatting-with-wrap">Charlie</p>
+                                                    <p class="last-msg">??</p>
+                                                </div>
+                                            </div>  
+                                        </li>
+                                        <li>
+                                            <div class="row current-chat-usr-wrap align-items-center">
+                                                <div class="chat-user-img col-sm-3">
+                                                    <img src="img/user-img.jpg" alt="userimg"/>
+                                                </div>
+                                                <div class="last-chat-detail col-sm-7 pad-left-0">
+                                                    <p class="user-chatting-with-wrap">Charlie</p>
+                                                    <p class="last-msg">??</p>
+                                                </div>
+                                            </div>  
+                                        </li>
+                                        <li>
+                                            <div class="row current-chat-usr-wrap align-items-center">
+                                                <div class="chat-user-img col-sm-3">
+                                                    <img src="img/user-img.jpg" alt="userimg"/>
+                                                </div>
+                                                <div class="last-chat-detail col-sm-7 pad-left-0">
+                                                    <p class="user-chatting-with-wrap">Charlie</p>
+                                                    <p class="last-msg">??</p>
+                                                </div>
+                                            </div>  
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+
+
 
 <!-- section-3 -->
 
@@ -288,7 +374,8 @@
 </div>
 
 
-<div class="real-message-section col-sm-5" id="chatwithfriend">
+<div class="real-message-section col-sm-5" id="chatwithfriend">                                
+                                <div class="messages-wrap">
 	                                <h2>
 										WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
 									</h2>
@@ -311,11 +398,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="ads-sections">
-                        </div>
+                       
                     </div>
-                    <div class="bottom-boxes-wrap">
-                    </div>
+                    <!-- <div class="bottom-boxes-wrap">
+                    </div> -->
                 </div>
             </div>
         </div>
