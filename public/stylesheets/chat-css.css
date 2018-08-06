@@ -144,7 +144,7 @@ a:hover{
 }
 .profile-options-wrap-inner li {
     border-bottom: 1px solid #d5d5d5;
-    padding: 15px 0px;
+    padding: 0px 0px;
 }
 .search-and-chat-section {
     border-right: 1px solid #d5d5d5;
@@ -266,4 +266,27 @@ right: 0;
 .messages-wrap {
     max-height: 80vh;
     overflow-y: auto;
+}
+.chatting-with-user-info {
+    background: #ff4f56;
+}
+.chatting-with-user-info .row.current-user-profile-inner.align-items-center {
+    overflow-x: hidden;
+    margin-left: 15px;
+    margin-right: 15px;
+    padding-top: 15px;
+}
+#frname {
+    color: #fff;
+    text-transform: capitalize;
+}
+.profile-options-wrap-inner li button {
+    padding: 15px 0px;
+    border: 0px;
+    width: 100%;
+    background: transparent;
+    text-align: left;
+}
+.profile-options-wrap-inner li button:hover{
+cursor:pointer;
 }

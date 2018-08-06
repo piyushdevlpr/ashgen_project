@@ -19,7 +19,7 @@
 			display: none;
 		}
 		#searchF{
-			display: none;
+			display: block;
 		}
 		#addFriend{
 			display: none;
@@ -103,12 +103,12 @@
 <div class="profile-options-wrap fullwidth">
                                         <ul class="profile-options-wrap-inner">
                                             <li>
-                                                <a href="">
+                                                <button>
                                                     <span class="fa fa-user-o">
 
                                                     </span>
                                                     <p class="profile-option-text">My Profile</p>
-                                                </a>
+                                                </button>
                                             </li>
                                             <li>
                                                 
@@ -172,12 +172,12 @@
                                                 </a>
                                             </li> -->
                                             <li>
-                                                <a href="">
+                                                 <button>
                                                     <span class="fa fa-superpowers">
 
                                                     </span>
                                                     <p class="profile-option-text">About</p>
-                                                </a>
+                                                </button>
                                             </li>   
                                         </ul>
                                     </div>
@@ -211,7 +211,8 @@
                                         <button>SEARCH</button>
                                     </form>
                                 </div>
-                                <div id="createpublicgroup">
+                               <div class=" second-section-options-wrap">
+                               		<div id="createpublicgroup">
 	<form id="creategroup">
 		<input type="text" id="grpname" placeholder="group name">
 		<input type="text" id="grpht" placeholder="hashtag">
@@ -349,6 +350,8 @@
                                         </li>
                                     </ul>
                                 </div>
+                               </div>
+                                
                             </div>
 
 
@@ -376,13 +379,25 @@
 
 <div class="real-message-section col-sm-5" id="chatwithfriend">                                
                                 <div class="messages-wrap">
-	                                <h2>
+	                                <!-- <h2>
 										WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
 									</h2>
 									<h2>
 										Chat with <span id="frname"></span>
-									</h2>
-                            <div class="messages-wrap">
+									</h2> -->
+                           			<div class="chatting-with-user-info">
+    									<div class="row current-user-profile-inner align-items-center">
+                                       		 <div class="user-profile-img col-sm-3 pad-left-0">
+                             
+                                				<img class="round-image-current-user" id="frimg" alt="user-img">
+                                       		 </div>
+                                        		<div class="user-info col-sm-6 pad-left-0">
+                                           				 <span id="frname"></span>
+                                       			 </div>
+        								<div class="col-sm-2"></div>
+                                   		 </div>
+    
+										</div>
                                     <ul class="messages-wrap-inner" id="chatbox" >
                                         
                                          
@@ -423,7 +438,7 @@
 		var chat = $("#chatbox");
 		var frname = $("#frname");
 		var searchF = $("#searchF");
-		var searchFriendButton = $("#searchFriendButton");
+		var searchFriendButton = $("#searchFform");
 		var friendlist = $("#friendlist");
 		var friendlistbutton = $("#friendlistbutton");
 		var addFriendButton = $("#addFriendButton");
@@ -450,7 +465,7 @@
 			$(defaultext).css("display", "none");
 			$("#publicgroupsettings").css("display","none");
 			$(addFriend).css("display", "none");
-			$(searchF).css("display", "none");
+			//$(searchF).css("display", "none");
 			$(friendlist).css("display", "none");
 			$("#show-searched-friend").css("display", "none");
 			$("#showing-searched-friend").css("display", "none");
@@ -466,7 +481,7 @@
 			$("#publicgroupsettings").css("display","none");
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "none");
-			$(searchF).css("display", "none");
+			//$(searchF).css("display", "none");
 			$(friendlist).css("display", "none");
 			$("#show-searched-friend").css("display", "none");
 			$("#showing-searched-friend").css("display", "none");
@@ -649,7 +664,7 @@
 			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "none");
-			$(searchF).css("display", "none");
+			//$(searchF).css("display", "none");
 			$(friendlist).css("display", "flex");
 			$("#show-searched-friend").css("display", "none");
 			$("#showing-searched-friend").css("display", "none");
@@ -673,13 +688,16 @@
 					
 					$("#friendlist button").click(function(e){
 						$("#frname").html($(this).html()) ;
+						socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
+						socket.on("friendimage",function(data3){
+							$("#frimg").attr('src', '/' + data3.profileImage);
+						});
 						$("#chatwithgroup").css("display","none");
-						console.log($(this).html());
 						$("#chatwithfriend").css("display","inline");
 					
 							e.preventDefault();
 						
-							socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
+							
 					
 				});	
 			}		
@@ -691,7 +709,7 @@
 			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "flex");
-			$(searchF).css("display", "none");
+			//$(searchF).css("display", "none");
 			$("#show-searched-friend").css("display", "none");
 			$("#showing-searched-friend").css("display", "none");
 			$(friendlist).css("display", "none");
@@ -705,7 +723,7 @@
 			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
 			$(addFriend).css("display", "none");
-			$(searchF).css("display", "inline");
+			//$(searchF).css("display", "inline");
 			$("#show-friend").css("display", "none");
 			$("#show-searched-friend").css("display", "flex");
 			$("#showing-searched-friend").css("display", "flex");
@@ -717,7 +735,10 @@
 		$(".linkToChat").click(function(e){
 			$("#frname").html($(".linkToChat").html()) ;
 			//e.preventDefault();
-			console.log("hi");
+			socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
+						socket.on("friendimage",function(data3){
+							$("#frimg").attr('src', '/' + data3.profileImage);
+						});
 			$("#chatwithfriend").css("display","inline");
 		});
 		

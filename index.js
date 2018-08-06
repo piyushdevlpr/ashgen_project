@@ -484,6 +484,12 @@ io.sockets.on("connection",function(socket){
               });
             }
          });
+              User.findOne({username:data2.to},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+                io.emit("friendimage",fuser);
+            }
+          });
     Message.findOne({from:data2.from,to:data2.to},function(err,cuser){
         if(err){
           console.log(err);
