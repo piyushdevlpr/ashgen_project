@@ -51,6 +51,9 @@
 		#chatwithgroup{
 			display: none;
 		}
+		#note{
+			display:none;
+		}
 	</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -141,9 +144,9 @@
                                                
                                             </li>
                                             <li>
-                                            		 <button id="searchFriendButton" >
+                                            		 <button id="notifications" >
                                        					 <span class="fa fa-search"></span>
-                                      					 <p class="profile-option-text">Search Friends</p>
+                                      					 <p class="profile-option-text">Notifications</p>
                                   					 </button>
                                                
                                             </li>
@@ -201,10 +204,7 @@
 										
 									</div>
 									<% } %>
-									<h2>You have new messages from :</h2>
-									<div id="newmess">
-										
-									</div>
+									
                                 <div id="searchF">
                                     <form id="searchFform">
                                         <input name="searchFriend" placeholder="search friend" id="friendtosearch" type="text">
@@ -226,6 +226,13 @@
 <div id="showpublicgroups">
 	
 </div>
+
+<div id = "note">
+									<h2>You have new messages from :</h2>
+									<div id="newmess">
+										
+									</div>
+									</div>
 
 <div id="publicgroupsettings">
    <form id="addmember">
@@ -269,86 +276,10 @@
 	
 </div>	
 
-                                <div class="chat-users-list">
-                                    <ul class="chat-users-list-wrap">
-                                        <li>
-                                            <div class="row current-chat-usr-wrap align-items-center">
-                                                <div class="chat-user-img col-sm-3">
-                                                    <img src="img/user-img.jpg" alt="userimg"/>
-                                                </div>
-                                                <div class="last-chat-detail col-sm-7 pad-left-0">
-                                                    <p class="user-chatting-with-wrap">Piyush</p>
-                                                    <p class="last-msg">??</p>
-                                                </div>
-                                            </div>  
-                                        </li>
-                                        <li>
-                                            <div class="row current-chat-usr-wrap align-items-center">
-                                                <div class="chat-user-img col-sm-3">
-                                                    <img src="img/user-img.jpg" alt="userimg"/>
-                                                </div>
-                                                <div class="last-chat-detail col-sm-7 pad-left-0">
-                                                    <p class="user-chatting-with-wrap">Piyush</p>
-                                                    <p class="last-msg">??</p>
-                                                </div>
-                                            </div>  
-                                        </li>
-                                        <li>
-                                            <div class="row current-chat-usr-wrap align-items-center">
-                                                <div class="chat-user-img col-sm-3">
-                                                    <img src="img/user-img.jpg" alt="userimg"/>
-                                                </div>
-                                                <div class="last-chat-detail col-sm-7 pad-left-0">
-                                                    <p class="user-chatting-with-wrap">Priya</p>
-                                                    <p class="last-msg">??</p>
-                                                </div>
-                                            </div>  
-                                        </li>
-                                        <li>
-                                            <div class="row current-chat-usr-wrap align-items-center">
-                                                <div class="chat-user-img col-sm-3">
-                                                    <img src="img/user-img.jpg" alt="userimg"/>
-                                                </div>
-                                                <div class="last-chat-detail col-sm-7 pad-left-0">
-                                                    <p class="user-chatting-with-wrap">Jass</p>
-                                                    <p class="last-msg">??</p>
-                                                </div>
-                                            </div>  
-                                        </li>
-                                        <li>
-                                            <div class="row current-chat-usr-wrap align-items-center">
-                                                <div class="chat-user-img col-sm-3">
-                                                    <img src="img/user-img.jpg" alt="userimg"/>
-                                                </div>
-                                                <div class="last-chat-detail col-sm-7 pad-left-0">
-                                                    <p class="user-chatting-with-wrap">Charlie</p>
-                                                    <p class="last-msg">??</p>
-                                                </div>
-                                            </div>  
-                                        </li>
-                                        <li>
-                                            <div class="row current-chat-usr-wrap align-items-center">
-                                                <div class="chat-user-img col-sm-3">
-                                                    <img src="img/user-img.jpg" alt="userimg"/>
-                                                </div>
-                                                <div class="last-chat-detail col-sm-7 pad-left-0">
-                                                    <p class="user-chatting-with-wrap">Charlie</p>
-                                                    <p class="last-msg">??</p>
-                                                </div>
-                                            </div>  
-                                        </li>
-                                        <li>
-                                            <div class="row current-chat-usr-wrap align-items-center">
-                                                <div class="chat-user-img col-sm-3">
-                                                    <img src="img/user-img.jpg" alt="userimg"/>
-                                                </div>
-                                                <div class="last-chat-detail col-sm-7 pad-left-0">
-                                                    <p class="user-chatting-with-wrap">Charlie</p>
-                                                    <p class="last-msg">??</p>
-                                                </div>
-                                            </div>  
-                                        </li>
-                                    </ul>
+                                <div class="chat-users-list" id="userslist">
+                                    <ul class="chat-users-list-wrap" id="userslist2">
+                                       
+                                      </ul>
                                 </div>
                                </div>
                                 
@@ -460,7 +391,13 @@
 			});
 			}
 		});
+		$("#notifications").click(function(e){
+				e.preventDefault();
+				$("#note").css("display","inline");
+		});
 		$("#yourpublicgroups").click(function(e){
+			$("#note").css("display","none");
+			$("#userslist2").css("display","none");
 			$(defaultext).css("display", "none");
 			$(defaultext).css("display", "none");
 			$("#publicgroupsettings").css("display","none");
@@ -476,6 +413,8 @@
 			$("#showing-result").css("display","none");
 		});	
 		$("#newpublicgroup").click(function(e){
+			$("#note").css("display","none");
+			$("#userslist2").css("display","none");
 			$(defaultext).css("display", "none");
 				$("#showing-result").css("display","none");
 			$("#publicgroupsettings").css("display","none");
@@ -660,6 +599,8 @@
 }
 		});
 		$(friendlistbutton).click(function(e){
+			$("#note").css("display","none");
+			$("#userslist2").css("display","inline");
 			$("#showpublicgroups").css("display","none");
 			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
@@ -677,6 +618,17 @@
 		});
 		socket.on("friend-list-emitted",function(data1){
 			//data1.forEach(function(f){
+				
+			console.log(data1.recentmessages.length );
+			if(data1.username === $(uname).html()){
+				$("#userslist2").empty();
+			for(var i = data1.recentmessages.length-1; i>=0 ; i--){
+			//data1.recentmessages.forEach(function(f){
+				
+
+			socket.emit("getimg",{frname :data1.recentmessages[i].users , usname : data1.username});
+			}
+			}
 				console.log(data1.friends.length);
 				if(data1.username=== $(uname).html()){
 			for(var i = 0; i<data1.friends.length ; i++){
@@ -705,6 +657,8 @@
 			 
 		});
 		$(addFriendButton).click(function(e){
+			$("#note").css("display","none");
+			$("#userslist2").css("display","none");
 			$("#showpublicgroups").css("display","none");
 			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
@@ -719,6 +673,8 @@
 			$("#publicgroupsettings").css("display","none");
 		});
 		$(searchFriendButton).click(function(e){
+			$("#note").css("display","none");
+			$("#userslist2").css("display","none");
 			$("#showpublicgroups").css("display","none");
 			$("#createpublicgroup").css("display","none");
 			$(defaultext).css("display", "none");
@@ -805,11 +761,11 @@
 	    	
 	    	if(data1.from===$(uname).html()){
 	    		
-	    		$(chat).append("<li class='own-msgs'><span>" + data1.messaged[data1.messaged.length - 1].data +"</span></li>" );
+	    		$(chat).append("<li class='own-msgs'><span>" + data1.messaged[data1.messaged.length - 1].data.substr(8) +"</span></li>" );
 	    	}
 	    	else if((data1.to===$(uname).html() && data1.from===$(frname).html())){
 	    		
-	    		$(chat).append("<li class='grey-bg'><span>" + data1.messaged[data1.messaged.length - 1].data +"</span></li>" );
+	    		$(chat).append("<li class='grey-bg'><span>" + data1.messaged[data1.messaged.length - 1].data.substr(8) +"</span></li>" );
 	    }
 	    });
        
@@ -834,6 +790,26 @@
 			socket.emit("send-message-grp",{to:$("#grname").html(),from:$(uname).html(),msg :$("#messagegrp").val()});
 			$("#messagegrp").val("");
 		});
+		socket.on("recentmessage",function(data1){
+			console.log(data1);
+			
+			console.log(data1.recentmessages.length );
+		
+			if(data1.username === $(uname).html()){
+					$("#userslist2").empty();
+			for(var i = data1.recentmessages.length-1; i>=0 ; i--){
+			//data1.recentmessages.forEach(function(f){
+			
+			socket.emit("getimg",{frname :data1.recentmessages[i].users , usname : data1.username});
+			}
+			}
+});
+		socket.on("frimg2",function(data3){
+			  if(data3.usname1 === $(uname).html()){
+							$("#userslist2").append( "<li><div class='row current-chat-usr-wrap align-items-center'><div class='chat-user-img col-sm-3'><img src='/"+ data3.frname.profileImage+"' alt='userimg'/></div><div class='last-chat-detail col-sm-7 pad-left-0'><p class='user-chatting-with-wrap'>" + data3.frname.username + "</p><p class='last-msg'>"+data3.lmsg.messaged[data3.lmsg.messaged.length - 1].data +"</p></div></div></li>");
+							
+							}
+						});
 	    socket.on("new-message-grp",function(data1){
 	    	console.log(data1);
 	    	data1.getusers.users.forEach(function(f){

@@ -469,7 +469,19 @@ io.sockets.on("connection",function(socket){
   });
   });
 
+ socket.on("getimg",function(data2){
+      User.findOne({username:data2.frname},function(err,fuser){
+        if(!err){
+        Message.findOne({from:data2.frname},function(err,guser){
+        if(!err){
+        io.emit("frimg2",{lmsg:guser ,frname:fuser,usname1:data2.usname});
+      }
 
+      });
+      }  
+  });
+      
+ });
   socket.on("loaded-message",function(data2){
              User.findOne({username:data2.from},function(err,fuser){
             if(err){console.log(err);}
@@ -553,13 +565,73 @@ io.sockets.on("connection",function(socket){
             if(err){console.log(err);}
             else{
               var isPresent  = false ;
+              var isPresent1 = false ;
               fuser.newmessages.forEach(function(f){
                 if(data1.from === f.users){
                   isPresent = true ;
                 }
               });
+                fuser.recentmessages.forEach(function(f){
+                if(data1.from === f.users){
+                  isPresent1 = true ;
+                }
+              });
               console.log(isPresent) ;
+              ////////////////////////////////////////
+              if(!isPresent1){
+                                  //????? jisko bheja usme mera naam ....aur jisne bheja usme jisko bheja uska naam aana chahiye.........
+                User.findOne({ username:data1.to},function(err,duser){
+                  if(duser.recentmessages.length===10){
+                    var lastname = {"users": duser.recentmessages[9].users} ;
+                    console.log(duser.recentmessages[9].users);
+                       duser.update({$pull : {recentmessages:lastname}},{new:true},function(err,guser){
+                          if(!err){
+                            console.log(guser);
+                          User.findOneAndUpdate({username:data1.to},{$addToSet:{recentmessages:messagefrom}},{new:true},function(err,huser){
+                           io.emit("recentmessage",huser);
+                          });
+                        }
+                       });
+
+                  }
+                else{
+                   User.findOneAndUpdate({username:data1.to},{$addToSet:{recentmessages:messagefrom}},{new:true},function(err,huser){
+                            io.emit("recentmessage",huser);
+                          });
+                }  
+                
+                });
+              }
+              ///////////////////////////////////////////
+              else{
+
+               // fuser.update({$pull:{recentmessages:messagefrom}},function(err,duser){
+                  User.findOneAndUpdate({ username:data1.to},{$pull:{recentmessages:messagefrom}},function(err,duser){
+                  if(duser.recentmessages.length===10){
+                    var lastname = {"users": duser.recentmessages[9].users} ;
+                    console.log(duser.recentmessages[9].users);
+                       duser.update({$pull : {recentmessages:lastname}},{new:true},function(err,guser){
+                          if(!err){
+                           User.findOneAndUpdate({username:data1.to},{$addToSet:{recentmessages:messagefrom}},{new:true},function(err,huser){
+                           io.emit("recentmessage",huser);
+                          });
+                        }
+                       });
+
+                  }
+                else{
+                   User.findOneAndUpdate({username:data1.to},{$addToSet:{recentmessages:messagefrom}},{new:true},function(err,huser){
+                            io.emit("recentmessage",huser);
+                          });
+                }  
+                
+                });
+              }
+              ///////////////////////////////////////////
               if(!isPresent){
+                //????? jisko bheja usme mera naam ....aur jisne bheja usme jisko bheja uska naam aana chahiye.........
+             
+                
               User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
                 function(err,cuser){
                   if(err){console.log(err);}
@@ -571,7 +643,70 @@ io.sockets.on("connection",function(socket){
             }
           }
          });
+         var newmessage2 = {"users": data1.to};
+      
+      User.findOne({username:data1.from},function(err,fuser){
+ if(err){console.log(err);}
+            else{
+          
+              var isPresent1 = false ;
+                fuser.recentmessages.forEach(function(f){
+                if(data1.to === f.users){
+                  isPresent1 = true ;
+                }
+              });
+                    if(!isPresent1){
+                                  //????? jisko bheja usme mera naam ....aur jisne bheja usme jisko bheja uska naam aana chahiye.........
+                User.findOne({ username:data1.from},function(err,duser){
+                  if(duser.recentmessages.length===10){
+                    var lastname = {"users": duser.recentmessages[9].users} ;
+                    console.log(duser.recentmessages[9].users);
+                       duser.update({$pull : {recentmessages:lastname}},{new:true},function(err,guser){
+                          if(!err){
+                            console.log(guser);
+                          User.findOneAndUpdate({username:data1.from},{$addToSet:{recentmessages:newmessage2}},{new:true},function(err,huser){
+                           io.emit("recentmessage",huser);
+                          });
+                        }
+                       });
 
+                  }
+                else{
+                   User.findOneAndUpdate({username:data1.from},{$addToSet:{recentmessages:newmessage2}},{new:true},function(err,huser){
+                            io.emit("recentmessage",huser);
+                          });
+                }  
+                
+                });
+              }
+              ///////////////////////////////////////////
+              else{
+
+               // fuser.update({$pull:{recentmessages:messagefrom}},function(err,duser){
+                  User.findOneAndUpdate({ username:data1.from},{$pull:{recentmessages:newmessage2}},{new:true},function(err,duser){
+                  if(duser.recentmessages.length===10){
+                    var lastname = {"users": duser.recentmessages[9].users} ;
+                    console.log(duser.recentmessages[9].users);
+                       duser.update({$pull : {recentmessages:lastname}},{new:true},function(err,guser){
+                          if(!err){
+                           User.findOneAndUpdate({username:data1.from},{$addToSet:{recentmessages:newmessage2}},{new:true},function(err,huser){
+                           io.emit("recentmessage",huser);
+                          });
+                        }
+                       });
+
+                  }
+                else{
+                   User.findOneAndUpdate({username:data1.from},{$addToSet:{recentmessages:newmessage2}},{new:true},function(err,huser){
+                            io.emit("recentmessage",huser);
+                          });
+                }  
+                
+                });
+              }
+            }
+      });
+      
  Message.findOne({from:data1.to,to:data1.from},function(err,cuser){
 
         if(err){
@@ -605,15 +740,7 @@ io.sockets.on("connection",function(socket){
 
               });
             }
-});
-     // Message.findOne({from:data1.from,to:data1.to},function(err,kuser){
-     //      if(err){
-     //      console.log(err);
-     //    }else{
-     //      console.log(kuser);
-     //           io.emit("new-message",kuser);
-     //    }
-     // });         
+});        
 
        });
       

@@ -19,6 +19,11 @@ var UserSchema = new mongoose.Schema({
       users:String
     }
     ],
+     recentmessages: [
+    {
+      users:String
+    }
+    ],
     friends: [
       {  
          name: String,
