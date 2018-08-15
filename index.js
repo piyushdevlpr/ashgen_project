@@ -745,8 +745,64 @@ io.sockets.on("connection",function(socket){
        });
       
 
-       socket.on("send-message-grp",function(data1){
+  socket.on("send-message-grp",function(data1){
     var messagefrom = {"users":data1.to};
+        PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
+      if(err){
+        console.log(err);
+      }
+      else{
+        cgroup.users.forEach(function(f){
+
+         User.findOne({username:f.username},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+              var isPresent  = false ;
+              fuser.recentgpmessages.forEach(function(g){
+                if(data1.to === g.users){
+                  isPresent = true ;
+                }
+              });
+              console.log(isPresent) ;
+              User.findById(fuser._id,function(err,usser){
+             if(!err){
+             var lastman = {"users" : usser.recentgpmessages[9]} ;
+              if(usser.recentgpmessages.length===10){
+                usser.update({$pull:{recentgpmessages:lastman}});
+              }
+            }
+          });
+              if(!isPresent){
+          
+              User.findByIdAndUpdate(fuser._id,{$addToSet:{recentgpmessages:messagefrom}},{new:true},
+                function(err,tuser){
+                  if(err){console.log(err);}
+                  else{
+                    io.emit("recentgrpmsg",tuser) ;
+                  }
+                });
+            }
+            else{
+                    User.findByIdAndUpdate(fuser._id,{$pull:{recentgpmessages:messagefrom}},{new:true},
+                function(err,kuser){
+                  if(err){console.log(err);}
+                });
+                      User.findByIdAndUpdate(fuser._id,{$addToSet:{recentgpmessages:messagefrom}},{new:true},
+                function(err,tuser){
+                  if(err){console.log(err);}
+                  else{
+                    io.emit("recentgrpmsg",tuser) ;
+                  }
+                });
+            }
+          }
+
+         });
+          
+        });
+          }
+        });
+
     PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
       if(err){
         console.log(err);
@@ -773,14 +829,17 @@ io.sockets.on("connection",function(socket){
                   else{
                     io.emit("newmessagefrom",cuser) ;
                   }
-                }
-                );
+                });
             }
           }
+
          });
-          
           }
         });
+          }
+       
+
+
      GroupMessage.findOne({to:data1.to},function(err,cuser){
 
         if(err){
@@ -793,7 +852,7 @@ io.sockets.on("connection",function(socket){
                   console.log(err);
                 }
                 // else{
-                    console.log(cgroup);
+                    
                    io.emit("new-message-grp",{getmsg:duser,getusers:cgroup});
                 // }
 
@@ -801,28 +860,23 @@ io.sockets.on("connection",function(socket){
             }
           });
 
-           }
-      });
-       });     
+       });         
   });
 
 
+  socket.on("getgrpmsg",function(data1){
+    GroupMessage.findOne({to:data1.grpname},function(err,cgroup){
+        if(!err){
+          io.emit("grpmsg",{grp:cgroup,usname1:data1.usname});
+        }
+    });
+  });
 
 
-
-
-
-
-
-
-
-
-
-
+});
 
 
 server.listen(port,function(){
   console.log("server running!!!!");
 });
 
-// https://sheltered-island-82789.herokuapp.com/

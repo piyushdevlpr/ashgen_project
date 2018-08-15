@@ -18,6 +18,7 @@
 		#friendlist{
 			display: none;
 		}
+
 		#searchF{
 			display: block;
 		}
@@ -275,11 +276,16 @@
 <div id="friendlist">
 	
 </div>	
-
-                                <div class="chat-users-list" id="userslist">
+								<div class="chat-users-list" class="userslist">
+                                    <ul class="chat-users-list-wrap" id="grplist2">
+                                       
+                                    </ul>
+                                </div>
+									
+                                <div class="chat-users-list" class="userslist">
                                     <ul class="chat-users-list-wrap" id="userslist2">
                                        
-                                      </ul>
+                                    </ul>
                                 </div>
                                </div>
                                 
@@ -397,6 +403,7 @@
 		});
 		$("#yourpublicgroups").click(function(e){
 			$("#note").css("display","none");
+			$("#grplist2").css("display","inline");
 			$("#userslist2").css("display","none");
 			$(defaultext).css("display", "none");
 			$(defaultext).css("display", "none");
@@ -413,6 +420,7 @@
 			$("#showing-result").css("display","none");
 		});	
 		$("#newpublicgroup").click(function(e){
+			$("#grplist2").css("display","none");
 			$("#note").css("display","none");
 			$("#userslist2").css("display","none");
 			$(defaultext).css("display", "none");
@@ -452,6 +460,13 @@
 		});
 		socket.on("herearethegroups",function(data1){
 			if(data1.username=== $(uname).html()){
+
+			$("#grplist2").empty();
+			for(var i = data1.recentgpmessages.length-1; i>=0 ; i--){
+			//data1.recentmessages.forEach(function(f){
+			socket.emit("getgrpmsg",{usname:data1.username ,grpname:data1.recentgpmessages[i].users} );
+			}
+			
 			for(var i = 0; i<data1.publicgrp.length ; i++){
 				$("#showpublicgroups").append("<button id= " + "'grouplink" + i + "'" + "class='getpreviouschatsofgrp'>" +  data1.publicgrp[i].hashname  + "</button>");
 		
@@ -600,6 +615,7 @@
 		});
 		$(friendlistbutton).click(function(e){
 			$("#note").css("display","none");
+			$("#grplist2").css("display","none");
 			$("#userslist2").css("display","inline");
 			$("#showpublicgroups").css("display","none");
 			$("#createpublicgroup").css("display","none");
@@ -658,6 +674,7 @@
 		});
 		$(addFriendButton).click(function(e){
 			$("#note").css("display","none");
+			$("#grplist2").css("display","none");
 			$("#userslist2").css("display","none");
 			$("#showpublicgroups").css("display","none");
 			$("#createpublicgroup").css("display","none");
@@ -674,6 +691,7 @@
 		});
 		$(searchFriendButton).click(function(e){
 			$("#note").css("display","none");
+			$("#grplist2").css("display","none");
 			$("#userslist2").css("display","none");
 			$("#showpublicgroups").css("display","none");
 			$("#createpublicgroup").css("display","none");
@@ -804,12 +822,36 @@
 			}
 			}
 });
-		socket.on("frimg2",function(data3){
+				socket.on("recentgrpmsg",function(data1){
+			console.log(data1);
+			
+			
+		
+			if(data1.username === $(uname).html()){
+					$("#grplist2").empty();
+					console.log("noooo");
+			for(var i = data1.recentgpmessages.length-1; i>=0 ; i--){
+			//data1.recentmessages.forEach(function(f){
+			socket.emit("getgrpmsg",{usname:data1.username ,grpname:data1.recentgpmessages[i].users} );
+			}
+			}
+});
+
+			socket.on("frimg2",function(data3){
 			  if(data3.usname1 === $(uname).html()){
 							$("#userslist2").append( "<li><div class='row current-chat-usr-wrap align-items-center'><div class='chat-user-img col-sm-3'><img src='/"+ data3.frname.profileImage+"' alt='userimg'/></div><div class='last-chat-detail col-sm-7 pad-left-0'><p class='user-chatting-with-wrap'>" + data3.frname.username + "</p><p class='last-msg'>"+data3.lmsg.messaged[data3.lmsg.messaged.length - 1].data +"</p></div></div></li>");
 							
 							}
 						});
+
+		socket.on("grpmsg",function(data3){
+			console.log(data3);
+			  if(data3.usname1 === $(uname).html()){
+							$("#grplist2").append( "<li><div class='row current-chat-usr-wrap align-items-center'><div class='chat-user-img col-sm-3'><img  alt='userimg'/></div><div class='last-chat-detail col-sm-7 pad-left-0'><p class='user-chatting-with-wrap'>" + data3.grp.to + "</p><p class='last-msg'>"+data3.grp.messaged[data3.grp.messaged.length - 1].data +"</p></div></div></li>");
+							
+							}
+						});
+
 	    socket.on("new-message-grp",function(data1){
 	    	console.log(data1);
 	    	data1.getusers.users.forEach(function(f){
