@@ -8,6 +8,8 @@ var express     = require("express"),
     Message        = require("./models/message"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage        = require("./models/groupmessage"),
+    PGroup        = require("./models/pgroup"),
+    GMessage        = require("./models/gmessage"),
     searchedFriend = {},
     addedFriend = "" ,
     whichPage = "one" ;
@@ -24,7 +26,7 @@ var express     = require("express"),
 
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
-  mongoose.connect(process.env.DATABASEURL,{useMongoClient:true})
+  mongoose.connect("mongodb://localhost/login-ashgen",{useMongoClient:true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
 
@@ -303,15 +305,29 @@ io.sockets.on("connection",function(socket){
               }
           });
       });
+     socket.on("clickedpgroups",function(data2){
+          User.findById(data2.id,function(err,cuser){
+              if(err){
+                console.log(err);
+              }
+              else{
+                io.emit("herearethepgroups",cuser);
+              }
+          });
+      });
      socket.on("createpubgroup",function(data2){
           console.log(data2);
           var userss = {"username": data2.maker };
           var output = {"name":data2.maker , "state":""} ;
+           PGroup.find({hashtag : data2.hashtagname}).count({},function(err,count1){
+
+
+          console.log(count1);
                 PublicGroup.find({ hashtag : data2.hashtagname}).count({},function(err,count){
                   
                     
                   
-                   if(err || count !== 0){
+                   if(err || count !== 0 || count1!== 0){
                     statement = "group already exists";
                     output = {"name":data2.maker , "state":statement} ;
                       io.emit("groupcreated",output) ; 
@@ -344,7 +360,7 @@ io.sockets.on("connection",function(socket){
                       io.emit("groupcreated",output) ; 
                   }
                 });
-              
+          });    
               
            
     });
@@ -438,37 +454,96 @@ io.sockets.on("connection",function(socket){
   });
 
      socket.on("search-friend-name",function(data2){
+      var isFriend = false ;
+      var output = {statement:"" , name:"" , user:""};
+      var isGroup = false ;
         User.findById(data2.id,function(err,cuser){
     if(err){
       console.log(err);
     }
     else{
-      var isFriend = false ;
-      searchedFriend = {} ;
+      
+      //searchedFriend = {} ;
+      PGroup.findOne({hashtag:data2.friendname},function(err,cgroup){
+      console.log(cgroup);
+            if(cgroup !== null){
+              isGroup= true ;
+              output = {statement:"" , name:data2.friendname , user: data2.from};
+              io.emit("group-searched",output);
+            }
+        });
       cuser.friends.forEach(function(f){
           
            if(f.name===data2.friendname){
                 
                 isFriend = true ;
-                searchedFriend = f ;
+                output =  {statement:"" , name:f.name ,user: data2.from};
+                //console.log(searchedFriend.name);
               } 
       }) ;
       } 
       if(isFriend){
         console.log(searchedFriend.name);
-        whichPage = "three" ;
-        whichPage2 = "six" ;
-        io.emit("friend-searched", searchedFriend);
+        io.emit("friend-searched", output);
         }
-        else{
-           whichPage = "three" ;
-           whichPage2 = "six" ;
-           console.log(searchedFriend.name);
-          io.emit("friend-searched", searchedFriend);
+        console.log(isFriend);
+        console.log(isGroup);
+        if(isFriend===false && isGroup===false){
+          output = {statement:"No such" , name:"" , user:data2.from};
+          io.emit("friend-searched",output) ;
         }
-  });
+        // else{
+        //    console.log(searchedFriend.name);
+        //   io.emit("friend-searched", searchedFriend);
+        // }
   });
 
+
+  });
+socket.on("requesttojoin",function(data2){
+   var newuser = {"username":data2.name} ;
+   var newgroup = {"hashname":data2.grpname} ;
+
+   PGroup.findOne({hashtag:data2.grpname},function(err,cgroup){
+    if(!err){
+      cgroup.update({$addToSet:{users:newuser}},{new:true},function(err,kgroup){
+
+
+      console.log(cgroup);
+      User.findOne({username:data2.name},function(err,cuser){
+          if(!err){
+            cuser.update({$addToSet:{pgrp:newgroup}},{new:true},function(err,guser){
+                          io.emit("groupjoined",{statement:"groupjoined",name:data2.name});
+             // io.emit("groupjoined",cuser);
+            });
+
+          }
+      });
+      }) ;
+    }
+  });
+});
+socket.on("clickedpublicsearch",function(data2){
+  PGroup.findOne({hashtag:data2.grpname},function(err,cgroup){
+    if(!err){
+      var isMember = false ;
+      cgroup.users.forEach(function(f){
+        if(data2.name===f.username){
+          isMember = true ;
+        }
+      });
+      if(isMember){
+        var output = {statement:"already a member",name:data2.name};
+        
+        io.emit("joingroup",output);
+      }
+      else{
+var output = {statement:"" , name:data2.name};
+       io.emit("joingroup",output); 
+      }
+    }
+  });
+});
  socket.on("getimg",function(data2){
       User.findOne({username:data2.frname},function(err,fuser){
         if(!err){
@@ -544,6 +619,31 @@ io.sockets.on("connection",function(socket){
         }
       });
   });
+
+socket.on("loaded-message-p-group",function(data2){
+   User.findOne({username:data2.from},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+              var messagefrom = {"users":data2.to};
+              User.findByIdAndUpdate(fuser._id,{$pull:{newmessages:messagefrom}},{new:true},
+                function(err,cuser){
+                  if(err){console.log(err);}
+                  else{
+                    io.emit("newmessagefrom",cuser) ;
+                  }
+              });
+            }
+         });
+     GMessage.findOne({to:data2.to},function(err,cuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(cuser);
+          io.emit("previous-group-p-message",cuser);
+        }
+      });
+  });
+
 
   socket.on("userloggedin",function(data2){
      User.findOne({username:data2},function(err,fuser){
@@ -745,6 +845,126 @@ io.sockets.on("connection",function(socket){
        });
       
 
+
+socket.on("send-message-p-grp",function(data1){
+    var messagefrom = {"users":data1.to};
+      //   PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
+      // if(err){
+      //   console.log(err);
+      // }
+      // else{
+      //   cgroup.users.forEach(function(f){
+
+      //    User.findOne({username:f.username},function(err,fuser){
+      //       if(err){console.log(err);}
+      //       else{
+      //         var isPresent  = false ;
+      //         fuser.recentgpmessages.forEach(function(g){
+      //           if(data1.to === g.users){
+      //             isPresent = true ;
+      //           }
+      //         });
+      //         console.log(isPresent) ;
+      //         User.findById(fuser._id,function(err,usser){
+      //        if(!err){
+      //        var lastman = {"users" : usser.recentgpmessages[9]} ;
+      //         if(usser.recentgpmessages.length===10){
+      //           usser.update({$pull:{recentgpmessages:lastman}});
+      //         }
+      //       }
+      //     });
+      //         if(!isPresent){
+          
+      //         User.findByIdAndUpdate(fuser._id,{$addToSet:{recentgpmessages:messagefrom}},{new:true},
+      //           function(err,tuser){
+      //             if(err){console.log(err);}
+      //             else{
+      //               io.emit("recentgrpmsg",tuser) ;
+      //             }
+      //           });
+      //       }
+      //       else{
+      //               User.findByIdAndUpdate(fuser._id,{$pull:{recentgpmessages:messagefrom}},{new:true},
+      //           function(err,kuser){
+      //             if(err){console.log(err);}
+      //           });
+      //                 User.findByIdAndUpdate(fuser._id,{$addToSet:{recentgpmessages:messagefrom}},{new:true},
+      //           function(err,tuser){
+      //             if(err){console.log(err);}
+      //             else{
+      //               io.emit("recentgrpmsg",tuser) ;
+      //             }
+      //           });
+      //       }
+      //     }
+
+      //    });
+          
+      //   });
+      //     }
+      //   });
+
+    PGroup.findOne({hashtag:data1.to},function(err,cgroup){
+      if(err){
+        console.log(err);
+      }
+      else{
+        cgroup.users.forEach(function(f){
+          if(f.username !== data1.from){
+
+         User.findOne({username:f.username},function(err,fuser){
+            if(err){console.log(err);}
+            else{
+              var isPresent  = false ;
+              fuser.newmessages.forEach(function(g){
+                if(data1.to === g.users){
+                  isPresent = true ;
+                }
+              });
+              console.log(isPresent) ;
+              if(!isPresent){
+          
+              User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
+                function(err,cuser){
+                  if(err){console.log(err);}
+                  else{
+                    io.emit("newmessagefrom",cuser) ;
+                  }
+                });
+            }
+          }
+
+         });
+          }
+        });
+          }
+       
+
+
+     GMessage.findOne({to:data1.to},function(err,cuser){
+
+        if(err){
+          console.log(err);
+        }else{
+              ms = { "data": data1.from + " : " + data1.msg} ;
+              
+              GMessage.findOneAndUpdate({_id : cuser._id},{$push: { messaged : ms}},{new:true},function(err,duser){
+                if(err){
+                  console.log(err);
+                }
+                // else{
+                    
+                   io.emit("new-message-p-grp",{getmsg:duser,getusers:cgroup});
+                // }
+
+              });
+            }
+          });
+
+       });         
+  });
+
+
   socket.on("send-message-grp",function(data1){
     var messagefrom = {"users":data1.to};
         PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
@@ -871,6 +1091,58 @@ io.sockets.on("connection",function(socket){
         }
     });
   });
+
+
+socket.on("createpgroup",function(data2){
+          console.log(data2);
+          var userss = {"username": data2.maker };
+          var output = {"name":data2.maker , "state":""} ;
+             PublicGroup.find({hashtag:data2.hashtagname}).count({},function(err,count1){
+
+            
+                console.log(count1);
+                PGroup.find({ hashtag : data2.hashtagname}).count({},function(err,count){
+                  
+                    
+                  
+                   if(err || count !== 0 || count1 !==0){
+                    statement = "group already exists";
+                    output = {"name":data2.maker , "state":statement} ;
+                      io.emit("pgroupcreated",output) ; 
+                  } 
+                  else{
+                      grouphashtag = {"hashname" :data2.hashtagname};
+                      User.findByIdAndUpdate(data2.id,
+                      {$addToSet: {pgrp: grouphashtag}},
+                      function(err, cuser) {
+                        if(err){
+                          console.log(err);
+                        }
+
+                      });
+                      var newpubgroup = new PGroup({groupname :data2.groupname, hashtag:data2.hashtagname,admin:data2.maker,users: userss }); 
+                      newpubgroup.save(function(err){
+                        if(err){
+                            console.log(err);
+                            }
+                      });
+                      var newgroupmessage = new GMessage({to : data2.hashtagname});
+                      newgroupmessage.save(function(err){
+                        if(err){
+                            console.log(err);
+                            }
+                      });
+                      statement = "group created";
+                      output = {"name":data2.maker , "state":statement} ;
+
+                      io.emit("pgroupcreated",output) ; 
+                  }
+                });
+              
+            });  
+           
+    });
+
 
 
 });

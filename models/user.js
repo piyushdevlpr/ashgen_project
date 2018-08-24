@@ -14,6 +14,11 @@ var UserSchema = new mongoose.Schema({
         hashname:String
       }
     ],
+    pgrp : [
+      {
+        hashname:String
+      }
+    ],
     newmessages: [
     {
       users:String
@@ -33,13 +38,6 @@ var UserSchema = new mongoose.Schema({
       {  
          name: String,
          propic: String,
-         message:[
-           {
-            data:String
-           }
-         ]
-         //type: mongoose.Schema.Types.ObjectId,
-         //ref: "Friend"
       }
    ],
     email: {

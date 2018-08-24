@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,6 +18,13 @@
 			border: 1px solid ;
 			overflow:auto;
 	}
+			#chatboxpgrp{
+			height:200px;
+			width: 200px;
+			border: 1px solid ;
+			overflow:auto;
+	}
+
 		#friendlist{
 			display: none;
 		}
@@ -37,10 +47,19 @@
 		#createpublicgroup{
 			display: none;
 		}
+		#createprgroup{
+			display: none;
+		}
 		#showpublicgroups{
 			display: none;
 		}
+		#showpgroups{
+			display: none;
+		}
 		#createdgroup{
+			display: none;
+		}
+		#newpg{
 			display: none;
 		}
 		#publicgroupsettings{
@@ -50,6 +69,9 @@
 			display: none;
 		}
 		#chatwithgroup{
+			display: none;
+		}
+		#chatwithpgroup{
 			display: none;
 		}
 		#note{
@@ -133,16 +155,16 @@
                                                
                                             </li>
                                             <li>
-                                                
-                                                	 
                                    					    <button id="yourpublicgroups" >
                                         					<span class="fa fa-cubes"></span>
-                                      						<p class="profile-option-text">My Groups</p>
+                                      						<p class="profile-option-text">My Private Groups</p>
                                     					</button>
-                                					
-                                                    
-                                                    
-                                               
+                                            </li>
+                                             <li>
+                                   					    <button id="yourpgroups" >
+                                        					<span class="fa fa-cubes"></span>
+                                      						<p class="profile-option-text">My Public Groups</p>
+                                    					</button>
                                             </li>
                                             <li>
                                             		 <button id="notifications" >
@@ -162,6 +184,15 @@
 
                                             <li>
                                             	<button id="newpublicgroup" >
+                                      				  <span class="fa fa-user"></span>
+                                      				<p class="profile-option-text">Create Private Groups</p>
+                                     			 </button>
+                                                
+                                            </li>
+
+
+                                            <li>
+                                            	<button id="newpgroup" >
                                       				  <span class="fa fa-user"></span>
                                       				<p class="profile-option-text">Create Public Groups</p>
                                      			 </button>
@@ -213,18 +244,35 @@
                                     </form>
                                 </div>
                                <div class=" second-section-options-wrap">
-                               		<div id="createpublicgroup">
+<div id="createpublicgroup">
 	<form id="creategroup">
 		<input type="text" id="grpname" placeholder="group name">
 		<input type="text" id="grpht" placeholder="hashtag">
 		<input type="submit" value="create">
 	</form>	
 </div>
+
+<div id="createprgroup">
+	<form id="createpgroup">
+		<input type="text" id="pgrpname" placeholder="group name">
+		<input type="text" id="pgrpht" placeholder="hashtag">
+		<input type="submit" value="create">
+	</form>	
+</div>
+
+<div id="newpg">
+	
+</div>
+
 <div id="createdgroup">
 	
 </div>
 
 <div id="showpublicgroups">
+	
+</div>
+
+<div id="showpgroups">
 	
 </div>
 
@@ -234,6 +282,8 @@
 										
 									</div>
 									</div>
+
+
 
 <div id="publicgroupsettings">
    <form id="addmember">
@@ -272,6 +322,17 @@
 	<button id="showing-searched-friend" class="linkToChat getpreviouschats">
 		
 	</button>
+    
+    <div id="show-searched-group">
+		
+	</div>
+	<button id="showing-searched-group">
+		
+	</button>
+	<div id="joingroup">
+		
+	</div>
+
 
 <div id="friendlist">
 	
@@ -313,6 +374,24 @@
 </form>	
 </div>
 
+
+
+<div id = "chatwithpgroup">
+<h2>
+	WELCOME "<span><%= currentUser.username %></span>" !!!!
+</h2>
+<h2>
+	Chat with <span id="grname1"></span>
+</h2>
+<!-- <form id = "getpreviouschats">
+	<input type="submit" value="get previous chats">
+</form> -->
+<div id="chatboxpgrp"></div>
+<form id = "sendmessagepgrp">
+	<input type="text" id="messagepgrp" size="35" required="true" >
+	<input type="submit" value="send" >
+</form>	
+</div>
 
 <div class="real-message-section col-sm-5" id="chatwithfriend">                                
                                 <div class="messages-wrap">
@@ -401,7 +480,55 @@
 				e.preventDefault();
 				$("#note").css("display","inline");
 		});
+
+		$("#yourpgroups").click(function(e){
+			$("#createprgroup").css("display","none");
+
+			$("#newpg").css("display","none");
+			$("#note").css("display","none");
+			$("#grplist2").css("display","none");
+			$("#userslist2").css("display","none");
+			$(defaultext).css("display", "none");
+			$(defaultext).css("display", "none");
+			$("#publicgroupsettings").css("display","none");
+			$(addFriend).css("display", "none");
+			//$(searchF).css("display", "none");
+			$(friendlist).css("display", "none");
+			$("#show-searched-friend").css("display", "none");
+			$("#showing-searched-friend").css("display", "none");
+			$("#show-friend").css("display", "none");
+			$("#showpublicgroups").css("display","none");
+			$("#showpgroups").css("display","flex");
+			$("#createpublicgroup").css("display","none");
+			$("#createdgroup").css("display","none");
+			$("#showing-result").css("display","none");
+		});	
+		$("#newpgroup").click(function(e){
+			//console.log("hi") ;
+			$("#newpg").css("display","none");
+			$("#grplist2").css("display","none");
+			$("#note").css("display","none");
+			$("#userslist2").css("display","none");
+			$(defaultext).css("display", "none");
+				$("#showing-result").css("display","none");
+			$("#publicgroupsettings").css("display","none");
+			$(defaultext).css("display", "none");
+			$(addFriend).css("display", "none");
+			//$(searchF).css("display", "none");
+			$(friendlist).css("display", "none");
+			$("#showpgroups").css("display","none");
+			$("#show-searched-friend").css("display", "none");
+			$("#showing-searched-friend").css("display", "none");
+			$("#show-friend").css("display", "none");
+			$("#showpublicgroups").css("display","none");
+			$("#createprgroup").css("display","inline");
+			$("#createdgroup").css("display","none");
+		});	
+
 		$("#yourpublicgroups").click(function(e){
+			$("#createprgroup").css("display","none");
+
+			$("#newpg").css("display","none");
 			$("#note").css("display","none");
 			$("#grplist2").css("display","inline");
 			$("#userslist2").css("display","none");
@@ -414,12 +541,15 @@
 			$("#show-searched-friend").css("display", "none");
 			$("#showing-searched-friend").css("display", "none");
 			$("#show-friend").css("display", "none");
+			$("#showpgroups").css("display","none");
 			$("#showpublicgroups").css("display","flex");
 			$("#createpublicgroup").css("display","none");
 			$("#createdgroup").css("display","none");
 			$("#showing-result").css("display","none");
 		});	
 		$("#newpublicgroup").click(function(e){
+			$("#createprgroup").css("display","none");
+			$("#newpg").css("display","none");
 			$("#grplist2").css("display","none");
 			$("#note").css("display","none");
 			$("#userslist2").css("display","none");
@@ -431,6 +561,7 @@
 			//$(searchF).css("display", "none");
 			$(friendlist).css("display", "none");
 			$("#show-searched-friend").css("display", "none");
+			$("#showpgroups").css("display","none");
 			$("#showing-searched-friend").css("display", "none");
 			$("#show-friend").css("display", "none");
 			$("#showpublicgroups").css("display","none");
@@ -445,6 +576,21 @@
 
 			socket.emit("createpubgroup",{id:$("#currentUserID").html() ,groupname : $("#grpname").val() , hashtagname:$("#grpht").val(), maker:$(uname).html()});
 		});
+		$("#createpgroup").submit(function(e){
+			e.preventDefault();
+			$("#newpg").css("display","none");
+			
+
+			socket.emit("createpgroup",{id:$("#currentUserID").html() ,groupname : $("#pgrpname").val() , hashtagname:$("#pgrpht").val(), maker:$(uname).html()});
+		});
+		socket.on("pgroupcreated",function(data1){
+			if(data1.name === $(uname).html()){
+			$("#newpg").css("display","inline");
+			$("#newpg").empty() ;
+			console.log(data1);
+			$("#newpg").append("<span>"+ data1.state + "</span>");
+		}
+		});
 		socket.on("groupcreated",function(data1){
 			if(data1.name === $(uname).html()){
 			$("#createdgroup").css("display","inline");
@@ -453,11 +599,94 @@
 			$("#createdgroup").append("<span>"+ data1.state + "</span>");
 		}
 		});
+		$("#yourpgroups").click(function(e){
+			e.preventDefault();
+			$("#showpgroups").empty();
+			socket.emit("clickedpgroups",{id:$("#currentUserID").html() });
+		});
 		$("#yourpublicgroups").click(function(e){
 			e.preventDefault();
 			$("#showpublicgroups").empty();
 			socket.emit("clickedpublicgroups",{id:$("#currentUserID").html() });
 		});
+
+		$("#showing-searched-group").click(function(e){
+			e.preventDefault();
+			console.log("ye");
+			socket.emit("clickedpublicsearch",{name:$(uname).html(),grpname:$("#showing-searched-group").html() });
+		});
+		socket.on("joingroup",function(data1){
+			console.log(data1);
+			if(data1.name===$(uname).html()){
+			if(data1.statement === "" ){
+				$("#joingroup").empty() ;
+				$("#joingroup").append("<button id='join'>join</button>") ;
+				$("#join").click(function(e){
+			e.preventDefault();
+			socket.emit("requesttojoin",{name:$(uname).html(),grpname:$("#showing-searched-group").html() })
+		});
+			}
+			else{
+				$("#joingroup").empty() ;
+				$("#joingroup").append("<span>"+ data1.statement + "</span>") ;
+			}
+		}
+		});
+		
+		socket.on("groupjoined",function(data1){
+			if(data1.name===$(uname).html()){
+			$("#joingroup").empty();
+			console.log(data1);
+			$("#joingroup").html(data1.statement);
+		}
+		});
+		socket.on("herearethepgroups",function(data1){
+			if(data1.username=== $(uname).html()){
+
+			// $("#grplist2").empty();
+			// for(var i = data1.recentgpmessages.length-1; i>=0 ; i--){
+			
+			// socket.emit("getgrpmsg",{usname:data1.username ,grpname:data1.recentgpmessages[i].users} );
+			// }
+			
+			for(var i = 0; i<data1.pgrp.length ; i++){
+				$("#showpgroups").append("<button id= " + "'grouplink" + i + "'" + "class='getpreviouschatsofgrp'>" +  data1.pgrp[i].hashname  + "</button>");
+		
+			}
+		
+						$("#showpgroups button").click(function(e){
+								
+								$("#grname1").html($(this).html()) ;
+						 		console.log($(this).html());
+						 		$("#chatwithfriend").css("display","none");
+				 				$("#chatwithgroup").css("display","none");
+				 				$("#chatwithpgroup").css("display","inline");
+							var grp = $(this).html();
+							//$("#publicgroupsettings").css("display","flex");
+
+							$("#showpgroups").css("display","none");
+							socket.emit("loaded-message-p-group",{to: grp,from:$(uname).html()});
+							socket.on("previous-group-p-message",function(data1){
+								console.log(data1);
+								if( data1.to === grp){
+	    		   
+	    					   $("#chatboxpgrp").empty();
+	   	     					for(var i =0; i<data1.messaged.length ; i++){
+	    							$("#chatboxpgrp").append("<span>" + data1.messaged[i].data + "</span><br/>");
+	    						}
+	    					}
+						});
+							
+							// socket.emit("member-names",grp);
+							// socket.on("names-here",function(data1){
+							
+								
+	
+							
+				});
+			}		
+		});
+
 		socket.on("herearethegroups",function(data1){
 			if(data1.username=== $(uname).html()){
 
@@ -572,17 +801,7 @@
 								
 	
 							});
-		
-			
-
-							 
-							
-
-										
-					
 				});
-
-
 			}		
 		});
 
@@ -614,6 +833,9 @@
 }
 		});
 		$(friendlistbutton).click(function(e){
+			$("#createprgroup").css("display","none");
+			$("#newpg").css("display","none");
+			$("#showpgroups").css("display","none");
 			$("#note").css("display","none");
 			$("#grplist2").css("display","none");
 			$("#userslist2").css("display","inline");
@@ -673,6 +895,9 @@
 			 
 		});
 		$(addFriendButton).click(function(e){
+			$("#createprgroup").css("display","none");
+			$("#newpg").css("display","none");
+			$("#showpgroups").css("display","none");
 			$("#note").css("display","none");
 			$("#grplist2").css("display","none");
 			$("#userslist2").css("display","none");
@@ -690,7 +915,10 @@
 			$("#publicgroupsettings").css("display","none");
 		});
 		$(searchFriendButton).click(function(e){
+			$("#createprgroup").css("display","none");
 			$("#note").css("display","none");
+			$("#showpgroups").css("display","none");
+			$("#newpg").css("display","none");
 			$("#grplist2").css("display","none");
 			$("#userslist2").css("display","none");
 			$("#showpublicgroups").css("display","none");
@@ -730,16 +958,38 @@
 			e.preventDefault();
 			socket.emit("search-friend-name",{id:$("#currentUserID").html() ,from:$(uname).html(),friendname :$("#friendtosearch").val()});
 		});
+
+		
 		socket.on("friend-searched",function(data1){
 	    	console.log(data1);
-	    	if(data1.name === undefined){
+	    	if(data1.user === $(uname).html()){
+	    	$("#show-searched-friend").empty();
+	    	$("#showing-searched-group").empty();
 	    		$("#showing-searched-friend").empty();
-	    		//$("#show-searched-friend").empty();
-	    		$("#show-searched-friend").html("<span>Enter a valid name</span><br/>");
-	    	}else{
-	    		$("#show-searched-friend").empty();
-	    		//$("#showing-searched-friend").empty();
 	    		$("#showing-searched-friend").html( data1.name );
+	    		//$("#show-searched-friend").empty();
+	    		
+	    	if(data1.statement !== ""){
+	    		$("#showing-searched-group").empty();
+	    		$("#show-searched-friend").empty();
+	    		$("#show-searched-friend").html("<span>Enter a valid user or group name</span><br/>");
+	    	}
+	    }
+	    		//$("#showing-searched-friend").empty();
+	    		
+	    		//$("#show-searched-friend").attr("href", /chat/data1.name );
+	    
+	    });
+	    		socket.on("group-searched",function(data1){
+	    	console.log(data1);
+	    	if(data1.user===$(uname).html()){
+	    	$("#show-searched-friend").empty();
+	    		$("#showing-searched-group").empty();
+	    		$("#show-searched-friend").empty();
+	    		//$("#show-searched-friend").empty();
+	    		// $("#show-searched-friend").html("<span>Enter a valid user or group name</span><br/>");
+	    	
+	    		$("#showing-searched-group").html( data1.name );
 	    		//$("#show-searched-friend").attr("href", /chat/data1.name );
 	    }
 	    });
@@ -808,6 +1058,13 @@
 			socket.emit("send-message-grp",{to:$("#grname").html(),from:$(uname).html(),msg :$("#messagegrp").val()});
 			$("#messagegrp").val("");
 		});
+
+		$("#sendmessagepgrp").submit(function(e){
+			e.preventDefault();
+			socket.emit("send-message-p-grp",{to:$("#grname1").html(),from:$(uname).html(),msg :$("#messagepgrp").val()});
+			$("#messagepgrp").val("");
+		});
+
 		socket.on("recentmessage",function(data1){
 			console.log(data1);
 			
@@ -859,8 +1116,16 @@
 	    	  $("#chatboxgrp").append("<span>" + data1.getmsg.messaged[data1.getmsg.messaged.length - 1].data + "</span><br/>");
 	    }
 	    	});
+});
+	   	    socket.on("new-message-p-grp",function(data1){
+	    	console.log(data1);
+	    	data1.getusers.users.forEach(function(f){
+	          if(f.username===$(uname).html()){
+	    	  $("#chatboxpgrp").append("<span>" + data1.getmsg.messaged[data1.getmsg.messaged.length - 1].data + "</span><br/>");
+	    }
+	    	});
+	});    
 	    
-	    });
 	    });    
       
 
