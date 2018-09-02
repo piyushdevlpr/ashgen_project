@@ -15,8 +15,7 @@ var express     = require("express"),
     whichPage = "one" ;
     whichPage2 = "six" ;
     frnames = [] ,
-   // Friend        = require("./models/friends"),
-   // addedFriend = "",
+   
     multer = require("multer"),
     path = require("path"),
     server= require("http").createServer(app),
@@ -30,7 +29,7 @@ var express     = require("express"),
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
 
-// MULTER CONFIGURATIONS ---
+// ----------To support profile photo uploadation ,multer configurations-------------
     var storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, 'uploads/');
@@ -54,14 +53,15 @@ var upload = multer({
   },
   fileFilter: fileFilter
 });
+//-----------------------------------------------------------------------------------
 app.use(express.static(__dirname + "/uploads"));
 
 app.use(bodyParser.urlencoded({extended: true}));
-// app.set("view engine", "ejs");
+
  app.use(express.static(__dirname + "/public"));
 
 
-// PASSPORT CONFIGURATION------------
+// PASSPORT CONFIGURATION for authentication(registration) of user--------------------
 app.use(require("express-session")({
     secret: "ashgen",
     resave: false,
@@ -82,25 +82,28 @@ app.use(function(req, res, next){
    res.fruser = req.fuser;
    next();
 });
+//-------------------------------------------------------------------------------------
 
-
-// ---------ROUTES--------------------
+// ---------HOME ROUTE (register page)-------------------------------------------------
 app.get("/",function(req,res){
   res.redirect("/register");
 });
-app.get("/login",function(req,res){
- // res.sendFile(path.join(__dirname+'/login.html')); 
+//-----------LOGIN ROUTE---------------------------------------------------------------
+app.get("/login",function(req,res){ 
   res.render("login.ejs");
 });
+//----------Authnticating the login credentials enterd by user-------------------------
 app.post("/login", passport.authenticate("local", 
     {
         successRedirect: "/signedin",
         failureRedirect: "/register"
     }), function(req, res){
 });
+//---------REGISTER ROUTE--------------------------------------------------------------
 app.get("/register",function(req,res){
   res.render("register.ejs");
 });
+//---------------Authenticating the register credntials -------------------------------
 app.post("/register",upload.single('profileImage'), function(req, res,next){
     
     var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
@@ -115,20 +118,22 @@ app.post("/register",upload.single('profileImage'), function(req, res,next){
         });
     });
 });
+//--------------Route to show the page after login -------------------------------------
 app.get("/signedin",function(req,res){
   var addedFriend = "" ;
   whichPage2 = "six" ;
   res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,searchedFriend:searchedFriend});
 });
 
-
+//---------------Route to logout---------------------------------------------------------
 app.get("/logout", function(req, res){
    req.logout();
    res.redirect("/login");
 });
 
-
+//----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
+//----------------Removing a member from private group------------------------------------
        socket.on("remove-member",function(data2){
         var grphashtag = {"hashname": data2.grpname};
           var grouphashtag = {"username": data2.membername} ;
@@ -144,7 +149,6 @@ io.sockets.on("connection",function(socket){
                     }
                 });
                 if(!isPresent){
-           // console.log(isPresent) ;
            var statement = "member does not exist";
                           var output = {"user": data2.user , "state":statement};
             io.emit("member-removed",output) ;
@@ -174,9 +178,9 @@ io.sockets.on("connection",function(socket){
        }
               }
           });
-          //console.log(isPresent) ;
           
        });
+//---------------------REmoving a member from the post of subadmin in private group---------------
          socket.on("remove-subadmin",function(data2){
           var grouphashtag = {"username": data2.membername} ;
           var isPresent = false ;
@@ -206,6 +210,7 @@ io.sockets.on("connection",function(socket){
           });   
           
        });
+//-------------------Adding a new member to private group---------------------------------------------
       socket.on("add-member",function(data2){
           User.find({ username : data2.membername}).count({},function(err,count){
               if(count===0){
@@ -262,7 +267,7 @@ io.sockets.on("connection",function(socket){
               }
           });
       });
-
+//-------------Making an existing member a sub admin -----------------------------------------
        socket.on("add-subadmin",function(data2){
           var grouphashtag = {"username": data2.membername} ;
           var isPresent = false ;
@@ -290,11 +295,13 @@ io.sockets.on("connection",function(socket){
               }
           });
       });
+//-------------The settings to show to the user of a private group based on whether he is subadmin, admin or a normal member-------------
         socket.on("settings-to-show",function(data2){
           PublicGroup.findOne({hashtag:data2},function(err,cgroup){
               io.emit("settings-emitted",cgroup);
           });
         });
+//-----------Emitting list of private groups of the user -----------------------------------------------------
       socket.on("clickedpublicgroups",function(data2){
           User.findById(data2.id,function(err,cuser){
               if(err){
@@ -305,6 +312,7 @@ io.sockets.on("connection",function(socket){
               }
           });
       });
+//-----------Emitting list of public groups of the user -------------------------------------------------------
      socket.on("clickedpgroups",function(data2){
           User.findById(data2.id,function(err,cuser){
               if(err){
@@ -315,6 +323,7 @@ io.sockets.on("connection",function(socket){
               }
           });
       });
+//------------creating a public group --------------------------------------------------------------------------
      socket.on("createpubgroup",function(data2){
           console.log(data2);
           var userss = {"username": data2.maker };
@@ -364,7 +373,7 @@ io.sockets.on("connection",function(socket){
               
            
     });
-
+//-----------------------Send the list of friends of the user ---------------------------------------
     socket.on("show-friend-list",function(data2){
       User.findById( data2.id,function(err,cuser){
         if(err){
@@ -375,7 +384,7 @@ io.sockets.on("connection",function(socket){
           });
       
     });
-
+//------------------------Add a new friend to the users' account--------------------------------------0
     socket.on("add-friend-name",function(data2){
       User.findOne({ username : data2.friendname},function(err,fuser){
     if (err) {
@@ -426,7 +435,6 @@ io.sockets.on("connection",function(socket){
             var addedFriend = "friend successfully added";
             whichPage="two" ;
             whichPage2 = "six" ;
-            // res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend});
             io.emit("friend-added",addedFriend);
             }
            });
@@ -438,21 +446,18 @@ io.sockets.on("connection",function(socket){
       io.emit("friend-added",addedFriend);
     }
            });
-           //console.log(isPresent) ;
-
   }
      else{
        var addedFriend = "no such  friend can be added";
        whichPage="two" ;
        whichPage2 = "six" ;
-       //res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,whichPage2:whichPage2,searchedFriend:searchedFriend}) ;
        io.emit("friend-added",addedFriend);
          }
           });
         }
     });
   });
-
+//----------------Call to search a friend from friend list of the user --------------------------------------------------
      socket.on("search-friend-name",function(data2){
       var isFriend = false ;
       var output = {statement:"" , name:"" , user:""};
@@ -462,8 +467,6 @@ io.sockets.on("connection",function(socket){
       console.log(err);
     }
     else{
-      
-      //searchedFriend = {} ;
       PGroup.findOne({hashtag:data2.friendname},function(err,cgroup){
       console.log(cgroup);
             if(cgroup !== null){
@@ -478,7 +481,7 @@ io.sockets.on("connection",function(socket){
                 
                 isFriend = true ;
                 output =  {statement:"" , name:f.name ,user: data2.from};
-                //console.log(searchedFriend.name);
+          
               } 
       }) ;
       } 
@@ -492,14 +495,11 @@ io.sockets.on("connection",function(socket){
           output = {statement:"No such" , name:"" , user:data2.from};
           io.emit("friend-searched",output) ;
         }
-        // else{
-        //    console.log(searchedFriend.name);
-        //   io.emit("friend-searched", searchedFriend);
-        // }
-  });
+      });
 
 
   });
+//----------------Call by the user to join a public group ------------------------------------------------------
 socket.on("requesttojoin",function(data2){
    var newuser = {"username":data2.name} ;
    var newgroup = {"hashname":data2.grpname} ;
@@ -514,7 +514,6 @@ socket.on("requesttojoin",function(data2){
           if(!err){
             cuser.update({$addToSet:{pgrp:newgroup}},{new:true},function(err,guser){
                           io.emit("groupjoined",{statement:"groupjoined",name:data2.name});
-             // io.emit("groupjoined",cuser);
             });
 
           }
@@ -523,6 +522,7 @@ socket.on("requesttojoin",function(data2){
     }
   });
 });
+//-----------------User has clicked the Search option for public groups and friends -----------------------------
 socket.on("clickedpublicsearch",function(data2){
   PGroup.findOne({hashtag:data2.grpname},function(err,cgroup){
     if(!err){
@@ -544,6 +544,8 @@ var output = {statement:"" , name:data2.name};
     }
   });
 });
+
+/-------------------------------------------------------------------------------------21444444444444444444444444443333
  socket.on("getimg",function(data2){
       User.findOne({username:data2.frname},function(err,fuser){
         if(!err){
@@ -557,6 +559,7 @@ var output = {statement:"" , name:data2.name};
   });
       
  });
+// --------------Load previous messages of a user with another user -----------------------------------
   socket.on("loaded-message",function(data2){
              User.findOne({username:data2.from},function(err,fuser){
             if(err){console.log(err);}
@@ -585,6 +588,7 @@ var output = {statement:"" , name:data2.name};
         }
       });
   });
+  //------------------Emitting the member names of a public group-------------------------------- 
   socket.on("member-names",function(data2){
      console.log(data2);
       PublicGroup.findOne({hashtag:data2},function(err,cgroup){
@@ -596,6 +600,7 @@ var output = {statement:"" , name:data2.name};
           }
       });
   });
+  //-------------------Loading the previous messages of a specific private group ------------------------- 
  socket.on("loaded-message-group",function(data2){
    User.findOne({username:data2.from},function(err,fuser){
             if(err){console.log(err);}
@@ -619,7 +624,7 @@ var output = {statement:"" , name:data2.name};
         }
       });
   });
-
+//-----------------------Loading the previous messages of a specific public group ------------------------- 
 socket.on("loaded-message-p-group",function(data2){
    User.findOne({username:data2.from},function(err,fuser){
             if(err){console.log(err);}
@@ -644,7 +649,7 @@ socket.on("loaded-message-p-group",function(data2){
       });
   });
 
-
+//-----------Emitting any newmessages to the user since the session he last logged in -----------------------------
   socket.on("userloggedin",function(data2){
      User.findOne({username:data2},function(err,fuser){
             if(err){console.log(err);}
@@ -654,14 +659,12 @@ socket.on("loaded-message-p-group",function(data2){
             }
          });
   });
+//-------------Sending message to a specific user ------------------------------------------------------------------
   socket.on("send-message",function(data1){
-    // console.log(data);
-    //  socket.frname = data.to ;
-    //  frnames.push(socket.frname);
-    // console.log(data.from);
          console.log(data1.msg);
          var messagefrom = {"users":data1.from};
          User.findOne({username:data1.to},function(err,fuser){
+      //---------------------Saving the message as recently sent for both current user and receiving user-------------
             if(err){console.log(err);}
             else{
               var isPresent  = false ;
@@ -679,7 +682,7 @@ socket.on("loaded-message-p-group",function(data2){
               console.log(isPresent) ;
               ////////////////////////////////////////
               if(!isPresent1){
-                                  //????? jisko bheja usme mera naam ....aur jisne bheja usme jisko bheja uska naam aana chahiye.........
+                          
                 User.findOne({ username:data1.to},function(err,duser){
                   if(duser.recentmessages.length===10){
                     var lastname = {"users": duser.recentmessages[9].users} ;
@@ -705,7 +708,7 @@ socket.on("loaded-message-p-group",function(data2){
               ///////////////////////////////////////////
               else{
 
-               // fuser.update({$pull:{recentmessages:messagefrom}},function(err,duser){
+              
                   User.findOneAndUpdate({ username:data1.to},{$pull:{recentmessages:messagefrom}},function(err,duser){
                   if(duser.recentmessages.length===10){
                     var lastname = {"users": duser.recentmessages[9].users} ;
@@ -729,9 +732,7 @@ socket.on("loaded-message-p-group",function(data2){
               }
               ///////////////////////////////////////////
               if(!isPresent){
-                //????? jisko bheja usme mera naam ....aur jisne bheja usme jisko bheja uska naam aana chahiye.........
-             
-                
+              
               User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
                 function(err,cuser){
                   if(err){console.log(err);}
@@ -756,7 +757,6 @@ socket.on("loaded-message-p-group",function(data2){
                 }
               });
                     if(!isPresent1){
-                                  //????? jisko bheja usme mera naam ....aur jisne bheja usme jisko bheja uska naam aana chahiye.........
                 User.findOne({ username:data1.from},function(err,duser){
                   if(duser.recentmessages.length===10){
                     var lastname = {"users": duser.recentmessages[9].users} ;
@@ -782,7 +782,6 @@ socket.on("loaded-message-p-group",function(data2){
               ///////////////////////////////////////////
               else{
 
-               // fuser.update({$pull:{recentmessages:messagefrom}},function(err,duser){
                   User.findOneAndUpdate({ username:data1.from},{$pull:{recentmessages:newmessage2}},{new:true},function(err,duser){
                   if(duser.recentmessages.length===10){
                     var lastname = {"users": duser.recentmessages[9].users} ;
@@ -806,7 +805,7 @@ socket.on("loaded-message-p-group",function(data2){
               }
             }
       });
-      
+      //-------------storing message to database -------------------------------------------------------------------------
  Message.findOne({from:data1.to,to:data1.from},function(err,cuser){
 
         if(err){
@@ -845,64 +844,9 @@ socket.on("loaded-message-p-group",function(data2){
        });
       
 
-
+//-----------------sending new message to a public group-------------------------------------------------------------
 socket.on("send-message-p-grp",function(data1){
     var messagefrom = {"users":data1.to};
-      //   PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
-      // if(err){
-      //   console.log(err);
-      // }
-      // else{
-      //   cgroup.users.forEach(function(f){
-
-      //    User.findOne({username:f.username},function(err,fuser){
-      //       if(err){console.log(err);}
-      //       else{
-      //         var isPresent  = false ;
-      //         fuser.recentgpmessages.forEach(function(g){
-      //           if(data1.to === g.users){
-      //             isPresent = true ;
-      //           }
-      //         });
-      //         console.log(isPresent) ;
-      //         User.findById(fuser._id,function(err,usser){
-      //        if(!err){
-      //        var lastman = {"users" : usser.recentgpmessages[9]} ;
-      //         if(usser.recentgpmessages.length===10){
-      //           usser.update({$pull:{recentgpmessages:lastman}});
-      //         }
-      //       }
-      //     });
-      //         if(!isPresent){
-          
-      //         User.findByIdAndUpdate(fuser._id,{$addToSet:{recentgpmessages:messagefrom}},{new:true},
-      //           function(err,tuser){
-      //             if(err){console.log(err);}
-      //             else{
-      //               io.emit("recentgrpmsg",tuser) ;
-      //             }
-      //           });
-      //       }
-      //       else{
-      //               User.findByIdAndUpdate(fuser._id,{$pull:{recentgpmessages:messagefrom}},{new:true},
-      //           function(err,kuser){
-      //             if(err){console.log(err);}
-      //           });
-      //                 User.findByIdAndUpdate(fuser._id,{$addToSet:{recentgpmessages:messagefrom}},{new:true},
-      //           function(err,tuser){
-      //             if(err){console.log(err);}
-      //             else{
-      //               io.emit("recentgrpmsg",tuser) ;
-      //             }
-      //           });
-      //       }
-      //     }
-
-      //    });
-          
-      //   });
-      //     }
-      //   });
 
     PGroup.findOne({hashtag:data1.to},function(err,cgroup){
       if(err){
@@ -964,9 +908,10 @@ socket.on("send-message-p-grp",function(data1){
        });         
   });
 
-
+// ----------------------------sending message to a private group ---------------------------------------------------------
   socket.on("send-message-grp",function(data1){
     var messagefrom = {"users":data1.to};
+    //-----------------------storing as recent private group meessage ------------------------------------------------------
         PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
       if(err){
         console.log(err);
@@ -1059,7 +1004,7 @@ socket.on("send-message-p-grp",function(data1){
           }
        
 
-
+      //----------------------saving message to database --------------------------------------------------------------
      GroupMessage.findOne({to:data1.to},function(err,cuser){
 
         if(err){
@@ -1083,7 +1028,7 @@ socket.on("send-message-p-grp",function(data1){
        });         
   });
 
-
+-----------------------------------------------------------------------------444444444444444444444444444444444444444444444444
   socket.on("getgrpmsg",function(data1){
     GroupMessage.findOne({to:data1.grpname},function(err,cgroup){
         if(!err){
@@ -1092,7 +1037,7 @@ socket.on("send-message-p-grp",function(data1){
     });
   });
 
-
+//-----------------------------creating a public group ----------------------------------------------------------------------
 socket.on("createpgroup",function(data2){
           console.log(data2);
           var userss = {"username": data2.maker };
@@ -1147,7 +1092,7 @@ socket.on("createpgroup",function(data2){
 
 });
 
-
+//------------------------------------listen to local port -----------------------------------------------------------------------------
 server.listen(port,function(){
   console.log("server running!!!!");
 });

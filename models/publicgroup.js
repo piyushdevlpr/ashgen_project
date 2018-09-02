@@ -1,3 +1,5 @@
+// actually private group.....
+
 var mongoose = require("mongoose");
 
 var PublicGroupSchema = new mongoose.Schema({

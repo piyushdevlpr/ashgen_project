@@ -1,3 +1,5 @@
+// for public groups ................
+
 var mongoose = require("mongoose");
 
 var GMessageSchema = new mongoose.Schema({

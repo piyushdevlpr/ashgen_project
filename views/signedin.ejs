@@ -173,14 +173,7 @@
                                   					 </button>
                                                
                                             </li>
-                                         <!--    <li>
-                                                <a href="">
-                                                    <span class="fa fa-random">
-
-                                                    </span>
-                                                    <p class="profile-option-text">Search Random</p>
-                                                </a>
-                                            </li> -->
+                            
 
                                             <li>
                                             	<button id="newpublicgroup" >
@@ -198,14 +191,7 @@
                                      			 </button>
                                                 
                                             </li>
-                                           <!--  <li>
-                                                <a href="">
-                                                    <span class="fa fa-clone">
-
-                                                    </span>
-                                                    <p class="profile-option-text">Create Private Groups</p>
-                                                </a>
-                                            </li> -->
+                                   
                                             <li>
                                                  <button>
                                                     <span class="fa fa-superpowers">
@@ -236,7 +222,8 @@
 										
 									</div>
 									<% } %>
-									
+
+		<!--111111111111111 				 search friend and public group		111111111111111							 -->
                                 <div id="searchF">
                                     <form id="searchFform">
                                         <input name="searchFriend" placeholder="search friend" id="friendtosearch" type="text">
@@ -244,155 +231,154 @@
                                     </form>
                                 </div>
                                <div class=" second-section-options-wrap">
-<div id="createpublicgroup">
-	<form id="creategroup">
-		<input type="text" id="grpname" placeholder="group name">
-		<input type="text" id="grpht" placeholder="hashtag">
-		<input type="submit" value="create">
-	</form>	
-</div>
 
-<div id="createprgroup">
-	<form id="createpgroup">
-		<input type="text" id="pgrpname" placeholder="group name">
-		<input type="text" id="pgrpht" placeholder="hashtag">
-		<input type="submit" value="create">
-	</form>	
-</div>
-
-<div id="newpg">
-	
-</div>
-
-<div id="createdgroup">
-	
-</div>
-
-<div id="showpublicgroups">
-	
-</div>
-
-<div id="showpgroups">
-	
-</div>
-
-<div id = "note">
-									<h2>You have new messages from :</h2>
-									<div id="newmess">
-										
-									</div>
-									</div>
-
-
-
-<div id="publicgroupsettings">
-   <form id="addmember">
-   		<input type="text" id="addmembername">
-   		<input type="submit" value="addmember">
-   </form>
-
-<div id="othersettingsselect">
-</div>
-<div id= "othersettings">
-	
-</div>
-<div id="showing-result">
-	
-</div>
-<!-- 	<button id="removesubadmin"></button>-->
-</div>
-
-<div id = "addFriend">
-<form id="addFriendSocket">
-	<input type="text" name="addfriend" id="friendName">
-	<button>add friend</button>
-</form>
-
-
-</div>
-<div href="" id="show-friend">
-	
-</div>
-
-
-
-	<div id="show-searched-friend">
-		
+         <!-- 1111111111111111   create public group   1111111111111111111 -->
+	<div id="createpublicgroup">
+		<form id="creategroup">
+			<input type="text" id="grpname" placeholder="group name">
+			<input type="text" id="grpht" placeholder="hashtag">
+			<input type="submit" value="create">
+		</form>	
 	</div>
+
+
+			  <!-- 1111111111111111   create private group   1111111111111111111 -->
+
+	<div id="createprgroup">
+		<form id="createpgroup">
+			<input type="text" id="pgrpname" placeholder="group name">
+			<input type="text" id="pgrpht" placeholder="hashtag">
+			<input type="submit" value="create">
+		</form>	
+	</div>
+			    
+
+	<div id="newpg">		<!-- new public group created notification -->
+	</div>
+
+
+	<div id="createdgroup">
+	</div>
+
+
+	<div id="showpublicgroups">
+	</div>
+
+
+	<div id="showpgroups">
+	</div>
+
+					<!-- 1111111111111111    new messages notifications      111111111111111111111 -->
+	<div id = "note">
+		<h2>You have new messages from :</h2>
+			<div id="newmess">
+			</div>
+	</div>
+
+
+			<!-- 		11111111111  settings to show to a specific user based on his position in private group  111111111111 -->
+	<div id="publicgroupsettings">
+   		<form id="addmember">
+   			<input type="text" id="addmembername">
+   			<input type="submit" value="addmember">
+   		</form>
+		<div id="othersettingsselect">
+		</div>
+		<div id= "othersettings">
+		</div>
+		<div id="showing-result">
+		</div>
+	</div>
+
+                           <!--    11111111111111111  add friend   1111111111111111111111111111 -->
+	<div id = "addFriend">
+		<form id="addFriendSocket">
+			<input type="text" name="addfriend" id="friendName">
+			<button>add friend</button>
+		</form>
+	</div>
+
+
+	<div href="" id="show-friend">
+	</div>
+
+
+							<!-- 111111111111111  result of searched friends and groups    11111111111111111111 -->
+	<div id="show-searched-friend">
+	</div>
+	
+
 	<button id="showing-searched-friend" class="linkToChat getpreviouschats">
-		
 	</button>
     
     <div id="show-searched-group">
-		
 	</div>
+
+
 	<button id="showing-searched-group">
-		
 	</button>
+
+			<!-- 1111111111111   if a public group is searched of which current user is not a member, give him the option to join -->
 	<div id="joingroup">
-		
 	</div>
 
-
-<div id="friendlist">
-	
-</div>	
+				<!-- 111111111111   show the friend list       111111111111111111 -->
+	<div id="friendlist">
+	</div>	
+					<!-- 111111111111        recent private group messages       11111111111111 -->
 								<div class="chat-users-list" class="userslist">
                                     <ul class="chat-users-list-wrap" id="grplist2">
                                        
                                     </ul>
                                 </div>
 									
+									<!-- 111111111111        recent private messages       11111111111111 -->
                                 <div class="chat-users-list" class="userslist">
                                     <ul class="chat-users-list-wrap" id="userslist2">
                                        
                                     </ul>
                                 </div>
-                               </div>
-                                
-                            </div>
+
+
+</div>
+</div>
 
 
 
 
 <!-- section-3 -->
-
+				<!-- 1111111111    private group       111111111111111 -->
 <div id = "chatwithgroup">
-<h2>
-	WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
-</h2>
-<h2>
-	Chat with <span id="grname"></span>
-</h2>
-<!-- <form id = "getpreviouschats">
-	<input type="submit" value="get previous chats">
-</form> -->
-<div id="chatboxgrp"></div>
-<form id = "sendmessagegrp">
-	<input type="text" id="messagegrp" size="35" required="true" >
-	<input type="submit" value="send" >
-</form>	
+	<h2>
+		WELCOME "<span id="uname"><%= currentUser.username %></span>" !!!!
+	</h2>
+	<h2>
+		Chat with <span id="grname"></span>
+	</h2>
+	<div id="chatboxgrp"></div>
+		<form id = "sendmessagegrp">
+			<input type="text" id="messagegrp" size="35" required="true" >
+			<input type="submit" value="send" >
+		</form>	
 </div>
 
 
-
+<!-- 				1111111111    public group       111111111111111-->
 <div id = "chatwithpgroup">
-<h2>
-	WELCOME "<span><%= currentUser.username %></span>" !!!!
-</h2>
-<h2>
-	Chat with <span id="grname1"></span>
-</h2>
-<!-- <form id = "getpreviouschats">
-	<input type="submit" value="get previous chats">
-</form> -->
-<div id="chatboxpgrp"></div>
-<form id = "sendmessagepgrp">
-	<input type="text" id="messagepgrp" size="35" required="true" >
-	<input type="submit" value="send" >
-</form>	
-</div>
+	<h2>
+		WELCOME "<span><%= currentUser.username %></span>" !!!!
+	</h2>
+	<h2>
+		Chat with <span id="grname1"></span>
+	</h2>	
+	<div id="chatboxpgrp"></div>
+		<form id = "sendmessagepgrp">
+			<input type="text" id="messagepgrp" size="35" required="true" >
+			<input type="submit" value="send" >
+		</form>	
+	</div>
 
+						<!-- 11111111111111      private messages         111111111111111 -->
 <div class="real-message-section col-sm-5" id="chatwithfriend">                                
                                 <div class="messages-wrap">
 	                                <!-- <h2>
@@ -465,7 +451,10 @@
 		var userlogin = true ;
 		var getpreviouschats = $(".getpreviouschats");
 				// console.log($(frname));
+  // sending user information to server as soon as he logs in
 		socket.emit("userloggedin",$(uname).html());
+
+  // notification of any new message received by cureent user 
 		socket.on("newmessagefrom",function(data2){
 			
 			if(data2.username=== $(uname).html()){
@@ -480,7 +469,7 @@
 				e.preventDefault();
 				$("#note").css("display","inline");
 		});
-
+//  making scripts visible and hiding others in section 2 on clicking any option from section 1
 		$("#yourpgroups").click(function(e){
 			$("#createprgroup").css("display","none");
 
@@ -569,18 +558,83 @@
 			$("#createdgroup").css("display","flex");
 		});	
 
+				$(addFriendButton).click(function(e){
+			$("#createprgroup").css("display","none");
+			$("#newpg").css("display","none");
+			$("#showpgroups").css("display","none");
+			$("#note").css("display","none");
+			$("#grplist2").css("display","none");
+			$("#userslist2").css("display","none");
+			$("#showpublicgroups").css("display","none");
+			$("#createpublicgroup").css("display","none");
+			$(defaultext).css("display", "none");
+			$(addFriend).css("display", "flex");
+			//$(searchF).css("display", "none");
+			$("#show-searched-friend").css("display", "none");
+			$("#showing-searched-friend").css("display", "none");
+			$(friendlist).css("display", "none");
+				$("#showing-result").css("display","none");
+			$("#createdgroup").css("display","none");
+			$("#show-friend").css("display", "flex");
+			$("#publicgroupsettings").css("display","none");
+		});
+		$(searchFriendButton).click(function(e){
+			$("#createprgroup").css("display","none");
+			$("#note").css("display","none");
+			$("#showpgroups").css("display","none");
+			$("#newpg").css("display","none");
+			$("#grplist2").css("display","none");
+			$("#userslist2").css("display","none");
+			$("#showpublicgroups").css("display","none");
+			$("#createpublicgroup").css("display","none");
+			$(defaultext).css("display", "none");
+			$(addFriend).css("display", "none");
+			//$(searchF).css("display", "inline");
+			$("#show-friend").css("display", "none");
+			$("#show-searched-friend").css("display", "flex");
+			$("#showing-searched-friend").css("display", "flex");
+			$(friendlist).css("display", "none");
+			$("#createdgroup").css("display","none");
+				$("#showing-result").css("display","none");
+			$("#publicgroupsettings").css("display","none");
+		});
+
+				$(friendlistbutton).click(function(e){
+			$("#createprgroup").css("display","none");
+			$("#newpg").css("display","none");
+			$("#showpgroups").css("display","none");
+			$("#note").css("display","none");
+			$("#grplist2").css("display","none");
+			$("#userslist2").css("display","inline");
+			$("#showpublicgroups").css("display","none");
+			$("#createpublicgroup").css("display","none");
+			$(defaultext).css("display", "none");
+			$(addFriend).css("display", "none");
+			//$(searchF).css("display", "none");
+			$(friendlist).css("display", "flex");
+			$("#show-searched-friend").css("display", "none");
+			$("#showing-searched-friend").css("display", "none");
+			$("#show-friend").css("display", "none");
+			$("#createdgroup").css("display","none");
+			$("#publicgroupsettings").css("display","none");
+			$(friendlist).empty();
+				$("#showing-result").css("display","none");
+			socket.emit("show-friend-list",{id:$("#currentUserID").html() ,from:$(uname).html()});
+		});
+
+// sending data to server on clicking any button on second section
 		$("#creategroup").submit(function(e){
 			e.preventDefault();
 			$("#createpublicgroup").css("display","none");
 			
-
+		// creating private group
 			socket.emit("createpubgroup",{id:$("#currentUserID").html() ,groupname : $("#grpname").val() , hashtagname:$("#grpht").val(), maker:$(uname).html()});
 		});
 		$("#createpgroup").submit(function(e){
 			e.preventDefault();
 			$("#newpg").css("display","none");
 			
-
+		// creating public group
 			socket.emit("createpgroup",{id:$("#currentUserID").html() ,groupname : $("#pgrpname").val() , hashtagname:$("#pgrpht").val(), maker:$(uname).html()});
 		});
 		socket.on("pgroupcreated",function(data1){
@@ -599,6 +653,8 @@
 			$("#createdgroup").append("<span>"+ data1.state + "</span>");
 		}
 		});
+
+
 		$("#yourpgroups").click(function(e){
 			e.preventDefault();
 			$("#showpgroups").empty();
@@ -615,6 +671,7 @@
 			console.log("ye");
 			socket.emit("clickedpublicsearch",{name:$(uname).html(),grpname:$("#showing-searched-group").html() });
 		});
+	// clicking of joingroup option
 		socket.on("joingroup",function(data1){
 			console.log(data1);
 			if(data1.name===$(uname).html()){
@@ -640,6 +697,8 @@
 			$("#joingroup").html(data1.statement);
 		}
 		});
+
+		// showing the groups 
 		socket.on("herearethepgroups",function(data1){
 			if(data1.username=== $(uname).html()){
 
@@ -653,7 +712,7 @@
 				$("#showpgroups").append("<button id= " + "'grouplink" + i + "'" + "class='getpreviouschatsofgrp'>" +  data1.pgrp[i].hashname  + "</button>");
 		
 			}
-		
+				// clicking on a specific group
 						$("#showpgroups button").click(function(e){
 								
 								$("#grname1").html($(this).html()) ;
@@ -665,6 +724,7 @@
 							//$("#publicgroupsettings").css("display","flex");
 
 							$("#showpgroups").css("display","none");
+					// loading previous messages for a specific group
 							socket.emit("loaded-message-p-group",{to: grp,from:$(uname).html()});
 							socket.on("previous-group-p-message",function(data1){
 								console.log(data1);
@@ -676,23 +736,15 @@
 	    						}
 	    					}
 						});
-							
-							// socket.emit("member-names",grp);
-							// socket.on("names-here",function(data1){
-							
-								
-	
-							
 				});
 			}		
 		});
-
+// similar action for the other type of group
 		socket.on("herearethegroups",function(data1){
 			if(data1.username=== $(uname).html()){
 
 			$("#grplist2").empty();
 			for(var i = data1.recentgpmessages.length-1; i>=0 ; i--){
-			//data1.recentmessages.forEach(function(f){
 			socket.emit("getgrpmsg",{usname:data1.username ,grpname:data1.recentgpmessages[i].users} );
 			}
 			
@@ -730,6 +782,7 @@
 									socket.emit("member-names",grp);
 
 								});
+			// showing options to user based on his status in group 
 							socket.emit("member-names",grp);
 							socket.on("names-here",function(data1){
 							$("#othersettings").empty();
@@ -804,7 +857,7 @@
 				});
 			}		
 		});
-
+// executing the options of a private group
 		socket.on("subadmin",function(data1){
 			if(data1.user === $(uname).html()){
 				$("#showing-result").empty();
@@ -832,40 +885,14 @@
 				console.log(data1);
 }
 		});
-		$(friendlistbutton).click(function(e){
-			$("#createprgroup").css("display","none");
-			$("#newpg").css("display","none");
-			$("#showpgroups").css("display","none");
-			$("#note").css("display","none");
-			$("#grplist2").css("display","none");
-			$("#userslist2").css("display","inline");
-			$("#showpublicgroups").css("display","none");
-			$("#createpublicgroup").css("display","none");
-			$(defaultext).css("display", "none");
-			$(addFriend).css("display", "none");
-			//$(searchF).css("display", "none");
-			$(friendlist).css("display", "flex");
-			$("#show-searched-friend").css("display", "none");
-			$("#showing-searched-friend").css("display", "none");
-			$("#show-friend").css("display", "none");
-			$("#createdgroup").css("display","none");
-			$("#publicgroupsettings").css("display","none");
-			$(friendlist).empty();
-				$("#showing-result").css("display","none");
-			socket.emit("show-friend-list",{id:$("#currentUserID").html() ,from:$(uname).html()});
-		});
+ // friend list of the user
 		socket.on("friend-list-emitted",function(data1){
-			//data1.forEach(function(f){
-				
 			console.log(data1.recentmessages.length );
 			if(data1.username === $(uname).html()){
 				$("#userslist2").empty();
 			for(var i = data1.recentmessages.length-1; i>=0 ; i--){
-			//data1.recentmessages.forEach(function(f){
-				
-
-			socket.emit("getimg",{frname :data1.recentmessages[i].users , usname : data1.username});
-			}
+				socket.emit("getimg",{frname :data1.recentmessages[i].users , usname : data1.username});
+				}
 			}
 				console.log(data1.friends.length);
 				if(data1.username=== $(uname).html()){
@@ -874,11 +901,13 @@
 		
 			}
 		
-	
+	// clicking on a friends name to chat
 					
 					$("#friendlist button").click(function(e){
 						$("#frname").html($(this).html()) ;
+				// loading previous messages of private chats 
 						socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
+				//getting profile image of friend to display it on screen
 						socket.on("friendimage",function(data3){
 							$("#frimg").attr('src', '/' + data3.profileImage);
 						});
@@ -894,56 +923,17 @@
 			
 			 
 		});
-		$(addFriendButton).click(function(e){
-			$("#createprgroup").css("display","none");
-			$("#newpg").css("display","none");
-			$("#showpgroups").css("display","none");
-			$("#note").css("display","none");
-			$("#grplist2").css("display","none");
-			$("#userslist2").css("display","none");
-			$("#showpublicgroups").css("display","none");
-			$("#createpublicgroup").css("display","none");
-			$(defaultext).css("display", "none");
-			$(addFriend).css("display", "flex");
-			//$(searchF).css("display", "none");
-			$("#show-searched-friend").css("display", "none");
-			$("#showing-searched-friend").css("display", "none");
-			$(friendlist).css("display", "none");
-				$("#showing-result").css("display","none");
-			$("#createdgroup").css("display","none");
-			$("#show-friend").css("display", "flex");
-			$("#publicgroupsettings").css("display","none");
-		});
-		$(searchFriendButton).click(function(e){
-			$("#createprgroup").css("display","none");
-			$("#note").css("display","none");
-			$("#showpgroups").css("display","none");
-			$("#newpg").css("display","none");
-			$("#grplist2").css("display","none");
-			$("#userslist2").css("display","none");
-			$("#showpublicgroups").css("display","none");
-			$("#createpublicgroup").css("display","none");
-			$(defaultext).css("display", "none");
-			$(addFriend).css("display", "none");
-			//$(searchF).css("display", "inline");
-			$("#show-friend").css("display", "none");
-			$("#show-searched-friend").css("display", "flex");
-			$("#showing-searched-friend").css("display", "flex");
-			$(friendlist).css("display", "none");
-			$("#createdgroup").css("display","none");
-				$("#showing-result").css("display","none");
-			$("#publicgroupsettings").css("display","none");
-		});
+// loading previous messages of private chats 
 		$(".linkToChat").click(function(e){
 			$("#frname").html($(".linkToChat").html()) ;
-			//e.preventDefault();
+		
 			socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
 						socket.on("friendimage",function(data3){
 							$("#frimg").attr('src', '/' + data3.profileImage);
 						});
 			$("#chatwithfriend").css("display","inline");
 		});
-		
+// adding a new friend to database		
 		$("#addFriendSocket").submit(function(e){
 			e.preventDefault();
 			socket.emit("add-friend-name",{id:$("#currentUserID").html() ,from:$(uname).html(),friendname :$("#friendName").val()});
@@ -958,8 +948,7 @@
 			e.preventDefault();
 			socket.emit("search-friend-name",{id:$("#currentUserID").html() ,from:$(uname).html(),friendname :$("#friendtosearch").val()});
 		});
-
-		
+   // searching a friend
 		socket.on("friend-searched",function(data1){
 	    	console.log(data1);
 	    	if(data1.user === $(uname).html()){
@@ -975,23 +964,17 @@
 	    		$("#show-searched-friend").html("<span>Enter a valid user or group name</span><br/>");
 	    	}
 	    }
-	    		//$("#showing-searched-friend").empty();
-	    		
-	    		//$("#show-searched-friend").attr("href", /chat/data1.name );
 	    
 	    });
+	 // searching a public group on the same search tab
 	    		socket.on("group-searched",function(data1){
 	    	console.log(data1);
 	    	if(data1.user===$(uname).html()){
 	    	$("#show-searched-friend").empty();
 	    		$("#showing-searched-group").empty();
 	    		$("#show-searched-friend").empty();
-	    		//$("#show-searched-friend").empty();
-	    		// $("#show-searched-friend").html("<span>Enter a valid user or group name</span><br/>");
-	    	
 	    		$("#showing-searched-group").html( data1.name );
-	    		//$("#show-searched-friend").attr("href", /chat/data1.name );
-	    }
+	    		}
 	    });
 	   
 
@@ -1038,21 +1021,6 @@
 	    });
        
 
-  //      		$(getpreviouschats).click(function(e){
-		// 	e.preventDefault();
-			
-		// 	socket.emit("loaded-message",{to:$(frname).html(),from:$(uname).html()});
-		// });
-		// socket.on("previous-message",function(data1){
-	   		
-	 //    	if(data1.from === $(uname).html() && data1.to === $(frname).html()){
-	 //    		   // $(getpreviouschats).css("display", "none");
-	 //    		   $("#chatbox").empty();
-	 //   	     		for(var i =0; i<data1.messaged.length ; i++){
-	 //    			$(chat).append("<span>" + data1.messaged[i].data + "</span><br/>");
-	 //    		}
-	 //    	}
-	 //    });
 		$("#sendmessagegrp").submit(function(e){
 			e.preventDefault();
 			socket.emit("send-message-grp",{to:$("#grname").html(),from:$(uname).html(),msg :$("#messagegrp").val()});
@@ -1093,14 +1061,14 @@
 			}
 			}
 });
-
+//  getting friend image for recent messages tab
 			socket.on("frimg2",function(data3){
 			  if(data3.usname1 === $(uname).html()){
 							$("#userslist2").append( "<li><div class='row current-chat-usr-wrap align-items-center'><div class='chat-user-img col-sm-3'><img src='/"+ data3.frname.profileImage+"' alt='userimg'/></div><div class='last-chat-detail col-sm-7 pad-left-0'><p class='user-chatting-with-wrap'>" + data3.frname.username + "</p><p class='last-msg'>"+data3.lmsg.messaged[data3.lmsg.messaged.length - 1].data +"</p></div></div></li>");
 							
 							}
 						});
-
+//  latest group message for recent group chats 
 		socket.on("grpmsg",function(data3){
 			console.log(data3);
 			  if(data3.usname1 === $(uname).html()){
@@ -1108,7 +1076,7 @@
 							
 							}
 						});
-
+// sending new messages for both types of groups respectively
 	    socket.on("new-message-grp",function(data1){
 	    	console.log(data1);
 	    	data1.getusers.users.forEach(function(f){

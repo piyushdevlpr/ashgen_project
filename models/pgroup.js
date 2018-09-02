@@ -1,3 +1,5 @@
+// public group with no subadmins , only one admin, who has created the group
+
 var mongoose = require("mongoose");
 
 var PGroupSchema = new mongoose.Schema({
