@@ -26,7 +26,8 @@ var express     = require("express"),
 
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
-  mongoose.connect("mongodb://127.0.0.1:27017/login-ashgen",{useMongoClient:true})
+var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
+  mongoose.connect(DBURL,{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
 
@@ -1115,7 +1116,7 @@ socket.on("createpgroup",function(data2){
 });
 
 //------------------------------------listen to local port -----------------------------------------------------------------------------
-server.listen(port,function(){
+server.listen(2000,function(){
   console.log("server running!!!!");
 });
 
