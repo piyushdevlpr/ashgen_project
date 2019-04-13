@@ -1,5 +1,6 @@
 var express     = require("express"),
     app         = express(),
+    cors        = require("cors"),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
     passport    = require("passport"),
@@ -25,40 +26,48 @@ var express     = require("express"),
 
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
-  mongoose.connect(process.env.DATABASEURL,{useMongoClient:true})
+  mongoose.connect("mongodb://127.0.0.1:27017/login-ashgen",{useMongoClient:true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
 
 // ----------To support profile photo uploadation ,multer configurations-------------
-    var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function(req, file, cb) {
+//     var storage = multer.diskStorage({
+//   destination: function(req, file, cb) {
+//     cb(null, 'uploads/');
+//   },
+//   filename: function(req, file, cb) {
     
-    cb(null, file.originalname);
-  }
-});
-function fileFilter(req, file, cb){
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
-var upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 5
-  },
-  fileFilter: fileFilter
-});
+//     cb(null, file.originalname);
+//   }
+// });
+// function fileFilter(req, file, cb){
+//   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+//     cb(null, true);
+//   } else {
+//     cb(null, false);
+//   }
+// };
+// var upload = multer({
+//   storage: storage,
+//   limits: {
+//     fileSize: 1024 * 1024 * 5
+//   },
+//   fileFilter: fileFilter
+// });
 //-----------------------------------------------------------------------------------
-app.use(express.static(__dirname + "/uploads"));
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(cors()) ;
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+//app.use(express.static(__dirname + "/uploads"));
 
- app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.use(express.static(__dirname + "/public"));
 
 
 // PASSPORT CONFIGURATION for authentication(registration) of user--------------------
@@ -75,7 +84,6 @@ passport.deserializeUser(User.deserializeUser());
 var port = process.env.PORT || 3000;
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
-   
    next();
 });
 app.use(function(req, res, next){
@@ -93,28 +101,42 @@ app.get("/login",function(req,res){
   res.render("login.ejs");
 });
 //----------Authnticating the login credentials enterd by user-------------------------
+app.get("/loggedin",function(req,res){
+  console.log(req.body + "true") ;
+  res.json("true") ;
+});
+app.get("/wrong",function(req,res){
+  console.log(req.body + "false") ;
+  res.json("false") ;
+});
 app.post("/login", passport.authenticate("local", 
     {
-        successRedirect: "/signedin",
-        failureRedirect: "/register"
+        successRedirect: "/loggedin",
+        failureRedirect: "/wrong"
     }), function(req, res){
-});
+    });
 //---------REGISTER ROUTE--------------------------------------------------------------
 app.get("/register",function(req,res){
   res.render("register.ejs");
 });
 //---------------Authenticating the register credntials -------------------------------
-app.post("/register",upload.single('profileImage'), function(req, res,next){
-    
-    var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
-    
+//app.post("/register",upload.single('profileImage'), function(req, res,next){
+app.post("/register",function(req, res,next){
+    //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
+    console.log("hello") ;
+    console.log(req.body) ;
+    var newUser = new User({username: req.body.username,email:req.body.emailid});
     User.register(newUser, req.body.password, function(err, user){
         if(err){
             console.log(err);
-            return res.render("register.ejs");
+            console.log("false");
+            return res.json("false") ;
+            //return res.render("register.ejs");
         }
         passport.authenticate("local")(req, res, function(){
-           res.redirect("/signedin"); 
+          console.log("true");  
+          res.json("true") ;
+          //   res.redirect("/signedin"); 
         });
     });
 });
@@ -545,7 +567,7 @@ var output = {statement:"" , name:data2.name};
   });
 });
 
-/-------------------------------------------------------------------------------------21444444444444444444444444443333
+//-------------------------------------------------------------------------------------21444444444444444444444444443333
  socket.on("getimg",function(data2){
       User.findOne({username:data2.frname},function(err,fuser){
         if(!err){
@@ -1028,7 +1050,7 @@ socket.on("send-message-p-grp",function(data1){
        });         
   });
 
------------------------------------------------------------------------------444444444444444444444444444444444444444444444444
+//-----------------------------------------------------------------------------444444444444444444444444444444444444444444444444
   socket.on("getgrpmsg",function(data1){
     GroupMessage.findOne({to:data1.grpname},function(err,cgroup){
         if(!err){

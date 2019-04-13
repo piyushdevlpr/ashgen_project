@@ -11,7 +11,6 @@ var validateEmail = function(email) {
 var UserSchema = new mongoose.Schema({
     username: String,
     password: String,
-    profileImage: String,
     // this is actually private group
     publicgrp : [
       {
