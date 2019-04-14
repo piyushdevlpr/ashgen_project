@@ -3,6 +3,10 @@
 var mongoose = require("mongoose");
 
 var PublicGroupSchema = new mongoose.Schema({
+  _id:{
+    type:mongoose.Schema.Types.ObjectId,
+    auto: true,
+  },
     groupname: String,
     hashtag: String,
     admin:String,

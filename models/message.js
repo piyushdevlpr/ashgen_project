@@ -3,6 +3,10 @@
 var mongoose = require("mongoose");
 
 var MessageSchema = new mongoose.Schema({
+  _id:{
+    type:mongoose.Schema.Types.ObjectId,
+    auto: true,
+  },
     from: String,
     to: String,
     messaged: [

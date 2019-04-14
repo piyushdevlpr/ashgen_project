@@ -9,6 +9,10 @@ var validateEmail = function(email) {
     return re.test(email)
 };
 var UserSchema = new mongoose.Schema({
+  _id:{
+    type:mongoose.Schema.Types.ObjectId,
+    auto: true,
+  },
     username: String,
     password: String,
     // this is actually private group

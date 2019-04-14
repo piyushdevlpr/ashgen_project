@@ -1116,7 +1116,7 @@ socket.on("createpgroup",function(data2){
 });
 
 //------------------------------------listen to local port -----------------------------------------------------------------------------
-server.listen(2000,function(){
+server.listen(port,function(){
   console.log("server running!!!!");
 });
 
