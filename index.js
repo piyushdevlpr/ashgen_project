@@ -82,7 +82,7 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 2000;
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
    next();

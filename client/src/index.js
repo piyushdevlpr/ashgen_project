@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 import { Route, BrowserRouter as Router, Switch} from 'react-router-dom'
 import './index.css';
 import App from './App';
-import Chat from './Chat';
+import Dashboard from './Dashboard';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render((
     <Router>
         <Switch>
        <Route exact path = "/" component = {App}/>
-       <Route path = "/home/" component = {Chat} />
+       <Route path = "/home/" component = {Dashboard} />
        </Switch>
  </Router>
 ), document.getElementById('root'));
