@@ -27,7 +27,7 @@ var express     = require("express"),
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
 var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
-  mongoose.connect(DBURL,{useNewUrlParser: true})
+  mongoose.connect("mongodb://localhost/login-ashgen",{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
 
@@ -1060,6 +1060,10 @@ socket.on("send-message-p-grp",function(data1){
     });
   });
 
+  io.emit("react",{data:"well done boy"}) ;
+  socket.on("incoming",function(data){
+    console.log(data) ;
+  })
 //-----------------------------creating a public group ----------------------------------------------------------------------
 socket.on("createpgroup",function(data2){
           console.log(data2);
