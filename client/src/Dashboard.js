@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import socketIOClient from "socket.io-client";
 
-class Chat extends Component {
+class Dashboard extends Component {
     ismounted = false ;
     constructor(props){
         super(props) ;
@@ -41,4 +41,4 @@ class Chat extends Component {
         }        
     }
 }
-export default Chat ;
+export default Dashboard ;
