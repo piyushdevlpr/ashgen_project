@@ -102,7 +102,7 @@ loginorsignup(){
             <button className={'col-sm-6 btn btn-default addallborder login'+this.state.login } onClick={()=>this.logintrue()}>LOGIN</button><button className={'col-sm-6 btn btn-default addallborder login'+!this.state.login} onClick={()=>this.loginfalse()}>SIGNUP</button>
             {this.loginorsignup()}
           </div>
-          {console.log(this.state)} ;
+          {console.log(this.state)} 
       </div>
     );
   }
