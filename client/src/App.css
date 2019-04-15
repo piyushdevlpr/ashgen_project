@@ -1,13 +1,41 @@
 .App {
   text-align: center;
 }
+.credfalse {
+  color: red ;
+}
+.topHeader {
+  background-color: orange ;
+  align-items:  center;
+  padding: 1%;
+  color:white;
+}
+.aligntext {
+  text-align: start;
+}
+.data {
+  text-align: left;
+  background-color:#F5F5F5;
+}
+.addborder {
+  border-bottom: 1px solid #DCDCDC;
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+}
+.logintrue {
+  background-color: #DCDCDC; 
 }
 
+.addallborder{
+  border: 1px solid #DCDCDC;
+}
+.link {
+  text-decoration: none;
+  color: black;
+  cursor: auto;
+}
+.size {
+  font-size: 11px ;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

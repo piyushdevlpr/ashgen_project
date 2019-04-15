@@ -10,6 +10,7 @@ class App extends Component {
         password: '',
         emailid: '',
         login: false ,
+        team:false,
         loggedin : false ,
         signedup : false
     }
@@ -98,7 +99,7 @@ getlogin=()=>{
   <div>
       <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
       <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
-      <button>LOGIN</button>
+      <button className='btn btn-default addallborder'>LOGIN</button>
       {/* <span> OR </span> */}
       {/* <button className='btn btn-default addallborder' onClick={()=>this.getsignup()}>SIGN UP</button> */}
       {this.gotohome()}
@@ -114,21 +115,32 @@ getsignup=()=>{
     <form onSubmit={this.click} method='POST' action='http://localhost:2000/register'>	
 									
 													
-                  <input id="login-firstname" type="text" className="background form-control" name='username' value={this.state.username} placeholder="USER NAME (MAX. LENGTH 6)" minLength="6" maxLength="6" required={true} onChange={this.handleChange}/>
+                  <input id="login-firstname" type="text" className="background form-control" name='username' value={this.state.username} placeholder="USER NAME (MAX. LENGTH 6)" minLength="6" maxLength="6" required={true} onChange={this.handleChange}/><br/>
                             
                               
-                  <input id="login-email" type="email" className="background form-control" name="emailid" value={this.state.emailid} placeholder="EMAIL ID" required={true} onChange={this.handleChange} /> 
+                  <input id="login-email" type="email" className="background form-control" name="emailid" value={this.state.emailid} placeholder="EMAIL ID" required={true} onChange={this.handleChange} /><br/> 
                             
-                  <input id="Password" type="password" className="background form-control" name='password' value={this.state.password} placeholder="PASSWORD" minLength="6" required={true} onChange={this.handleChange} />
+                  <input id="Password" type="password" className="background form-control" name='password' value={this.state.password} placeholder="PASSWORD" minLength="6" required={true} onChange={this.handleChange} /><br/>
                   
                   {/* <input id="ConfirmPassword" type="password" class="background form-control" name="confpassword" placeholder="CONFIRM-PASSWORD" minlength="6" required="true" onChange={this.handleChange} /> */}
                     
-                  <button>SIGN UP</button>
+                  <button className='btn btn-default addallborder'>SIGN UP</button>
                         
               </form>
               {this.gotohomeforfirst() }
   </div>
   );
+}
+teamtrue=()=>{
+  if(this._ismounted){
+  this.setState({team : true}) ;
+  }//event.preventDefault();
+  //event.target.classList.add('lohgintrue') ;
+}
+teamfalse=()=>{
+  if(this._ismounted){
+  this.setState({team : false});
+}
 }
 logintrue=()=>{
   if(this._ismounted){
@@ -141,6 +153,13 @@ loginfalse=()=>{
   this.setState({login : false});
 }
 }
+teamorind=()=>{
+  if(this.state.team === true){
+      return this.getteam() ;
+  }else{
+      return this.getind();
+  }
+}
 loginorsignup=()=>{
   if(this.state.login === true){
       return this.getlogin() ;
@@ -148,15 +167,92 @@ loginorsignup=()=>{
       return this.getsignup();
   }
 }
-  render() {
-    return (
-      <div className="App">
-           <div className ='container mt-3'>
-            <button className={'col-sm-6 btn btn-default addallborder login'+this.state.login } onClick={()=>this.logintrue()}>LOGIN</button><button className={'col-sm-6 btn btn-default addallborder login'+!this.state.login} onClick={()=>this.loginfalse()}>SIGNUP</button>
-            {this.loginorsignup()}
+click4=(event)=>{
+  event.preventDefault() ;
+  if(this._ismounted === true){
+  console.log(this.state) ;
+  fetch("http://localhost:2000/registerteam", {
+    method: "POST",
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(this.state)
+  }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({signedup : data})}})
+  console.log(this.state) ;
+}
+}
+click3=(event)=>{
+  event.preventDefault() ;
+  if(this._ismounted === true){
+  console.log(this.state) ;
+  fetch("http://localhost:2000/loginteam", {
+    method: "POST",
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(this.state)
+  }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
+  console.log(this.state) ;
+  }
+}
+getloginteam=()=>{
+  return(
+  <div>
+  <form onSubmit={this.click3} method='POST' action='http://localhost:2000/loginteam'>
+  <div> 
+      <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
+      <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
+      <button className='btn btn-default addallborder'>LOGIN</button>
+      {/* <span> OR </span> */}
+      {/* <button className='btn btn-default addallborder' onClick={()=>this.getsignup()}>SIGN UP</button> */}
+      {this.gotohome()}
+  </div>
+  </form>
+  </div>
+  )
+};
+getsignupteam=()=>{
+  return(
+  <div>    
+    <form onSubmit={this.click4} method='POST' action='http://localhost:2000/registerteam'>	
+                  <input id="login-firstname" type="text" className="background form-control" name='username' value={this.state.username} placeholder="TEAMNAME (MAX. LENGTH 6)" minLength="6" maxLength="6" required={true} onChange={this.handleChange}/><br/>
+                  <input id="login-email" type="email" className="background form-control" name="emailid" value={this.state.emailid} placeholder="EMAIL ID" required={true} onChange={this.handleChange} /><br/> 
+                  <input id="Password" type="password" className="background form-control" name='password' value={this.state.password} placeholder="PASSWORD" minLength="6" required={true} onChange={this.handleChange} /><br/>
+                  {/* <input id="ConfirmPassword" type="password" class="background form-control" name="confpassword" placeholder="CONFIRM-PASSWORD" minlength="6" required="true" onChange={this.handleChange} /> */}
+                  <button className='btn btn-default addallborder'>SIGN UP</button>                       
+              </form>
+              {this.gotohomeforfirst() }
+  </div>
+  );
+}
+loginorsignupteam=()=>{
+  if(this.state.login === true){
+      return this.getloginteam() ;
+  }else{
+      return this.getsignupteam();
+  }
+}
+getteam=()=>{
+  return( 
+    <div className ='container mt-3'>
+       <button className={'col-sm-6 btn btn-default addallborder login'+this.state.login } onClick={()=>this.logintrue()}>LOGIN</button><button className={'col-sm-6 btn btn-default addallborder login'+!this.state.login} onClick={()=>this.loginfalse()}>SIGNUP</button><br/>
+       {this.loginorsignupteam()}
+     </div>
+    );
+}
+getind=()=>{
+         return( 
+         <div className ='container mt-3'>
+<button className={'col-sm-6 btn btn-default addallborder login'+this.state.login } onClick={()=>this.logintrue()}>LOGIN</button><button className={'col-sm-6 btn btn-default addallborder login'+!this.state.login} onClick={()=>this.loginfalse()}>SIGNUP</button><br/>            
+{this.loginorsignup()}
           </div>
+         );
+}
+render() {
+    return (
+      <div className="App container mt-3">
+      <div>
+        <button className={'col-sm-6 btn btn-default addallborder login'+!this.state.team } onClick={()=>this.teamfalse()}>INDIVIDUAL</button><button className={'col-sm-6 btn btn-default addallborder login'+this.state.team} onClick={()=>this.teamtrue()}>TEAM</button>
+        {this.teamorind()}           
           {console.log(this.state)} 
       </div>
+       </div>
     );
   }
 }

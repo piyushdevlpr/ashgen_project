@@ -6,6 +6,7 @@ var express     = require("express"),
     passport    = require("passport"),
     LocalStrategy = require("passport-local"),
     User        = require("./models/user"),
+    Team        = require("./models/team"),
     Message        = require("./models/message"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage        = require("./models/groupmessage"),
@@ -79,9 +80,12 @@ app.use(require("express-session")({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use('userlocal',new LocalStrategy(User.authenticate()));
+passport.use('teamlocal',new LocalStrategy(Team.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(Team.serializeUser());
+passport.deserializeUser(Team.deserializeUser());
 var port = process.env.PORT || 2000;
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
@@ -110,7 +114,7 @@ app.get("/wrong",function(req,res){
   console.log(req.body + "false") ;
   res.json("false") ;
 });
-app.post("/login", passport.authenticate("local", 
+app.post("/login", passport.authenticate("userlocal", 
     {
         successRedirect: "/loggedin",
         failureRedirect: "/wrong"
@@ -134,12 +138,40 @@ app.post("/register",function(req, res,next){
             return res.json("false") ;
             //return res.render("register.ejs");
         }
-        passport.authenticate("local")(req, res, function(){
+        passport.authenticate("userlocal")(req, res, function(){
           console.log("true");  
           res.json("true") ;
           //   res.redirect("/signedin"); 
         });
     });
+});
+app.post("/loginteam", passport.authenticate("teamlocal", 
+    {
+        successRedirect: "/loggedin",
+        failureRedirect: "/wrong"
+    }), function(req, res){
+});
+app.get("/registerteam",function(req,res){
+  res.render("register.ejs");
+});
+app.post("/registerteam",function(req, res,next){
+  //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
+  console.log("hello") ;
+  console.log(req.body) ;
+  var newUser = new Team({username: req.body.username,email:req.body.emailid});
+  Team.register(newUser, req.body.password, function(err, user){
+      if(err){
+          console.log(err);
+          console.log("false");
+          return res.json("false") ;
+          //return res.render("register.ejs");
+      }
+      passport.authenticate("teamlocal")(req, res, function(){
+        console.log("true");  
+        res.json("true") ;
+        //   res.redirect("/signedin"); 
+      });
+  });
 });
 //--------------Route to show the page after login -------------------------------------
 app.get("/signedin",function(req,res){
