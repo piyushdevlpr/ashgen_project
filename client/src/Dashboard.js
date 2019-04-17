@@ -25,14 +25,14 @@ class Dashboard extends Component {
     componentWillUnmount(){
         this.ismounted = false ; 
     }
-    filehandleChange(event)
+    filehandleChange(event)     // file handler
     {
         console.log(event.target.name);
         event.target.name='photo'?this.setState({isphoto:true}):this.setState({isphoto:false});
         this.setState({
             [event.target.name]: event.target.files[0],
         })
-        console.log(this.state.photo);
+        console.log(this.state.photo);          // only printing null after setting state
 
     }
     handleChange=(event)=>{
@@ -53,9 +53,9 @@ class Dashboard extends Component {
                     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     credentials: 'include'
                 }).then(res => res.json()).then(data => {
-                    if(this.state.isphoto)
+                    if(this.state.isphoto)   // ignore this
                     {
-                        console.log(this.state.photo);
+                        console.log(this.state.photo);     
                     }
 
                 })
