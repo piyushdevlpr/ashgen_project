@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import { Route, BrowserRouter as Router, Switch} from 'react-router-dom'
 import './index.css';
 import App from './App';
+import Profileind from './Profileind';
+import Profileteam from './Profileteam';
 import Dashboard from './Dashboard';
 import * as serviceWorker from './serviceWorker';
 
@@ -11,6 +13,8 @@ ReactDOM.render((
     <Router>
         <Switch>
        <Route exact path = "/" component = {App}/>
+       <Route exact path = "/team-profile/" component = {Profileteam}/>
+       <Route exact path = "/your-profile/" component = {Profileind}/>
        <Route path = "/home/" component = {Dashboard} />
        </Switch>
  </Router>
