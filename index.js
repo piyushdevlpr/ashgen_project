@@ -7,6 +7,8 @@ var express     = require("express"),
     LocalStrategy = require("passport-local"),
     User        = require("./models/user"),
     Team        = require("./models/team"),
+    Yourprofile        = require("./models/yourprofile"),
+    Teamprofile        = require("./models/teamprofile"),
     Message        = require("./models/message"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage        = require("./models/groupmessage"),
@@ -180,6 +182,55 @@ app.get("/signedin",function(req,res){
   res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,searchedFriend:searchedFriend});
 });
 
+app.post("/your-profile",function(req, res){
+  //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
+  console.log("hello") ;
+  console.log(req.body) ;
+  var newUser = new Yourprofile({first_name: req.body.first_name,
+  Last_Name:req.body.Last_Name,
+  Specialisation:req.body.Specialisation,
+  College:req.body.College,
+  Teams:req.body.Teams,
+  Short_Bio:req.body.Short_Bio,
+  Message_Request_Option:req.body.Message_Request_Option,
+  Projects_and_competitions:req.body.Projects_and_competitions,
+  Achievements_in_competitions:req.body.Achievements_in_competitions,
+  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
+  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs
+  });
+  newUser.save(function(err,cuser){
+    if(err){
+      console.log(err);
+    }else{
+      console.log(cuser) ;
+    }
+  }) ;
+});
+
+app.post("/team-profile",function(req, res){
+  //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
+  console.log("hello") ;
+  console.log(req.body) ;
+  var newUser = new Teamprofile({first_name: req.body.first_name,
+  Last_Name:req.body.Last_Name,
+  Specialisation:req.body.Specialisation,
+  College:req.body.College,
+  Teams:req.body.Teams,
+  Short_Bio:req.body.Short_Bio,
+  Message_Request_Option:req.body.Message_Request_Option,
+  Projects_and_competitions:req.body.Projects_and_competitions,
+  Achievements_in_competitions:req.body.Achievements_in_competitions,
+  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
+  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs
+  });
+  newUser.save(function(err,cuser){
+    if(err){
+      console.log(err);
+    }else{
+      console.log(cuser) ;
+    }
+  }) ;
+});
 //---------------Route to logout---------------------------------------------------------
 app.get("/logout", function(req, res){
    req.logout();

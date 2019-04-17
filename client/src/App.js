@@ -78,11 +78,11 @@ gotohome=()=>{
   });
   }
 }
-gotohomeforfirst=()=>{
+gotohomeprofile=()=>{
   //event.preventDefault();
   if(this.state.signedup === "true" && this._ismounted === true){
     this.props.history.push({
-      pathname: '/home/',
+      pathname: '/your-profile/',
       state: {
         loggedin: false,
         signedup: "true",
@@ -127,7 +127,7 @@ getsignup=()=>{
                   <button className='btn btn-default addallborder'>SIGN UP</button>
                         
               </form>
-              {this.gotohomeforfirst() }
+              {this.gotohomeprofile() }
   </div>
   );
 }
@@ -207,6 +207,19 @@ getloginteam=()=>{
   </div>
   )
 };
+gotohometeamprofile=()=>{
+  if(this.state.signedup === "true" && this._ismounted === true){
+    this.props.history.push({
+      pathname: '/team-profile/',
+      state: {
+        loggedin: false,
+        signedup: "true",
+        username: this.state.username,
+        emailid: this.state.emailid
+      }
+    });
+  }
+}
 getsignupteam=()=>{
   return(
   <div>    
@@ -217,7 +230,7 @@ getsignupteam=()=>{
                   {/* <input id="ConfirmPassword" type="password" class="background form-control" name="confpassword" placeholder="CONFIRM-PASSWORD" minlength="6" required="true" onChange={this.handleChange} /> */}
                   <button className='btn btn-default addallborder'>SIGN UP</button>                       
               </form>
-              {this.gotohomeforfirst() }
+              {this.gotohometeamprofile() }
   </div>
   );
 }
