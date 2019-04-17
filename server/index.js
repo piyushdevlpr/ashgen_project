@@ -30,7 +30,7 @@ var express     = require("express"),
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
 var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
-  mongoose.connect("mongodb://localhost/login-ashgen",{useNewUrlParser: true})
+  mongoose.connect(DBURL,{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
 
