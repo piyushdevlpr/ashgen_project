@@ -32,9 +32,9 @@ var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
 
-app.use(cors()) ;
+app.use(cors({credentials: true, origin: 'http://localhost:3000'})) ;
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
@@ -49,7 +49,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(require("express-session")({
     secret: "ashgen",
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -59,39 +59,39 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 passport.serializeUser(Team.serializeUser());
 passport.deserializeUser(Team.deserializeUser());
-app.use(function(req,res , next){                            //Populating current users to frontend
-    
-    
-  res.locals.currentUser = req.user;
-  
-  res.locals.error       = req.flash("error");
-  res.locals.success     = req.flash("success");
-  next();
-});
+// app.use(function(req,res,next){                            //Populating current users to frontend
+//   res.locals.currentUser = req.user;
+//   res.locals.error       = req.flash("error");
+//   res.locals.success     = req.flash("success");
+//   next();
+// });
 var port = process.env.PORT || 2000;
-app.use(function(req, res, next){
-   res.locals.currentUser = req.user;
-   next();
-});
-app.use(function(req, res, next){
-   res.fruser = req.fuser;
-   next();
-});
+// app.use(function(req, res, next){
+//    res.locals.currentUser = req.user;
+//    next();
+// });
+// app.use(function(req, res, next){
+//    res.fruser = req.fuser;
+//    next();
+// });
 //-------------------------------------------------------------------------------------
 //----------Authnticating the login credentials enterd by user-------------------------
-app.get("/loggedin",function(req,res){
-  console.log(req.body + "true") ;
+app.get("/loggedin",function(req,res,next){
+  console.log(req.user + "true") ;
   res.json("true") ;
 });
 app.get("/wrong",function(req,res){
   console.log(req.body + "false") ;
   res.json("false") ;
 });
-app.post("/login", passport.authenticate("userlocal", 
-    {
-        successRedirect: "/loggedin",
+app.post("/login", passport.authenticate("userlocal",
+    {   session: true ,
+        // successRedirect: "/loggedin",
         failureRedirect: "/wrong"
+        
     }), function(req, res){
+     // console.log(req.user) ;
+      res.redirect("/loggedin")
     });
 //---------REGISTER ROUTE--------------------------------------------------------------
 //---------------Authenticating the register credntials -------------------------------
@@ -144,6 +144,7 @@ app.post("/registerteam",function(req, res,next){
 
 app.post("/your-profile",function(req, res){
     console.log("hello") ;
+    console.log(req) ;
   console.log(req.body) ;
   var newUser = new Yourprofile({first_name: req.body.first_name,
   Last_Name:req.body.Last_Name,
@@ -219,24 +220,17 @@ io.sockets.on("connection",function(socket){
                            if(err){
                           console.log(err);
                           }else{
-                              console.log(fuser) ;
-                                   
+                              console.log(fuser) ;                                   
                                     var statement = "member does not exist";
                           var output = {"user": data2.user , "state":statement};
                                     io.emit("member-removed",output);
-                              
-                    
-                                  }
-                      
+                                  }             
                       });
-                
-                          
-                        }
+                  }
          });
        }
               }
-          });
-          
+          });          
        });
 //---------------------REmoving a member from the post of subadmin in private group---------------
          socket.on("remove-subadmin",function(data2){
@@ -1075,14 +1069,11 @@ socket.on("send-message-p-grp",function(data1){
                   console.log(err);
                 }
                 // else{
-                    
                    io.emit("new-message-grp",{getmsg:duser,getusers:cgroup});
                 // }
-
               });
             }
           });
-
        });         
   });
 
@@ -1105,13 +1096,8 @@ socket.on("createpgroup",function(data2){
           var userss = {"username": data2.maker };
           var output = {"name":data2.maker , "state":""} ;
              PublicGroup.find({hashtag:data2.hashtagname}).count({},function(err,count1){
-
-            
                 console.log(count1);
                 PGroup.find({ hashtag : data2.hashtagname}).count({},function(err,count){
-                  
-                    
-                  
                    if(err || count !== 0 || count1 !==0){
                     statement = "group already exists";
                     output = {"name":data2.maker , "state":statement} ;
@@ -1125,7 +1111,6 @@ socket.on("createpgroup",function(data2){
                         if(err){
                           console.log(err);
                         }
-
                       });
                       var newpubgroup = new PGroup({groupname :data2.groupname, hashtag:data2.hashtagname,admin:data2.maker,users: userss }); 
                       newpubgroup.save(function(err){
@@ -1141,17 +1126,11 @@ socket.on("createpgroup",function(data2){
                       });
                       statement = "group created";
                       output = {"name":data2.maker , "state":statement} ;
-
                       io.emit("pgroupcreated",output) ; 
                   }
                 });
-              
-            });  
-           
+            });      
     });
-
-
-
 });
 
 //------------------------------------listen to local port -----------------------------------------------------------------------------
