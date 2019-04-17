@@ -6,39 +6,60 @@ class Dashboard extends Component {
     constructor(props){
         super(props) ;
         this.state = {
-            response : '',
-            endpoint : "http://127.0.0.1:2000",
-            username : '' 
+            username : '' ,
+            userId : null,
+            desc: '',
+            photo:null,
+            video:null,
+            isphoto : true,          //this parameter used for either photo or video upload
         }
         this.uploadPost = this.uploadPost.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.filehandleChange = this.filehandleChange.bind(this)
     }
-    setthestate=data=>{
-        if(this.ismounted === true){
-        this.setState({response : data}) ;
-        console.log(this.state);
-        }
-    }
+ 
     componentDidMount(){ 
         this.ismounted = true ;
-        const socket = socketIOClient(this.state.endpoint);
-        // socket.on("react",this.setthestate);      
-        // socket.emit("incoming", this.state.username) ; 
+     
     }
     componentWillUnmount(){
         this.ismounted = false ; 
+    }
+    filehandleChange(event)
+    {
+        console.log(event.target.name);
+        event.target.name='photo'?this.setState({isphoto:true}):this.setState({isphoto:false});
+        this.setState({
+            [event.target.name]: event.target.files[0],
+        })
+        console.log(this.state.photo);
+
+    }
+    handleChange=(event)=>{
+        event.preventDefault() ;
+        this.setState({
+          [event.target.name] : event.target.value,
+        })
+        console.log(this.state.desc);
+        
     }
 
     uploadPost(event)
     {
         event.preventDefault() ;
-  if(this._ismounted === true){
-  console.log(this.state) ;
-  fetch("127.0.0.1:2000/post_upload", {
-            method: "POST",
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.state)
-        }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
-        console.log(this.state) ;
+        if(this.ismounted === true){
+        fetch("http://localhost:2000/getUser", {
+                    method: "GET",
+                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                }).then(res => res.json()).then(data => {
+                    if(this.state.isphoto)
+                    {
+                        console.log(this.state.photo);
+                    }
+
+                })
+    
   }
     }
     render(){
@@ -51,16 +72,16 @@ class Dashboard extends Component {
                     <form onSubmit={this.uploadPost}>
                     <div className="form-group">
                     <label for="exampleFormControlTextarea1">Upload post</label>
-                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="write your post"></textarea>
+                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" name="desc" value={this.state.desc} onChange={this.handleChange} placeholder="write your post"></textarea>
                  </div>
                  <div className="row">
-                 <div class="form-group">
+                 <div className="form-group">
                 <label for="exampleFormControlFile1">Photo Upload</label>
-                <input type="file" className="form-control-file" id="photo-upload" />
+                <input type="file" name="photo" value={this.state.photo} onChange={this.filehandleChange} className="form-control-file" id="photo-upload" />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                 <label for="exampleFormControlFile1">Video Upload</label>
-                <input type="file" className="form-control-file" id="video-upload" />
+                <input type="file" name="video" value={this.state.video} onChange={this.filehandleChange} className="form-control-file" id="video-upload" />
                 </div>
                 <button type="submit" className="btn btn-primary">Post</button>
 
