@@ -12,10 +12,7 @@ var PostSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    
     username: String
-    
-    
 },
 type : {type: String, default: ''},       // type of the post - text, photo and video 
 title: {type: String, default: ''},
@@ -27,7 +24,6 @@ comments: [{                          //comments on the post
         type:mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    
     user: {type: String, default: ''},           // user who has comment
     comment: {type: String, default: ''},       // comment of the user
     likes : [{                                  // likes on the comment
