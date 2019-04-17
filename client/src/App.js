@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 class App extends Component {
-   _ismounted = false ;
+   _ismounted = true ;
   constructor(props){
     super(props);
     this.state = {
