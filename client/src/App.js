@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 class App extends Component {
-   _ismounted = false ;
+   _ismounted = true ;
   constructor(props){
     super(props);
     this.state = {
@@ -56,7 +56,7 @@ click2=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/login", {
+  fetch("http://127.0.0.1:2000/login", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
