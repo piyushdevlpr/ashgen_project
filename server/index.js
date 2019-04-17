@@ -15,8 +15,6 @@ var express     = require("express"),
     PGroup        = require("./models/pgroup"),
     GMessage        = require("./models/gmessage"),
     searchedFriend = {},
-    addedFriend = "" ,
-    whichPage = "one" ;
     whichPage2 = "six" ;
     frnames = [] ,
    
@@ -34,39 +32,12 @@ var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
 
-// ----------To support profile photo uploadation ,multer configurations-------------
-//     var storage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, 'uploads/');
-//   },
-//   filename: function(req, file, cb) {
-    
-//     cb(null, file.originalname);
-//   }
-// });
-// function fileFilter(req, file, cb){
-//   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-//     cb(null, true);
-//   } else {
-//     cb(null, false);
-//   }
-// };
-// var upload = multer({
-//   storage: storage,
-//   limits: {
-//     fileSize: 1024 * 1024 * 5
-//   },
-//   fileFilter: fileFilter
-// });
-//-----------------------------------------------------------------------------------
-
 app.use(cors()) ;
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-//app.use(express.static(__dirname + "/uploads"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -88,6 +59,15 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 passport.serializeUser(Team.serializeUser());
 passport.deserializeUser(Team.deserializeUser());
+app.use(function(req,res , next){                            //Populating current users to frontend
+    
+    
+  res.locals.currentUser = req.user;
+  
+  res.locals.error       = req.flash("error");
+  res.locals.success     = req.flash("success");
+  next();
+});
 var port = process.env.PORT || 2000;
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
@@ -98,15 +78,6 @@ app.use(function(req, res, next){
    next();
 });
 //-------------------------------------------------------------------------------------
-
-// ---------HOME ROUTE (register page)-------------------------------------------------
-app.get("/",function(req,res){
-  res.redirect("/register");
-});
-//-----------LOGIN ROUTE---------------------------------------------------------------
-app.get("/login",function(req,res){ 
-  res.render("login.ejs");
-});
 //----------Authnticating the login credentials enterd by user-------------------------
 app.get("/loggedin",function(req,res){
   console.log(req.body + "true") ;
@@ -123,9 +94,6 @@ app.post("/login", passport.authenticate("userlocal",
     }), function(req, res){
     });
 //---------REGISTER ROUTE--------------------------------------------------------------
-app.get("/register",function(req,res){
-  res.render("register.ejs");
-});
 //---------------Authenticating the register credntials -------------------------------
 //app.post("/register",upload.single('profileImage'), function(req, res,next){
 app.post("/register",function(req, res,next){
@@ -153,9 +121,7 @@ app.post("/loginteam", passport.authenticate("teamlocal",
         failureRedirect: "/wrong"
     }), function(req, res){
 });
-app.get("/registerteam",function(req,res){
-  res.render("register.ejs");
-});
+
 app.post("/registerteam",function(req, res,next){
   //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
   console.log("hello") ;
@@ -175,16 +141,9 @@ app.post("/registerteam",function(req, res,next){
       });
   });
 });
-//--------------Route to show the page after login -------------------------------------
-app.get("/signedin",function(req,res){
-  var addedFriend = "" ;
-  whichPage2 = "six" ;
-  res.render("signedin.ejs",{addedFriend:addedFriend,whichPage:whichPage,searchedFriend:searchedFriend});
-});
 
 app.post("/your-profile",function(req, res){
-  //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
-  console.log("hello") ;
+    console.log("hello") ;
   console.log(req.body) ;
   var newUser = new Yourprofile({first_name: req.body.first_name,
   Last_Name:req.body.Last_Name,
@@ -208,7 +167,6 @@ app.post("/your-profile",function(req, res){
 });
 
 app.post("/team-profile",function(req, res){
-  //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
   console.log("hello") ;
   console.log(req.body) ;
   var newUser = new Teamprofile({first_name: req.body.first_name,
@@ -231,12 +189,6 @@ app.post("/team-profile",function(req, res){
     }
   }) ;
 });
-//---------------Route to logout---------------------------------------------------------
-app.get("/logout", function(req, res){
-   req.logout();
-   res.redirect("/login");
-});
-
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
