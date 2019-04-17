@@ -64,7 +64,13 @@ shares : [{                                // shares on the post
     },
     
     user: {type: String, default: ''},
-}]
+}],
+uploadedAt: {
+ type:String,
+ default: moment().format('LLL').toString()
+ 
+}
+
 
  
 
