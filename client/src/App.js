@@ -38,7 +38,7 @@ click=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("http://localhost:2000/register", {
+  fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/register", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
@@ -56,7 +56,7 @@ click2=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("http://localhost:2000/login", {
+  fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/login", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
@@ -95,7 +95,7 @@ gotohomeprofile=()=>{
 getlogin=()=>{
   return(
   <div>
-  <form onSubmit={this.click2} method='POST' action='http://localhost:2000/login'>
+  <form onSubmit={this.click2} method='POST' action='https://ojus-server-132kgu2rdjqbfc.herokuapp.com/login'>
   <div>
       <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
       <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
@@ -112,7 +112,7 @@ getsignup=()=>{
   return(
   <div>
     
-    <form onSubmit={this.click} method='POST' action='http://localhost:2000/register'>	
+    <form onSubmit={this.click} method='POST' action='https://ojus-server-132kgu2rdjqbfc.herokuapp.com/register'>	
 									
 													
                   <input id="login-firstname" type="text" className="background form-control" name='username' value={this.state.username} placeholder="USER NAME (MAX. LENGTH 6)" minLength="6" maxLength="6" required={true} onChange={this.handleChange}/><br/>
@@ -171,7 +171,7 @@ click4=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("http://localhost:2000/registerteam", {
+  fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/registerteam", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
@@ -183,7 +183,7 @@ click3=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("http://localhost:2000/loginteam", {
+  fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/loginteam", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
@@ -194,7 +194,7 @@ click3=(event)=>{
 getloginteam=()=>{
   return(
   <div>
-  <form onSubmit={this.click3} method='POST' action='http://localhost:2000/loginteam'>
+  <form onSubmit={this.click3} method='POST' action='https://ojus-server-132kgu2rdjqbfc.herokuapp.com/loginteam'>
   <div> 
       <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
       <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
@@ -223,7 +223,7 @@ gotohometeamprofile=()=>{
 getsignupteam=()=>{
   return(
   <div>    
-    <form onSubmit={this.click4} method='POST' action='http://localhost:2000/registerteam'>	
+    <form onSubmit={this.click4} method='POST' action='https://ojus-server-132kgu2rdjqbfc.herokuapp.com/registerteam'>	
                   <input id="login-firstname" type="text" className="background form-control" name='username' value={this.state.username} placeholder="TEAMNAME (MAX. LENGTH 6)" minLength="6" maxLength="6" required={true} onChange={this.handleChange}/><br/>
                   <input id="login-email" type="email" className="background form-control" name="emailid" value={this.state.emailid} placeholder="EMAIL ID" required={true} onChange={this.handleChange} /><br/> 
                   <input id="Password" type="password" className="background form-control" name='password' value={this.state.password} placeholder="PASSWORD" minLength="6" required={true} onChange={this.handleChange} /><br/>

@@ -7,7 +7,7 @@ class Dashboard extends Component {
         super(props) ;
         this.state = {
             response : '',
-            endpoint : "http://127.0.0.1:2000",
+            endpoint : "https://ojus-server-132kgu2rdjqbfc.herokuapp.com",
             username : '' 
         }
     }

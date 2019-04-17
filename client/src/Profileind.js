@@ -28,7 +28,7 @@ class Profileind extends Component {
     }
     gotohome=(event)=>{
         event.preventDefault() ;
-        fetch("http://localhost:2000/your-profile", {
+        fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/your-profile", {
         method: "POST",
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify(this.state)

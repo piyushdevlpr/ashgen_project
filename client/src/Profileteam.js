@@ -28,7 +28,7 @@ class Profileteam extends Component {
     }
     gotohome=(event)=>{
         event.preventDefault() ;
-        fetch("http://localhost:2000/team-profile", {
+        fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/team-profile", {
             method: "POST",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify(this.state)
