@@ -31,7 +31,8 @@ class Profileteam extends Component {
         fetch("http://127.0.0.1:2000/team-profile", {
             method: "POST",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.state)
+            body: JSON.stringify(this.state),
+            credentials:'include'
             })
             //.then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
       

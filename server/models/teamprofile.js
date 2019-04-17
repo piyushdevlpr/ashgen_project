@@ -5,6 +5,13 @@ var TeamProfileSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     auto: true,
   },
+  user: {                                     //user who has posted
+    id:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    username: String
+},
   first_name: String,
   Last_Name:String,
   Specialisation:String,

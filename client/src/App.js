@@ -38,7 +38,9 @@ click=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("http://127.0.0.1:2000/register", {
+
+  //https://ojus-server-132kgu2rdjqbfc.herokuapp.com
+  fetch("http://localhost:2000/register", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
@@ -56,10 +58,11 @@ click2=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("http://127.0.0.1:2000/login", {
+  fetch("http://localhost:2000/login", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-    body: JSON.stringify(this.state)
+    body: JSON.stringify(this.state),
+     credentials: 'include'
   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
   console.log(this.state) ;
   }
@@ -171,7 +174,7 @@ click4=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/registerteam", {
+  fetch("http://localhost:2000/registerteam", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
@@ -183,7 +186,7 @@ click3=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/loginteam", {
+  fetch("http://localhost:2000/loginteam", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)

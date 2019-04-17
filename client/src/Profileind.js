@@ -28,10 +28,11 @@ class Profileind extends Component {
     }
     gotohome=(event)=>{
         event.preventDefault() ;
-        fetch("http://127.0.0.1:2000/your-profile", {
+        fetch("http://localhost:2000/your-profile", {
         method: "POST",
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(this.state)
+        body: JSON.stringify(this.state),
+        credentials:'include'
         })
         //.then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
   
