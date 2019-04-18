@@ -32,7 +32,7 @@ class Profileind extends Component {
         method: "POST",
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify(this.state),
-        credentials:'include'
+        credentials : 'include'
         })
         //.then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
   

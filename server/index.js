@@ -28,16 +28,21 @@ var express     = require("express"),
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
 var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
-  mongoose.connect(DBURL,{useNewUrlParser: true})
+  mongoose.connect("mongodb://localhost/login-ashgen",{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
-
-app.use(cors({credentials: true, origin: 'http://localhost:3000'})) ;
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+  var whitelist = ['http://localhost:3000', 'http://localhost:3000/your-profile/']
+  var corsOptions = {
+    credentials:true,                           //using credentials from frontend aftr authentication
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+          callback(null, true)
+        } else {
+          callback(new Error('Not allowed by CORS'))
+        }
+      }
+    }
+app.use(cors(corsOptions)) ;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -144,9 +149,11 @@ app.post("/registerteam",function(req, res,next){
 
 app.post("/your-profile",function(req, res){
     console.log("hello") ;
-    console.log(req) ;
-  console.log(req.body) ;
-  var newUser = new Yourprofile({first_name: req.body.first_name,
+  console.log(req.user) ;
+  var user = {'id':req.user._id , 'username' : req.user.username}
+  var newUser = new Yourprofile({
+  user: user ,
+  first_name: req.body.first_name,
   Last_Name:req.body.Last_Name,
   Specialisation:req.body.Specialisation,
   College:req.body.College,
@@ -164,13 +171,16 @@ app.post("/your-profile",function(req, res){
     }else{
       console.log(cuser) ;
     }
-  }) ;
+  }) 
 });
 
 app.post("/team-profile",function(req, res){
   console.log("hello") ;
   console.log(req.body) ;
-  var newUser = new Teamprofile({first_name: req.body.first_name,
+  var user = {id:req.user.id , username : req.user.username}
+  var newUser = new Teamprofile({
+  user : user,
+  first_name: req.body.first_name,
   Last_Name:req.body.Last_Name,
   Specialisation:req.body.Specialisation,
   College:req.body.College,
@@ -207,7 +217,7 @@ io.sockets.on("connection",function(socket){
                       isPresent = true ;
                     }
                 });
-                if(!isPresent){
+                if(!isPresent){ 
            var statement = "member does not exist";
                           var output = {"user": data2.user , "state":statement};
             io.emit("member-removed",output) ;

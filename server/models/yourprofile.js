@@ -8,7 +8,7 @@ var YourProfileSchema = new mongoose.Schema({
   user: {                                     //user who has posted
     id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref: "Team"
+        ref: "User"
     },
     username: String
   },

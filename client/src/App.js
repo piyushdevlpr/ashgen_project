@@ -42,7 +42,8 @@ click=(event)=>{
   fetch("http://localhost:2000/register", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-    body: JSON.stringify(this.state)
+    body: JSON.stringify(this.state),
+    credentials:'include'
   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({signedup : data})}})
   console.log(this.state) ;
 }
