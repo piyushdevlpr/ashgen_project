@@ -28,7 +28,7 @@ class Profileteam extends Component {
     }
     gotohome=(event)=>{
         event.preventDefault() ;
-        fetch("http://127.0.0.1:2000/team-profile", {
+        fetch("http://localhost:2000/team-profile", {
             method: "POST",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify(this.state),
