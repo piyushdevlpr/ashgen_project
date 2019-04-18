@@ -28,7 +28,7 @@ class Dashboard extends Component {
     filehandleChange(event)     // file handler
     {
         console.log(event.target.name);
-        event.target.name='photo'?this.setState({isphoto:true}):this.setState({isphoto:false});
+        event.target.name=='photo'?this.setState({isphoto:true}):this.setState({isphoto:false});
         this.setState({
             [event.target.name]: event.target.files[0],
         })
