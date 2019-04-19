@@ -6,6 +6,8 @@ import './index.css';
 import App from './App';
 import Profileind from './Profileind';
 import Profileteam from './Profileteam';
+import People from './People';
+import Shownotifications from './shownotifications';
 import Dashboard from './Dashboard';
 import * as serviceWorker from './serviceWorker';
 
@@ -16,6 +18,8 @@ ReactDOM.render((
        <Route exact path = "/team-profile/" component = {Profileteam}/>
        <Route exact path = "/your-profile/" component = {Profileind}/>
        <Route path = "/home/" component = {Dashboard} />
+       <Route path = "/people/" component = {People} />
+       <Route path = "/notifications/" component = {Shownotifications} />
        </Switch>
  </Router>
 ), document.getElementById('root'));

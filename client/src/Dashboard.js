@@ -9,12 +9,14 @@ class Dashboard extends Component {
             username : '' ,
             userId : null,
             desc: '',
-            photo:null,
-            video:null,
+            photo: null,
+            video: null,
             isphoto : true,          //this parameter used for either photo or video upload
         }
         this.uploadPost = this.uploadPost.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.gotopeople = this.gotopeople.bind(this);
+        this.gotonoti = this.gotonoti.bind(this);
         this.filehandleChange = this.filehandleChange.bind(this)
     }
  
@@ -28,11 +30,12 @@ class Dashboard extends Component {
     filehandleChange(event)     // file handler
     {
         console.log(event.target.name);
-        event.target.name=='photo'?this.setState({isphoto:true}):this.setState({isphoto:false});
+        event.target.name==='photo'?this.setState({isphoto:true}):this.setState({isphoto:false});
         this.setState({
             [event.target.name]: event.target.files[0],
         })
-        console.log(this.state.photo);          // only printing null after setting state
+        console.log(this.state.isphoto);
+        console.log(this.state.video);          // only printing null after setting state
 
     }
     handleChange=(event)=>{
@@ -62,6 +65,24 @@ class Dashboard extends Component {
     
   }
     }
+    gotopeople=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/people/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
+    gotonoti=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/notifications/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
     render(){
         if(this.props.location.state === undefined){
             this.props.history.push("/") ;
@@ -69,25 +90,29 @@ class Dashboard extends Component {
         }else{
             return(
                 <div className="container">
-                    <form onSubmit={this.uploadPost}>
+                   <div>
+                        <button onClick={this.gotopeople}>PEOPLE</button>
+                        <button onClick={this.gotonoti}>Notifications</button>
+                    </div>
+                    <form onSubmit={this.uploadPost} encType="multipart/form-data">
                     <div className="form-group">
-                    <label for="exampleFormControlTextarea1">Upload post</label>
+                    <label htmlFor="exampleFormControlTextarea1">Upload post</label>
                     <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" name="desc" value={this.state.desc} onChange={this.handleChange} placeholder="write your post"></textarea>
                  </div>
                  <div className="row">
                  <div className="form-group">
-                <label for="exampleFormControlFile1">Photo Upload</label>
-                <input type="file" name="photo" value={this.state.photo} onChange={this.filehandleChange} className="form-control-file" id="photo-upload" />
+                <label htmlFor="exampleFormControlFile1">Photo Upload</label>
+                <input type="file" name="photo" onChange={this.filehandleChange} className="form-control-file" id="photo-upload" />
                 </div>
                 <div className="form-group">
-                <label for="exampleFormControlFile1">Video Upload</label>
-                <input type="file" name="video" value={this.state.video} onChange={this.filehandleChange} className="form-control-file" id="video-upload" />
+                <label htmlFor="exampleFormControlFile1">Video Upload</label>
+                <input type="file" name="video"  onChange={this.filehandleChange} className="form-control-file" id="video-upload" />
                 </div>
                 <button type="submit" className="btn btn-primary">Post</button>
 
                 </div>
              </form>
-                  
+              {console.log(this.state.video)}                    
                 </div>
             );
         }        

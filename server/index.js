@@ -13,6 +13,7 @@ var express     = require("express"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage        = require("./models/groupmessage"),
     PGroup        = require("./models/pgroup"),
+    Notification = require("./models/notifications")
     GMessage        = require("./models/gmessage"),
     searchedFriend = {},
     whichPage2 = "six" ;
@@ -29,16 +30,21 @@ var express     = require("express"),
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
 var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
-  mongoose.connect(DBURL,{useNewUrlParser: true})
+  mongoose.connect("mongodb://localhost/login-ashgen",{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
-
-app.use(cors({credentials: true, origin: 'http://localhost:3000'})) ;
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+  var whitelist = ['http://localhost:3000', 'http://localhost:3000/your-profile/','http://localhost:3000/people/']
+  var corsOptions = {
+    credentials:true,                           //using credentials from frontend aftr authentication
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+          callback(null, true)
+        } else {
+          callback(new Error('Not allowed by CORS'))
+        }
+      }
+    }
+app.use(cors(corsOptions)) ;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -103,6 +109,7 @@ app.post("/register",function(req, res,next){
     console.log("hello") ;
     console.log(req.body) ;
     var newUser = new User({username: req.body.username,email:req.body.emailid});
+    //var newnoti =  ;
     User.register(newUser, req.body.password, function(err, user){
         if(err){
             console.log(err);
@@ -111,8 +118,36 @@ app.post("/register",function(req, res,next){
             //return res.render("register.ejs");
         }
         passport.authenticate("userlocal")(req, res, function(){
+          var newnoti = new Notification({handlename : req.body.username}) ;
+          newnoti.save(function(err,record){
+            if(err){
+              console.log(err) ;
+            }
+          })
+          var user = {'id':req.user._id , 'username' : req.user.username}
+        var newUser = new Yourprofile({
+        user: user ,
+        first_name: '',
+        Last_Name:'',
+        Specialisation:'',
+        College:'',
+        Teams:'',
+        Short_Bio:'',
+        Message_Request_Option:'',
+        Projects_and_competitions:'',
+        Achievements_in_competitions:'',
+        open_to_which_type_of_company_projects:'',
+        Open_to_which_type_of_collabs:''
+      });
+      newUser.save(function(err,cuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(cuser) ;
+        }
+      })
           console.log("true");  
-          res.json("true") ;
+          res.json("true") ;    
           //   res.redirect("/signedin"); 
         });
     });
@@ -137,6 +172,34 @@ app.post("/registerteam",function(req, res,next){
           //return res.render("register.ejs");
       }
       passport.authenticate("teamlocal")(req, res, function(){
+        var newnoti = new Notification({handlename : req.body.username}) ;
+        newnoti.save(function(err,record){
+          if(err){
+            console.log(err) ;
+          }
+        })
+        var user = {'id':req.user._id , 'username' : req.user.username}
+        var newUser = new Teamprofile({
+        user: user ,
+        first_name: '',
+        Last_Name:'',
+        Specialisation:'',
+        College:'',
+        Teams:'',
+        Short_Bio:'',
+        Message_Request_Option:'',
+        Projects_and_competitions:'',
+        Achievements_in_competitions:'',
+        open_to_which_type_of_company_projects:'',
+        Open_to_which_type_of_collabs:''
+      });
+      newUser.save(function(err,cuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(cuser) ;
+        }
+      })
         console.log("true");  
         res.json("true") ;
         //   res.redirect("/signedin"); 
@@ -146,52 +209,104 @@ app.post("/registerteam",function(req, res,next){
 
 app.post("/your-profile",function(req, res){
     console.log("hello") ;
-    console.log(req) ;
-  console.log(req.body) ;
-  var newUser = new Yourprofile({first_name: req.body.first_name,
-  Last_Name:req.body.Last_Name,
-  Specialisation:req.body.Specialisation,
-  College:req.body.College,
-  Teams:req.body.Teams,
-  Short_Bio:req.body.Short_Bio,
-  Message_Request_Option:req.body.Message_Request_Option,
-  Projects_and_competitions:req.body.Projects_and_competitions,
-  Achievements_in_competitions:req.body.Achievements_in_competitions,
-  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs
+  console.log(req.user) ;
+  var user = {'id':req.user._id , 'username' : req.user.username}
+  Yourprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
+    Last_Name:req.body.Last_Name,
+    Specialisation:req.body.Specialisation,
+    College:req.body.College,
+    Teams:req.body.Teams,
+    Short_Bio:req.body.Short_Bio,
+    Message_Request_Option:req.body.Message_Request_Option,
+    Projects_and_competitions:req.body.Projects_and_competitions,
+    Achievements_in_competitions:req.body.Achievements_in_competitions,
+    open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
+    Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs}},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }
   });
-  newUser.save(function(err,cuser){
-    if(err){
-      console.log(err);
-    }else{
-      console.log(cuser) ;
-    }
-  }) ;
 });
 
 app.post("/team-profile",function(req, res){
   console.log("hello") ;
   console.log(req.body) ;
-  var newUser = new Teamprofile({first_name: req.body.first_name,
-  Last_Name:req.body.Last_Name,
-  Specialisation:req.body.Specialisation,
-  College:req.body.College,
-  Teams:req.body.Teams,
-  Short_Bio:req.body.Short_Bio,
-  Message_Request_Option:req.body.Message_Request_Option,
-  Projects_and_competitions:req.body.Projects_and_competitions,
-  Achievements_in_competitions:req.body.Achievements_in_competitions,
-  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs
+  var user = {id:req.user.id , username : req.user.username}
+  Teamprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
+    Last_Name:req.body.Last_Name,
+    Specialisation:req.body.Specialisation,
+    College:req.body.College,
+    Teams:req.body.Teams,
+    Short_Bio:req.body.Short_Bio,
+    Message_Request_Option:req.body.Message_Request_Option,
+    Projects_and_competitions:req.body.Projects_and_competitions,
+    Achievements_in_competitions:req.body.Achievements_in_competitions,
+    open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
+    Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs}},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }
   });
-  newUser.save(function(err,cuser){
+});
+// app.get('/people/',function(req,res){
+//   res.redirect('/people/0') ;
+// });
+app.get('/people/:name',function(req,res){
+  var name = '' ;
+  name = req.params.name ;
+  if(name === null || name === undefined){
+    name = '' ;
+  }
+  User.find({username :  {$regex : ".*"+name+".*"}},function(err,cuser){
     if(err){
       console.log(err);
     }else{
-      console.log(cuser) ;
+       //console.log(cuser) ;
+       resuser = [] ;
+       cuser.forEach(function(user){
+        resuser.push(user.username) ;
+       });
+       response = {users: resuser}
+       console.log(response) ;
+       res.json(response) ;
     }
-  }) ;
+  })
 });
+app.get("/notification/:frname",function(req,res){
+  var username = req.user.username ;
+  var friend = req.params.frname ;
+  var usern = {"from" : username} ;
+  Notification.findOneAndUpdate({handlename : friend},{$push: {requests: usern}},function(err,cuser){
+    if(err){
+      console.log(err);
+    }else{
+      console.log(cuser);
+    }
+  })
+})
+app.get("/get-notifications",function(req,res){
+  var username = req.user.username ;
+  Notification.findOne({handlename : username},function(err,cuser){
+    if(err){
+      console.log(err);
+    }else{
+      message = [] ;
+      request = [] ;
+      cuser.messages.forEach(function(mes){
+          message.push(mes['from']) ;
+      });
+      cuser.requests.forEach(function(mes){
+        request.push(mes.from) ;
+      });
+      var data = {message:message,request:request};
+      res.json(data) ;
+      console.log(message);
+      console.log(request);
+      console.log(data);
+      console.log(cuser);
+    }
+  })
+})
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
@@ -209,7 +324,7 @@ io.sockets.on("connection",function(socket){
                       isPresent = true ;
                     }
                 });
-                if(!isPresent){
+                if(!isPresent){ 
            var statement = "member does not exist";
                           var output = {"user": data2.user , "state":statement};
             io.emit("member-removed",output) ;
