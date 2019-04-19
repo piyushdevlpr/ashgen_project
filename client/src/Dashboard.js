@@ -10,11 +10,12 @@ class Dashboard extends Component {
             userId : null,
             desc: '',
             photo: null,
-            video: '',
+            video: null,
             isphoto : true,          //this parameter used for either photo or video upload
         }
         this.uploadPost = this.uploadPost.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.gotopeople = this.gotopeople.bind(this);
         this.filehandleChange = this.filehandleChange.bind(this)
     }
  
@@ -28,12 +29,12 @@ class Dashboard extends Component {
     filehandleChange(event)     // file handler
     {
         console.log(event.target.name);
-        event.target.name==="photo"?this.setState({isphoto:true}):this.setState({isphoto:false});
+        event.target.name==='photo'?this.setState({isphoto:true}):this.setState({isphoto:false});
         this.setState({
             [event.target.name]: event.target.files[0],
         })
         console.log(this.state.isphoto);
-        console.log(this.state.photo);          // only printing null after setting state
+        console.log(this.state.video);          // only printing null after setting state
 
     }
     handleChange=(event)=>{
@@ -63,6 +64,15 @@ class Dashboard extends Component {
     
   }
     }
+    gotopeople=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/people/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
     render(){
         if(this.props.location.state === undefined){
             this.props.history.push("/") ;
@@ -70,6 +80,9 @@ class Dashboard extends Component {
         }else{
             return(
                 <div className="container">
+                   <div>
+                        <button onClick={this.gotopeople}>PEOPLE</button>
+                    </div>
                     <form onSubmit={this.uploadPost} encType="multipart/form-data">
                     <div className="form-group">
                     <label htmlFor="exampleFormControlTextarea1">Upload post</label>
@@ -82,13 +95,13 @@ class Dashboard extends Component {
                 </div>
                 <div className="form-group">
                 <label htmlFor="exampleFormControlFile1">Video Upload</label>
-                <input type="file" name="video" value={this.state.video} onChange={this.filehandleChange} className="form-control-file" id="video-upload" />
+                <input type="file" name="video"  onChange={this.filehandleChange} className="form-control-file" id="video-upload" />
                 </div>
                 <button type="submit" className="btn btn-primary">Post</button>
 
                 </div>
              </form>
-              {console.log(this.state.photo)}                    
+              {console.log(this.state.video)}                    
                 </div>
             );
         }        

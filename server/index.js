@@ -13,6 +13,7 @@ var express     = require("express"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage        = require("./models/groupmessage"),
     PGroup        = require("./models/pgroup"),
+    Notification = require("./models/notifications")
     GMessage        = require("./models/gmessage"),
     searchedFriend = {},
     whichPage2 = "six" ;
@@ -31,7 +32,7 @@ var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
   mongoose.connect("mongodb://localhost/login-ashgen",{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
-  var whitelist = ['http://localhost:3000', 'http://localhost:3000/your-profile/']
+  var whitelist = ['http://localhost:3000', 'http://localhost:3000/your-profile/','http://localhost:3000/people/']
   var corsOptions = {
     credentials:true,                           //using credentials from frontend aftr authentication
     origin: function (origin, callback) {
@@ -106,6 +107,7 @@ app.post("/register",function(req, res,next){
     console.log("hello") ;
     console.log(req.body) ;
     var newUser = new User({username: req.body.username,email:req.body.emailid});
+    //var newnoti =  ;
     User.register(newUser, req.body.password, function(err, user){
         if(err){
             console.log(err);
@@ -114,8 +116,14 @@ app.post("/register",function(req, res,next){
             //return res.render("register.ejs");
         }
         passport.authenticate("userlocal")(req, res, function(){
+          var newnoti = new Notification({handlename : req.body.username}) ;
+          newnoti.save(function(err,record){
+            if(err){
+              console.log(err) ;
+            }
+          })
           console.log("true");  
-          res.json("true") ;
+          res.json("true") ;    
           //   res.redirect("/signedin"); 
         });
     });
@@ -140,6 +148,7 @@ app.post("/registerteam",function(req, res,next){
           //return res.render("register.ejs");
       }
       passport.authenticate("teamlocal")(req, res, function(){
+
         console.log("true");  
         res.json("true") ;
         //   res.redirect("/signedin"); 
@@ -200,6 +209,38 @@ app.post("/team-profile",function(req, res){
     }
   }) ;
 });
+app.get('/people/',function(req,res){
+  res.redirect('/people/0') ;
+});
+app.get('/people/:name',function(req,res){
+  var name = req.params.name ;
+  User.find({username :  {$regex : ".*"+name+".*"}},function(err,cuser){
+    if(err){
+      console.log(err);
+    }else{
+       //console.log(cuser) ;
+       resuser = [] ;
+       cuser.forEach(function(user){
+        resuser.push(user.username) ;
+       });
+       response = {users: resuser}
+       console.log(response) ;
+       res.json(response) ;
+    }
+  })
+});
+app.get("/notification/:frname",function(req,res){
+  var username = req.user.username ;
+  var friend = req.params.frname ;
+  var usern = {"from" : username} ;
+  Notification.findOneAndUpdate({handlename : friend},{$push: {requests: usern}},function(err,cuser){
+    if(err){
+      console.log(err);
+    }else{
+      console.log(cuser);
+    }
+  })
+})
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
