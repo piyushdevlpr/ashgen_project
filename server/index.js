@@ -122,6 +122,28 @@ app.post("/register",function(req, res,next){
               console.log(err) ;
             }
           })
+          var user = {'id':req.user._id , 'username' : req.user.username}
+        var newUser = new Yourprofile({
+        user: user ,
+        first_name: '',
+        Last_Name:'',
+        Specialisation:'',
+        College:'',
+        Teams:'',
+        Short_Bio:'',
+        Message_Request_Option:'',
+        Projects_and_competitions:'',
+        Achievements_in_competitions:'',
+        open_to_which_type_of_company_projects:'',
+        Open_to_which_type_of_collabs:''
+      });
+      newUser.save(function(err,cuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(cuser) ;
+        }
+      })
           console.log("true");  
           res.json("true") ;    
           //   res.redirect("/signedin"); 
@@ -148,7 +170,34 @@ app.post("/registerteam",function(req, res,next){
           //return res.render("register.ejs");
       }
       passport.authenticate("teamlocal")(req, res, function(){
-
+        var newnoti = new Notification({handlename : req.body.username}) ;
+        newnoti.save(function(err,record){
+          if(err){
+            console.log(err) ;
+          }
+        })
+        var user = {'id':req.user._id , 'username' : req.user.username}
+        var newUser = new Teamprofile({
+        user: user ,
+        first_name: '',
+        Last_Name:'',
+        Specialisation:'',
+        College:'',
+        Teams:'',
+        Short_Bio:'',
+        Message_Request_Option:'',
+        Projects_and_competitions:'',
+        Achievements_in_competitions:'',
+        open_to_which_type_of_company_projects:'',
+        Open_to_which_type_of_collabs:''
+      });
+      newUser.save(function(err,cuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(cuser) ;
+        }
+      })
         console.log("true");  
         res.json("true") ;
         //   res.redirect("/signedin"); 
@@ -160,60 +209,52 @@ app.post("/your-profile",function(req, res){
     console.log("hello") ;
   console.log(req.user) ;
   var user = {'id':req.user._id , 'username' : req.user.username}
-  var newUser = new Yourprofile({
-  user: user ,
-  first_name: req.body.first_name,
-  Last_Name:req.body.Last_Name,
-  Specialisation:req.body.Specialisation,
-  College:req.body.College,
-  Teams:req.body.Teams,
-  Short_Bio:req.body.Short_Bio,
-  Message_Request_Option:req.body.Message_Request_Option,
-  Projects_and_competitions:req.body.Projects_and_competitions,
-  Achievements_in_competitions:req.body.Achievements_in_competitions,
-  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs
+  Yourprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
+    Last_Name:req.body.Last_Name,
+    Specialisation:req.body.Specialisation,
+    College:req.body.College,
+    Teams:req.body.Teams,
+    Short_Bio:req.body.Short_Bio,
+    Message_Request_Option:req.body.Message_Request_Option,
+    Projects_and_competitions:req.body.Projects_and_competitions,
+    Achievements_in_competitions:req.body.Achievements_in_competitions,
+    open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
+    Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs}},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }
   });
-  newUser.save(function(err,cuser){
-    if(err){
-      console.log(err);
-    }else{
-      console.log(cuser) ;
-    }
-  }) 
 });
 
 app.post("/team-profile",function(req, res){
   console.log("hello") ;
   console.log(req.body) ;
   var user = {id:req.user.id , username : req.user.username}
-  var newUser = new Teamprofile({
-  user : user,
-  first_name: req.body.first_name,
-  Last_Name:req.body.Last_Name,
-  Specialisation:req.body.Specialisation,
-  College:req.body.College,
-  Teams:req.body.Teams,
-  Short_Bio:req.body.Short_Bio,
-  Message_Request_Option:req.body.Message_Request_Option,
-  Projects_and_competitions:req.body.Projects_and_competitions,
-  Achievements_in_competitions:req.body.Achievements_in_competitions,
-  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs
+  Teamprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
+    Last_Name:req.body.Last_Name,
+    Specialisation:req.body.Specialisation,
+    College:req.body.College,
+    Teams:req.body.Teams,
+    Short_Bio:req.body.Short_Bio,
+    Message_Request_Option:req.body.Message_Request_Option,
+    Projects_and_competitions:req.body.Projects_and_competitions,
+    Achievements_in_competitions:req.body.Achievements_in_competitions,
+    open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
+    Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs}},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }
   });
-  newUser.save(function(err,cuser){
-    if(err){
-      console.log(err);
-    }else{
-      console.log(cuser) ;
-    }
-  }) ;
 });
-app.get('/people/',function(req,res){
-  res.redirect('/people/0') ;
-});
+// app.get('/people/',function(req,res){
+//   res.redirect('/people/0') ;
+// });
 app.get('/people/:name',function(req,res){
-  var name = req.params.name ;
+  var name = '' ;
+  name = req.params.name ;
+  if(name === null || name === undefined){
+    name = '' ;
+  }
   User.find({username :  {$regex : ".*"+name+".*"}},function(err,cuser){
     if(err){
       console.log(err);
@@ -237,6 +278,29 @@ app.get("/notification/:frname",function(req,res){
     if(err){
       console.log(err);
     }else{
+      console.log(cuser);
+    }
+  })
+})
+app.get("/get-notifications",function(req,res){
+  var username = req.user.username ;
+  Notification.findOne({handlename : username},function(err,cuser){
+    if(err){
+      console.log(err);
+    }else{
+      message = [] ;
+      request = [] ;
+      cuser.messages.forEach(function(mes){
+          message.push(mes['from']) ;
+      });
+      cuser.requests.forEach(function(mes){
+        request.push(mes.from) ;
+      });
+      var data = {message:message,request:request};
+      res.json(data) ;
+      console.log(message);
+      console.log(request);
+      console.log(data);
       console.log(cuser);
     }
   })

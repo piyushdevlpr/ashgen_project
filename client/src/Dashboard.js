@@ -16,6 +16,7 @@ class Dashboard extends Component {
         this.uploadPost = this.uploadPost.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.gotopeople = this.gotopeople.bind(this);
+        this.gotonoti = this.gotonoti.bind(this);
         this.filehandleChange = this.filehandleChange.bind(this)
     }
  
@@ -73,6 +74,15 @@ class Dashboard extends Component {
           }
         }) ;
     }
+    gotonoti=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/notifications/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
     render(){
         if(this.props.location.state === undefined){
             this.props.history.push("/") ;
@@ -82,6 +92,7 @@ class Dashboard extends Component {
                 <div className="container">
                    <div>
                         <button onClick={this.gotopeople}>PEOPLE</button>
+                        <button onClick={this.gotonoti}>Notifications</button>
                     </div>
                     <form onSubmit={this.uploadPost} encType="multipart/form-data">
                     <div className="form-group">
