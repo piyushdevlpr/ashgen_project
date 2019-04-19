@@ -23,7 +23,8 @@ var express     = require("express"),
     path = require("path"),
     server= require("http").createServer(app),
     io = require("socket.io").listen(server),
-    getUserRoute = require('./routes/getUser'); 
+    getUserRoute = require('./routes/getUser'),
+    postRoute    = require('./routes/post');
 
 
 
@@ -74,6 +75,7 @@ passport.deserializeUser(Team.deserializeUser());
 // });
 var port = process.env.PORT || 2000;
 app.use(getUserRoute);
+app.use(postRoute);
 // app.use(function(req, res, next){
 //    res.locals.currentUser = req.user;
 //    next();
