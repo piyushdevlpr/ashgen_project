@@ -15,12 +15,6 @@ var UserSchema = new mongoose.Schema({
   },
     username: String,
     password: String,
-    // this is actually private group
-    publicgrp : [
-      {
-        hashname:String
-      }
-    ],
     // this is public group
     pgrp : [
       {
@@ -39,18 +33,12 @@ var UserSchema = new mongoose.Schema({
       users:String
     }
     ],
-    // recent private group messages
-    recentgpmessages: [
-    {
-      users:String
-    }
-    ],
     friends: [
       {  
          name: String,
          propic: String,
       }
-   ],
+    ],
     email: {
         type: String,
         validate: [validateEmail, 'Please fill a valid email address']

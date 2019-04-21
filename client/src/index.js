@@ -8,6 +8,7 @@ import Profileind from './Profileind';
 import Profileteam from './Profileteam';
 import People from './People';
 import Shownotifications from './shownotifications';
+import Showfriends from './showfriends';
 import Dashboard from './Dashboard';
 import * as serviceWorker from './serviceWorker';
 
@@ -20,6 +21,7 @@ ReactDOM.render((
        <Route path = "/home/" component = {Dashboard} />
        <Route path = "/people/" component = {People} />
        <Route path = "/notifications/" component = {Shownotifications} />
+       <Route path = "/friends/" component = {Showfriends} />
        </Switch>
  </Router>
 ), document.getElementById('root'));

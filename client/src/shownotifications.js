@@ -25,6 +25,22 @@ class People extends Component {
     componentWillUnmount(){
         this.ismounted = false ; 
     }
+    accepted=(key)=>{
+        fetch("http://localhost:2000/verdict-accepted/"+key, {
+            method: "GET",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include'
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:data.message , requestfrom: data.request})}})
+        
+    }
+    declined=(key)=>{
+        fetch("http://localhost:2000/verdict-declined/"+key, {
+            method: "GET",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include'
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:data.message , requestfrom: data.request})}})
+        
+    }
     showmessandreq=()=>{
         if(this.state.messagefrom.length === 0 && this.state.requestfrom.length === 0){
             return (
@@ -33,12 +49,11 @@ class People extends Component {
                 </div>
             );
         }else{
-            //this.showmessages() ;
-            //this.showrequests() ;
-            
             const reqfrom = this.state.requestfrom.map((data)=>
                     <li>
-                        You have a friend request from {data} .
+                      <span>You have a friend request from {data} .</span>
+                      <button onClick = {()=>this.accepted(data)}>Accept</button>
+                      <button onClick = {()=>this.declined(data)}>Decline</button> 
                     </li>
             )
             const messfrom = this.state.messagefrom.map((data,key)=>
@@ -57,24 +72,6 @@ class People extends Component {
             </div>
             ) ;
         }
-    }
-    showmessages=()=>{
-        return(
-            this.state.messagefrom.map((data,key)=>
-                <div>
-                    You have a new message from {data} .
-                </div>
-            )
-        );
-    }
-    showrequests=()=>{
-        return(
-            this.state.requestfrom.map((data)=>
-                <li>
-                    You have a friend request from {data} .
-                </li>
-            )
-        );
     }
     render(){
         if(this.props.location.state === undefined){

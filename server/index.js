@@ -103,51 +103,59 @@ app.post("/login", passport.authenticate("userlocal",
 //---------------Authenticating the register credntials -------------------------------
 //app.post("/register",upload.single('profileImage'), function(req, res,next){
 app.post("/register",function(req, res,next){
-    //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
     console.log("hello") ;
     console.log(req.body) ;
+    var usern = req.body.usernmae ;
     var newUser = new User({username: req.body.username,email:req.body.emailid});
-    //var newnoti =  ;
-    User.register(newUser, req.body.password, function(err, user){
-        if(err){
-            console.log(err);
-            console.log("false");
-            return res.json("false") ;
-            //return res.render("register.ejs");
-        }
-        passport.authenticate("userlocal")(req, res, function(){
-          var newnoti = new Notification({handlename : req.body.username}) ;
-          newnoti.save(function(err,record){
+    
+    Team.find({username : usern},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }else{
+        if(cuser.length === 0){
+          User.register(newUser, req.body.password, function(err, user){
             if(err){
-              console.log(err) ;
+                console.log(err);
+                console.log("false");
+                return res.json("false") ;
+                //return res.render("register.ejs");
             }
-          })
-          var user = {'id':req.user._id , 'username' : req.user.username}
-        var newUser = new Yourprofile({
-        user: user ,
-        first_name: '',
-        Last_Name:'',
-        Specialisation:'',
-        College:'',
-        Teams:'',
-        Short_Bio:'',
-        Message_Request_Option:'',
-        Projects_and_competitions:'',
-        Achievements_in_competitions:'',
-        open_to_which_type_of_company_projects:'',
-        Open_to_which_type_of_collabs:''
-      });
-      newUser.save(function(err,cuser){
-        if(err){
-          console.log(err);
-        }else{
-          console.log(cuser) ;
-        }
-      })
-          console.log("true");  
-          res.json("true") ;    
-          //   res.redirect("/signedin"); 
+            passport.authenticate("userlocal")(req, res, function(){
+              var newnoti = new Notification({handlename : req.body.username}) ;
+              newnoti.save(function(err,record){
+                if(err){
+                  console.log(err) ;
+                }
+              })
+              var user = {'id':req.user._id , 'username' : req.user.username}
+              var newUser = new Teamprofile({
+              user: user ,
+              first_name: '',
+              Last_Name:'',
+              Specialisation:'',
+              College:'',
+              Teams:'',
+              Short_Bio:'',
+              Message_Request_Option:'',
+              Projects_and_competitions:'',
+              Achievements_in_competitions:'',
+              open_to_which_type_of_company_projects:'',
+              Open_to_which_type_of_collabs:''
+            });
+            newUser.save(function(err,cuser){
+              if(err){
+                console.log(err);
+              }else{
+                console.log(cuser) ;
+              }
+            })
+              console.log("true");  
+              res.json("true") ;
+              //   res.redirect("/signedin"); 
+            });
         });
+        }
+      }
     });
 });
 app.post("/loginteam", passport.authenticate("teamlocal", 
@@ -161,48 +169,58 @@ app.post("/registerteam",function(req, res,next){
   //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
   console.log("hello") ;
   console.log(req.body) ;
+  var usern = req.body.username ; 
   var newUser = new Team({username: req.body.username,email:req.body.emailid});
-  Team.register(newUser, req.body.password, function(err, user){
-      if(err){
-          console.log(err);
-          console.log("false");
-          return res.json("false") ;
-          //return res.render("register.ejs");
-      }
-      passport.authenticate("teamlocal")(req, res, function(){
-        var newnoti = new Notification({handlename : req.body.username}) ;
-        newnoti.save(function(err,record){
+  User.find({username : usern},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      if(cuser.length === 0){
+        Team.register(newUser, req.body.password, function(err, user){
           if(err){
-            console.log(err) ;
+              console.log(err);
+              console.log("false");
+              return res.json("false") ;
+              //return res.render("register.ejs");
           }
-        })
-        var user = {'id':req.user._id , 'username' : req.user.username}
-        var newUser = new Teamprofile({
-        user: user ,
-        first_name: '',
-        Last_Name:'',
-        Specialisation:'',
-        College:'',
-        Teams:'',
-        Short_Bio:'',
-        Message_Request_Option:'',
-        Projects_and_competitions:'',
-        Achievements_in_competitions:'',
-        open_to_which_type_of_company_projects:'',
-        Open_to_which_type_of_collabs:''
+          passport.authenticate("teamlocal")(req, res, function(){
+            var newnoti = new Notification({handlename : req.body.username}) ;
+            newnoti.save(function(err,record){
+              if(err){
+                console.log(err) ;
+              }
+            })
+            var user = {'id':req.user._id , 'username' : req.user.username}
+            var newUser = new Teamprofile({
+            user: user ,
+            first_name: '',
+            Last_Name:'',
+            Specialisation:'',
+            College:'',
+            Teams:'',
+            Short_Bio:'',
+            Message_Request_Option:'',
+            Projects_and_competitions:'',
+            Achievements_in_competitions:'',
+            open_to_which_type_of_company_projects:'',
+            Open_to_which_type_of_collabs:''
+          });
+          newUser.save(function(err,cuser){
+            if(err){
+              console.log(err);
+            }else{
+              console.log(cuser) ;
+            }
+          })
+            console.log("true");  
+            res.json("true") ;
+            //   res.redirect("/signedin"); 
+          });
       });
-      newUser.save(function(err,cuser){
-        if(err){
-          console.log(err);
-        }else{
-          console.log(cuser) ;
-        }
-      })
-        console.log("true");  
-        res.json("true") ;
-        //   res.redirect("/signedin"); 
-      });
+      }
+    }
   });
+  
 });
 
 app.post("/your-profile",function(req, res){
@@ -304,7 +322,58 @@ app.get("/get-notifications",function(req,res){
       console.log(cuser);
     }
   })
-})
+});
+app.get("/verdict-accepted/:frname",function(req,res){
+  var usernam = req.user.username ;
+  var frname = req.params.frname ;
+  console.log(frname) ;
+  var not = {from:frname} ;
+  Notification.findOneAndUpdate({handlename : usernam},{$pull: {requests : not}},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      //console.log(cuser);
+      var fr1 = {name:frname,propic:''} ;
+      var fr2 = {name:usernam,propic:''} ; 
+      User.findOneAndUpdate({username:usernam},{$push: {friends : fr1}},function(err,fuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(fuser.username)
+        }
+      });
+      User.findOneAndUpdate({username:frname},{$push: {friends : fr2}},function(err,kuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(kuser)
+        }
+      });
+    }
+  });
+});
+app.get("/verdict-declined/:frname",function(req,res){
+  var username = req.user.username ;
+  var frname = req.params.frname ;
+  var not = {from:frname} ;
+  Notification.findOneAndUpdate({handlename : username},{$pull: {requests : not}},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      console.log(cuser) ;
+    }
+  });
+});
+app.get("/get-friends",function(req,res){
+  var username = req.user.username ;
+  User.findOne({username:username},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      res.json(cuser.friends) ;
+    }
+  });
+});
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
