@@ -10,7 +10,8 @@ var YourProfileSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    username: String
+    username: String,
+    team:Boolean
   },
   first_name: String,
   Last_Name:String,

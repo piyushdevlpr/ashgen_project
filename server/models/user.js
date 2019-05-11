@@ -15,6 +15,7 @@ var UserSchema = new mongoose.Schema({
   },
     username: String,
     password: String,
+    team:Boolean,
     // this is public group
     pgrp : [
       {

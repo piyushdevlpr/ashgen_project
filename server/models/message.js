@@ -7,10 +7,11 @@ var MessageSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-    from: String,
-    to: String,
+    usercombo1: String,
+    usercombo2: String,
     messaged: [
       {
+        from:String,
         data:String
       }
     ]

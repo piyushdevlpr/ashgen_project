@@ -62,11 +62,11 @@ app.use(require("express-session")({
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use('userlocal',new LocalStrategy(User.authenticate()));
-passport.use('teamlocal',new LocalStrategy(Team.authenticate()));
+//passport.use('teamlocal',new LocalStrategy(Team.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-passport.serializeUser(Team.serializeUser());
-passport.deserializeUser(Team.deserializeUser());
+//passport.serializeUser(Team.serializeUser());
+//passport.deserializeUser(Team.deserializeUser());
 // app.use(function(req,res,next){                            //Populating current users to frontend
 //   res.locals.currentUser = req.user;
 //   res.locals.error       = req.flash("error");
@@ -109,14 +109,15 @@ app.post("/login", passport.authenticate("userlocal",
 app.post("/register",function(req, res,next){
     console.log("hello") ;
     console.log(req.body) ;
-    var usern = req.body.usernmae ;
-    var newUser = new User({username: req.body.username,email:req.body.emailid});
+    var tof = req.body.team ;
+    //var usern = req.body.usernmae ;
+    var newUser = new User({username: req.body.username,email:req.body.emailid, team:tof});
     
-    Team.find({username : usern},function(err,cuser){
-      if(err){
-        console.log(err) ;
-      }else{
-        if(cuser.length === 0){
+    // Team.find({username : usern},function(err,cuser){
+    //   if(err){
+    //     console.log(err) ;
+    //   }else{
+    //     if(cuser.length === 0){
           User.register(newUser, req.body.password, function(err, user){
             if(err){
                 console.log(err);
@@ -125,14 +126,14 @@ app.post("/register",function(req, res,next){
                 //return res.render("register.ejs");
             }
             passport.authenticate("userlocal")(req, res, function(){
-              var newnoti = new Notification({handlename : req.body.username}) ;
+              var newnoti = new Notification({handlename : req.body.username,team:req.body.team}) ;
               newnoti.save(function(err,record){
                 if(err){
                   console.log(err) ;
                 }
               })
-              var user = {'id':req.user._id , 'username' : req.user.username}
-              var newUser = new Teamprofile({
+              var user = {'id':req.user._id , 'username' : req.user.username, 'team':req.body.team}
+              var newUser = new Yourprofile({
               user: user ,
               first_name: '',
               Last_Name:'',
@@ -152,80 +153,81 @@ app.post("/register",function(req, res,next){
               }else{
                 console.log(cuser) ;
               }
-            })
+            });
               console.log("true");  
               res.json("true") ;
               //   res.redirect("/signedin"); 
             });
         });
-        }
-      }
-    });
 });
-app.post("/loginteam", passport.authenticate("teamlocal", 
-    {
-        successRedirect: "/loggedin",
-        failureRedirect: "/wrong"
-    }), function(req, res){
-});
+//        }
+//      }
+//    });
+//});
+// app.post("/loginteam", passport.authenticate("teamlocal", 
+//     {
+//         successRedirect: "/loggedin",
+//         failureRedirect: "/wrong"
+//     }), function(req, res){
+// });
 
-app.post("/registerteam",function(req, res,next){
-  //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
-  console.log("hello") ;
-  console.log(req.body) ;
-  var usern = req.body.username ; 
-  var newUser = new Team({username: req.body.username,email:req.body.emailid});
-  User.find({username : usern},function(err,cuser){
-    if(err){
-      console.log(err) ;
-    }else{
-      if(cuser.length === 0){
-        Team.register(newUser, req.body.password, function(err, user){
-          if(err){
-              console.log(err);
-              console.log("false");
-              return res.json("false") ;
-              //return res.render("register.ejs");
-          }
-          passport.authenticate("teamlocal")(req, res, function(){
-            var newnoti = new Notification({handlename : req.body.username}) ;
-            newnoti.save(function(err,record){
-              if(err){
-                console.log(err) ;
-              }
-            })
-            var user = {'id':req.user._id , 'username' : req.user.username}
-            var newUser = new Teamprofile({
-            user: user ,
-            first_name: '',
-            Last_Name:'',
-            Specialisation:'',
-            College:'',
-            Teams:'',
-            Short_Bio:'',
-            Message_Request_Option:'',
-            Projects_and_competitions:'',
-            Achievements_in_competitions:'',
-            open_to_which_type_of_company_projects:'',
-            Open_to_which_type_of_collabs:''
-          });
-          newUser.save(function(err,cuser){
-            if(err){
-              console.log(err);
-            }else{
-              console.log(cuser) ;
-            }
-          })
-            console.log("true");  
-            res.json("true") ;
-            //   res.redirect("/signedin"); 
-          });
-      });
-      }
-    }
-  });
+// app.post("/registerteam",function(req, res,next){
+//   //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
+//   console.log("hello") ;
+//   console.log(req.body) ;
+//   var usern = req.body.username ; 
+//   var newUser = new Team({username: req.body.username,email:req.body.emailid});
+//   User.find({username : usern},function(err,cuser){
+//     if(err){
+//       console.log(err) ;
+//     }else{
+//       if(cuser.length === 0){
+//         Team.register(newUser, req.body.password, function(err, user){
+//           if(err){
+//               console.log(err);
+//               console.log("false");
+//               return res.json("false") ;
+//               //return res.render("register.ejs");
+//           }
+//           passport.authenticate("teamlocal")(req, res, function(){
+//             var newnoti = new Notification({handlename : req.body.username}) ;
+//             newnoti.save(function(err,record){
+//               if(err){
+//                 console.log(err) ;
+//               }
+//             })
+//             var user = {'id':req.user._id , 'username' : req.user.username}
+//             var newUser = new Teamprofile({
+//             user: user ,
+//             first_name: '',
+//             Last_Name:'',
+//             Specialisation:'',
+//             College:'',
+//             Teams:'',
+//             Short_Bio:'',
+//             Message_Request_Option:'',
+//             Projects_and_competitions:'',
+//             Achievements_in_competitions:'',
+//             open_to_which_type_of_company_projects:'',
+//             Open_to_which_type_of_collabs:''
+//           });
+//           newUser.save(function(err,cuser){
+//             if(err){
+//               console.log(err);
+//             }else{
+//               console.log(cuser) ;
+//             }
+//           })
+//             console.log("true");  
+//             res.json("true") ;
+//             //   res.redirect("/signedin"); 
+//           });
+//       });
+//       }
+//     }
+//   });
   
-});
+// });
 
 app.post("/your-profile",function(req, res){
     console.log("hello") ;
@@ -252,7 +254,7 @@ app.post("/team-profile",function(req, res){
   console.log("hello") ;
   console.log(req.body) ;
   var user = {id:req.user.id , username : req.user.username}
-  Teamprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
+  Yourprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
     Last_Name:req.body.Last_Name,
     Specialisation:req.body.Specialisation,
     College:req.body.College,
@@ -268,25 +270,22 @@ app.post("/team-profile",function(req, res){
       }
   });
 });
-// app.get('/people/',function(req,res){
-//   res.redirect('/people/0') ;
-// });
 app.get('/people/:name',function(req,res){
   var name = '' ;
   name = req.params.name ;
   if(name === null || name === undefined){
     name = '' ;
   }
+  //resuser = [] ;
+  response = [];
   User.find({username :  {$regex : ".*"+name+".*"}},function(err,cuser){
     if(err){
       console.log(err);
     }else{
-       //console.log(cuser) ;
-       resuser = [] ;
        cuser.forEach(function(user){
-        resuser.push(user.username) ;
+        response.push({user:user.username,team:user.team,propic:user.propic}) ;
        });
-       response = {users: resuser}
+       //response = {users: resuser}
        console.log(response) ;
        res.json(response) ;
     }
@@ -353,6 +352,15 @@ app.get("/verdict-accepted/:frname",function(req,res){
           console.log(kuser)
         }
       });
+      var usercombo1 = usernam+frname ;
+      var usercombo2 = frname+usernam ;
+      var newChat = new Message({usercombo1:usercombo1,usercombo2:usercombo2}) ;
+      //var newChat2 = new Message({from:frname,to:usernam}) ;
+      newChat.save(function(err,c){
+        if(err){
+          console.log(err) ;
+        }
+      });
     }
   });
 });
@@ -381,7 +389,43 @@ app.get("/get-friends",function(req,res){
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
-       socket.on("remove-member",function(data2){
+socket.on('join', function (data) {    
+  socket.join(data.username);               // make room by name of each user for each user.. when a user needs to send message to thid user, just enter its room.
+});
+socket.on("showmessages",function(data){
+  var currentuser = data.username ;
+        var friendname = data.friendname ;
+        var usercombo1 = currentuser+friendname ;
+        console.log(usercombo1) ;
+        //var message = data.message ;
+        //ms = { "data": currentuser + " : " + message} ;
+        Message.findOne({$or:[{usercombo1:usercombo1},{usercombo2:usercombo1}]},function(err,cuser){
+          if(err){
+            console.log(err) ;
+          }else{
+            console.log(cuser) ;
+            io.to(currentuser).emit("getmessages",{messages:cuser.messaged});               
+          }
+        })
+})
+socket.on("newmessage",function(data){
+        var currentuser = data.username ;
+        var friendname = data.friendname ;
+        var usercombo1 = currentuser+friendname ;
+        var message = data.message ;
+        ms = { "from":currentuser,"data":message } ;
+        // io.to(friendname).emit("newmessagereceived",{messages:ms});
+        Message.findOneAndUpdate({$or:[{usercombo1:usercombo1},{usercombo2:usercombo1}]},{$push:{messaged:ms}},{new:true},function(err,cuser){
+          if(err){
+            console.log(err) ;
+          }else{
+            console.log(cuser.messaged[cuser.messaged.length - 1]) ;
+            io.to(friendname).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});               
+            io.to(currentuser).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});
+          }
+        })
+      });
+socket.on("remove-member",function(data2){
         var grphashtag = {"hashname": data2.grpname};
           var grouphashtag = {"username": data2.membername} ;
           var isPresent = false ;

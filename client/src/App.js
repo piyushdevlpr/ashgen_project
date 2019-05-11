@@ -40,7 +40,7 @@ click=(event)=>{
   console.log(this.state) ;
 
   //https://ojus-server-132kgu2rdjqbfc.herokuapp.com
-  fetch("http://localhost:2000/register", {
+  fetch("http://localhost:2000/register",{
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state),
@@ -99,7 +99,7 @@ gotohomeprofile=()=>{
 getlogin=()=>{
   return(
   <div>
-  <form onSubmit={this.click2} method='POST' action='https://ojus-server-132kgu2rdjqbfc.herokuapp.com/login'>
+  <form onSubmit={this.click2} method='POST' action='http://localhost:2000/login'>
   <div>
       <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
       <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
@@ -116,7 +116,7 @@ getsignup=()=>{
   return(
   <div>
     
-    <form onSubmit={this.click} method='POST' action='https://ojus-server-132kgu2rdjqbfc.herokuapp.com/register'>	
+    <form onSubmit={this.click} method='POST' >	
 									
 													
                   <input id="login-firstname" type="text" className="background form-control" name='username' value={this.state.username} placeholder="USER NAME (MAX. LENGTH 6)" minLength="6" maxLength="6" required={true} onChange={this.handleChange}/><br/>
@@ -175,7 +175,7 @@ click4=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("http://localhost:2000/registerteam", {
+  fetch("http://localhost:2000/register", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
@@ -187,7 +187,7 @@ click3=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   console.log(this.state) ;
-  fetch("http://localhost:2000/loginteam", {
+  fetch("http://localhost:2000/login", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)

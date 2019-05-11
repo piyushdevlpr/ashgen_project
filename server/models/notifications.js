@@ -8,6 +8,7 @@ var NotificationSchema = new mongoose.Schema({
     auto: true,
   },                   
     handlename: String,                     // name of team and user who will receive the notification
+    team: Boolean,
     messages :[{
         from : {type:String}                // user name who has sent the msg
     }],

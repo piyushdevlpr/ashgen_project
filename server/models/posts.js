@@ -13,6 +13,7 @@ var PostSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    team:Boolean,
     username: String
 },
 type : {type: String, default: ''},       // type of the post - text, photo and video 

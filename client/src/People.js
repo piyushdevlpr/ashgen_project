@@ -7,8 +7,7 @@ class People extends Component {
         super(props) ;
         this.state = {
             people : '',
-            propiclink : [],
-            username : []
+            user : []
         }
         this.handlechange = this.handlechange.bind(this) ;
         // this.sendnoti = this.sendnoti.bind(this) ;
@@ -43,10 +42,10 @@ class People extends Component {
         .then(datas =>{
           this.setState({
             //propiclink: datas.propic,
-            username : datas.users
+            user : datas
           })
           console.log(this.state.people) ;
-          console.log(this.state.username) ;
+          console.log(this.state.user) ;
         }
         )
         .catch(error => console.log(error));
@@ -56,12 +55,12 @@ class People extends Component {
             return null ;
         }else{
             return(
-                <span>{key}<button onClick={()=>this.sendnoti(key)}>AddFriend</button></span>
+                <span>{key.user}<button onClick={()=>this.sendnoti(key.user)}>AddFriend</button></span>
             );
         }
     }
     showusers=()=>{
-        if(this.state.username.length === 0){
+        if(this.state.user.length === 0){
             return (
                 <div>
                     NO SUCH USER
@@ -69,7 +68,7 @@ class People extends Component {
             );
         }else{
         return(
-        this.state.username.map((name,key)=>
+        this.state.user.map((name,key)=>
             <div>
                 {this.authuser(name)} 
             </div>
