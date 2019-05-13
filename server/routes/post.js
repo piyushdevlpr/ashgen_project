@@ -56,7 +56,8 @@ router.post('/photo_upload', function(req,res)
                     throw err;
                 else{
                     console.log(model);
-                    return res.send(200).end();
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(model);
 
                 }
 
@@ -98,7 +99,8 @@ router.post('/video_upload', function(req,res)
                     throw err;
                 else{
                     console.log(model);
-                    return res.send(200).end();
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(model);
 
                 }
 
@@ -125,7 +127,8 @@ router.post('/text_upload', function(req,res)
                     throw err;
                 else{
                     console.log(model);
-                    return res.send(200).end();
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(model);
 
                 }
 
@@ -134,6 +137,110 @@ router.post('/text_upload', function(req,res)
 }
 );
 
+//gett posts
+router.get('/dashboard_posts',function(req,res)
+{
+    var data = {List:[]};
+    postModel.find({},function(err,model)
+    {
+        if(err)
+            throw err;
+        else{
+            data.List= model;
+            res.setHeader('Content-Type', 'application/json');
+            res.send(data);
+
+
+        }
+    })
+
+} );
+
+//post comment
+router.post('/post_comment',function(req,res)
+{
+    var id = req.body._id;
+    console.log(id);
+    comments ={
+
+    }
+    author = {
+
+    }
+    author.id = req.user._id;
+    author.user = req.user.username;
+    comments.comment = req.body.comment;
+    comments.author = author;
+
+    
+    postModel.findByIdAndUpdate(id,{"$push":{"comments":comments}}, { "new": true, "upsert": true },function(err,model)
+    {
+        if(err)
+        {
+            throw err;
+        }
+        else{
+            console.log(model);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+        }
+    })
+})
+
+//post likes
+router.post('/post_like',function(req,res)
+{
+    var id = req.body.id;
+    likes ={
+
+    }
+    author = {
+
+    }
+    author.id = req.user._id;
+    author.user = req.user.username;
+    likes.author = author;
+
+    
+    postModel.findByIdAndUpdate(id,{"$push":{"likes":likes}}, { "new": true, "upsert": true },function(err,model)
+    {
+        if(err)
+        {
+            throw err;
+        }
+        else{
+            // console.log(model);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+        }
+    })
+});
+
+
+//delete likes
+
+router.delete('/post_like',function(req,res)
+{
+    // var id = req.body.id;
+    // console.log(req.user._id);
+    // var userId = req.user._id;
+    // author = {};
+    // author.id = userId;
+    console.log(req.body);
+    
+    // postModel.findByIdAndUpdate(id,{"$pull":{"likes":[author]}},function(err,model)
+    // {
+    //     if(err)
+    //     {
+    //         throw err;
+    //     }
+    //     else{
+    //         console.log(model);
+    //         res.setHeader('Content-Type', 'application/json');
+    //         res.send(model);
+    //     }
+    // })
+});
 
 
 module.exports = router;

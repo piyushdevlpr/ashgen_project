@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import socketIOClient from "socket.io-client";
-const axios = require("axios");
+import TextList from './TextList';
+import PhotoList from './PhotoList';
+import VideoList from './VideoList';
 
+const axios = require("axios");
 
 class Dashboard extends Component {
     ismounted = true ;
@@ -14,17 +17,21 @@ class Dashboard extends Component {
             photo: null,
             video: null,
             isphoto : false,          //this parameter used for either photo or video upload
+            data : {},
+            loading: true
         }
         this.uploadPost = this.uploadPost.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.gotopeople = this.gotopeople.bind(this);
         this.gotonoti = this.gotonoti.bind(this);
         this.gotofriends = this.gotofriends.bind(this);
-        this.filehandleChange = this.filehandleChange.bind(this)
+        this.filehandleChange = this.filehandleChange.bind(this);
+        this.renderPosts   = this.renderPosts.bind(this);
     }
  
     componentDidMount(){ 
         this.ismounted = true ;
+        this.fetchPosts();
      
     }
     componentWillUnmount(){
@@ -68,6 +75,9 @@ class Dashboard extends Component {
             axios.post("http://localhost:2000/photo_upload",formData,config)
                 .then((response) => {
                     alert("The Photo is successfully uploaded");
+                    var data = this.state.data;
+                    data.List.unshift(response.data);
+                    this.setState({data:data})
                 }).catch((error) => {
             });
             
@@ -91,6 +101,9 @@ class Dashboard extends Component {
                     axios.post("http://localhost:2000/video_upload",formData,config)
                         .then((response) => {
                             alert("The Video is successfully uploaded");
+                            var data = this.state.data;
+                            data.List.unshift(response.data);
+                            this.setState({data:data})
                         }).catch((error) => {
                     });                   
 
@@ -110,6 +123,9 @@ class Dashboard extends Component {
                         axios.post("http://localhost:2000/text_upload",data,config)
                         .then((response) => {
                             alert("The Post is successfully uploaded");
+                            var data = this.state.data;
+                            data.List.unshift(response.data);
+                            this.setState({data:data});
                         }).catch((error) => {
                     });  
 
@@ -119,17 +135,7 @@ class Dashboard extends Component {
 
        
        
-    //     if(this.ismounted === true){
-    //     fetch("http://localhost:2000/post_upload", {
-    //                 method: "POST",
-    //                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-    //                 body: JSON.stringify({hello:'world'}),
-    //                 credentials: 'include'
-    //             }).then(res => res.json()).then(data => {
-                   
-
-    //             })
-    //  }
+ 
 
     }
     gotopeople=(event)=>{
@@ -159,6 +165,60 @@ class Dashboard extends Component {
           }
         }) ;
     }
+
+    fetchPosts()
+    {
+        axios.get('http://localhost:2000/dashboard_posts').then((response)=>{
+            // console.log(response);
+            this.setState({data:response.data},()=>{
+
+                this.setState({loading:false})
+
+            });
+            
+        })
+
+    }
+
+//returning post
+    renderPosts()
+    {
+
+        
+
+        if(this.state.loading)
+        {
+            return(
+                <p>Loading...</p>
+            )
+        }
+       else{
+           const list = this.state.data.List.map(function(item)
+           {
+               if(item.type=='text')
+               {
+                   return(<TextList item={item} key={item._id} />)
+               }
+               else if(item.type=="photo")
+               {
+                return(<PhotoList item={item} key={item._id} />)
+
+               }
+               else{
+                return(<VideoList item={item} key={item._id} />)
+
+               }
+           })
+
+           return list;
+       }
+        
+       
+
+    }
+
+
+
     render(){
         if(this.props.location.state === undefined){
             this.props.history.push("/") ;
@@ -171,6 +231,7 @@ class Dashboard extends Component {
                         <button onClick={this.gotonoti}>NOTIFICATIONS</button>
                         <button onClick={this.gotofriends}>FRIENDS</button>
                     </div>
+                    <div>
                     <form onSubmit={this.uploadPost} encType="multipart/form-data">
                     <div className="form-group">
                     <label htmlFor="exampleFormControlTextarea1">Upload post</label>
@@ -189,6 +250,13 @@ class Dashboard extends Component {
 
                 </div>
              </form>
+             </div>
+                <div className="posts"> 
+                {this.renderPosts()}
+                
+                </div>
+
+
                 </div>
             );
         }        

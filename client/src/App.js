@@ -37,7 +37,7 @@ componentWillUnmount(){
 click=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
-  console.log(this.state) ;
+  // console.log(this.state) ;
 
   //https://ojus-server-132kgu2rdjqbfc.herokuapp.com
   fetch("http://localhost:2000/register",{
@@ -46,7 +46,7 @@ click=(event)=>{
     body: JSON.stringify(this.state),
     credentials:'include'
   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({signedup : data})}})
-  console.log(this.state) ;
+  // console.log(this.state) ;
 }
 }
 handleChange=(event)=>{
@@ -58,14 +58,14 @@ handleChange=(event)=>{
 click2=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
-  console.log(this.state) ;
+  // console.log(this.state) ;
   fetch("http://localhost:2000/login", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state),
      credentials: 'include'
   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
-  console.log(this.state) ;
+  // console.log(this.state) ;
   }
 }
 gotohome=()=>{
@@ -174,13 +174,13 @@ loginorsignup=()=>{
 click4=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
-  console.log(this.state) ;
+  // console.log(this.state) ;
   fetch("http://localhost:2000/register", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({signedup : data})}})
-  console.log(this.state) ;
+  // console.log(this.state) ;
 }
 }
 click3=(event)=>{
@@ -192,7 +192,7 @@ click3=(event)=>{
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state)
   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
-  console.log(this.state) ;
+  // console.log(this.state) ;
   }
 }
 getloginteam=()=>{
@@ -267,7 +267,7 @@ render() {
       <div>
         <button className={'col-sm-6 btn btn-default addallborder login'+!this.state.team } onClick={()=>this.teamfalse()}>INDIVIDUAL</button><button className={'col-sm-6 btn btn-default addallborder login'+this.state.team} onClick={()=>this.teamtrue()}>TEAM</button>
         {this.teamorind()}           
-          {console.log(this.state)} 
+          {/* {console.log(this.state)}  */}
       </div>
        </div>
     );

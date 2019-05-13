@@ -22,46 +22,75 @@ desc : {type: String, default:''},  //description of the post
 imgurl: {type:String, default:''}, // url of th image uploaded
 vidurl : {type:String, default:''}, // url of the video uploaded
 comments: [{                          //comments on the post
-    id:{
+
+    _id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    },
-    user: {type: String, default: ''},           // user who has comment
-    comment: {type: String, default: ''},       // comment of the user
-    likes : [{                                  // likes on the comment
-         id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    },
-    
-    user: {type: String, default: ''},  
-    }],
-    reply: [{                                 //reply on the comment
+        auto: true,
+      },
+
+    author:{
         id:{
             type:mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
-        
-        user: {type: String, default: ''},
+        user: {type: String, default: ''},           // user who has comment
+
+    },
+   
+    count : {type:Number,default:0} ,// comment count
+    comment: {type: String, default: ''},       // comment of the user
+    likes : [{ // likes on the comment
+        author:{
+            id:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            },
+            user: {type: String, default: ''},           // user who has comment
+    
+        },
+    count : {type:Number, default:0}   //likes on comment count
+    }],
+    reply: [{                                 //reply on the comment
+        _id:{
+            type:mongoose.Schema.Types.ObjectId,
+            auto: true,
+          },
+        author:{
+            id:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            },
+            user: {type: String, default: ''},           // user who has comment
+    
+        },
+       
+        count : {type:Number, default:0}, //reply count on comment
         comment : {type: String, default: ''},
     }],
 
 }],
 likes: [{                                     // likes on the post
-    id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref: "User"
+    author:{
+        id:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        user: {type: String, default: ''},           // user who has comment
+
     },
-    
-    user:{type: String, default: ''},
+    count : {type:Number, default:0}  // likes count
+
 }],
 shares : [{                                // shares on the post
-    id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref: "User"
+    author:{
+        id:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        user: {type: String, default: ''},           // user who has comment
+
     },
-    
-    user: {type: String, default: ''},
+    count: {type:Number, default:0}    //shares count
 }],
 uploadedAt: {
  type:String,
