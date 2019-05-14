@@ -25,7 +25,8 @@ _isMounted = true;
         this.toggleLike = this.toggleLike.bind(this);
         this.fetchLikes = this.fetchLikes.bind(this);
         this.checkIfLiked = this.checkIfLiked.bind(this);
-        
+        this.fetchShare   = this.fetchShare.bind(this);
+        this.postShare = this.postShare.bind(this);
        
     }
 
@@ -248,6 +249,38 @@ _isMounted = true;
     }
 
 
+    postShare(event)
+    {   
+        event.preventDefault();
+        const config = {
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true, // default
+
+        };
+        var post_id = this.state.item._id;
+        var data = {};
+        data.post_id = post_id;
+        axios.post('http://localhost:2000/post_share',data,config)
+        .then((response)=>{
+            console.log(response.data);
+
+        })
+        .catch((err)=>{
+            throw err;
+        })
+
+
+    }
+
+
+    fetchShare()
+    {
+
+    }
+
+
     render()
     {
         
@@ -268,6 +301,14 @@ _isMounted = true;
             <p>Liked by</p>
             <div>
                 {this.fetchLikes()}
+            </div>
+            </div>
+
+            <div className="share-button">
+            <button type="button" onClick={this.postShare} className="btn btn-danger">Share</button>
+            <p>Shared by</p>
+            <div>
+                {this.fetchShare()}
             </div>
             </div>
             <div className="comment">

@@ -22,7 +22,6 @@ var CommentSchema = new mongoose.Schema({
     },
   },
 
-  count : {type:Number,default:0} ,// comment count
   comment: {type: String, default: ''},       // comment of the user
 
   postedAt: {

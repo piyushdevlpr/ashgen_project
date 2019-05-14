@@ -22,7 +22,6 @@ var LikeSchema = new mongoose.Schema({
     },
   },
 
-  count : {type:Number,default:0} ,// comment count
   postedAt: {
     type:String,
     default: moment().format('LLL').toString()

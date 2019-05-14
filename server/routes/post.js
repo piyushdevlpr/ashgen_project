@@ -3,6 +3,7 @@ const multer = require("multer");
 let postModel = require('../models/posts/posts')
 let commentModel = require('../models/posts/comment');
 let likeModel       = require('../models/posts/like');
+let shareModel      = require('../models/posts/share');
 var mongoose   = require('mongoose');
 //uploading photo
 const storagePhoto = multer.diskStorage({
@@ -335,6 +336,33 @@ router.post('/check_like',function(req,res)
                 res.send(data);           }
         }
     })
+})
+
+
+router.post('/post_share',function(req,res)
+{
+    var post_id = mongoose.Types.ObjectId(req.body.post_id);
+
+    var user_id = req.user.user_id;
+    var username = req.user.username;
+    var author ={};
+    author.id = user_id;
+    author.username = username;
+    var post ={}
+    post.id = post_id;
+    data ={};
+    data.author = author;
+    data.post = post;
+    shareModel.create(data,function(err,model)
+    {
+        if(err)
+            throw err;
+        else{
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+        }
+    })
+
 })
 
 module.exports = router;
