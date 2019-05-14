@@ -8,9 +8,15 @@ _isMounted = true;
     constructor(props){
         super(props) ;
         this.state = {
-           comment:'',
+           comment:'',   //user can write comment
            like:false,
            item : this.props.item,
+           comments: [],          //posts comments
+           likes: [],           //list of post likes
+           commentLoad : false,
+           likeLoad    : false,
+           likeInfo : {}, // if user liked the post then LikeSchema will be stored here
+
            
         }
         this.postComment = this.postComment.bind(this);
@@ -18,6 +24,7 @@ _isMounted = true;
         this.fetchComments  = this.fetchComments.bind(this);
         this.toggleLike = this.toggleLike.bind(this);
         this.fetchLikes = this.fetchLikes.bind(this);
+        this.checkIfLiked = this.checkIfLiked.bind(this);
         
        
     }
@@ -25,11 +32,45 @@ _isMounted = true;
     componentWillMount()
     {
         this._isMounted = true;
+        this.checkIfLiked();
+
     }
     componentWillUnmount()
     {
         this._isMounted = false;
+
     }
+
+    checkIfLiked()
+    {
+
+        const config = {
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true, // default
+
+        };
+        var data ={};
+        data.post_id = this.props.item._id;
+        axios.post('http://localhost:2000/check_like',data,config)
+        .then((response)=>{
+
+            if(response.data.check==true)
+            {
+                this.setState({like:true});
+                this.setState({likeInfo:response.data.likeInfo});
+            }
+
+        })
+        .catch((err)=>{
+            throw err;
+        })
+
+
+    }
+
+
     postComment(event)
     {
         event.preventDefault() ;
@@ -43,16 +84,18 @@ _isMounted = true;
         const data = {
 
         }
-        data._id = this.state.item._id;
-        data.comment = this.state.comment;
+        data._id = this.state.item._id;   //post id
+        data.comment = this.state.comment; // comment
 
         axios.post('http://localhost:2000/post_comment',data,config)
         .then((response)=>{
-            console.log(response.data.comments);
-            var item = this.state.item;
-            item.comments = response.data.comments;
-            // console.log(item.comments);
-            this.setState({item:item});
+        //    console.log(response.data);
+            var comments  =this.state.comments;
+            comments.unshift(response.data);
+            this.setState({comments:comments}, ()=>{
+                this.setState({comment:''})
+            });
+
         })
         .catch((error)=>{
             throw error;
@@ -74,33 +117,87 @@ _isMounted = true;
 
     fetchComments()
     {
-        var list = this.state.item.comments.map(function(item){
+
+        if(!this.state.commentLoad)
+        {
+            var data ={}
+            var post_id = this.state.item._id;
+            data.post_id = post_id;
+            const config = {
+                headers: {
+                    'content-type': 'application/json'
+                },
+                withCredentials: true, // default
+
+            };
+            var list;
+
+            axios.post('http://localhost:2000/fetch_comments',data,config)
+            .then((response)=>{
+                // console.log(response.data);
+                this.setState({comments:response.data},()=>{this.setState({commentLoad:true})})
+            
+            })
+    }
+    else{
+
+        list = this.state.comments.map(function(item)
+        {
             return(
                 <div key={item._id}>
-                    <h5>{item.author.user}</h5>
+                    <h5>comment by {item.author.username}</h5>
                     <p>{item.comment}</p>
-                    <hr />
-                 </div>
+                </div>
             )
         })
+
         return list;
+
+
+    }
     }
 
     fetchLikes()
     {
-        var list = this.state.item.likes.map(function(item){
+       if(!this.state.likeLoad)
+       {
+        var data ={}
+        var post_id = this.state.item._id;
+        data.post_id = post_id;
+        const config = {
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true, // default
+
+        };
+        var list;
+
+        axios.post('http://localhost:2000/fetch_likes',data,config)
+        .then((response)=>{
+            // console.log(response.data);
+            this.setState({likes:response.data},()=>{this.setState({likeLoad:true})})
+        
+        })
+       }
+       else{
+
+        list = this.state.likes.map(function(item)
+        {
             return(
-                <div key={item._id}>
-                    <p>{item.author.user}</p>
-                 </div>
+                <div>
+                    <p key={item._id}>{item.author.username}</p>
+                </div>
             )
         })
+
         return list;
+
+       }
     }
 
     toggleLike(event)
     {
-        console.log('hello');
         event.preventDefault();
 
         const config = {
@@ -117,10 +214,13 @@ _isMounted = true;
             axios.post('http://localhost:2000/post_like',data,config)
             .then((response)=>{
 
-                this.setState({like:true});
-                var item = this.state.item;
-                item.likes = response.data.likes;
-                this.setState({item:item});
+                var likes  =this.state.likes;
+                likes.unshift(response.data);
+                this.setState({likes:likes}, ()=>{
+                    this.setState({like:true});
+                    this.checkIfLiked();
+                });
+             
             
             })
             .catch((error)=>{
@@ -130,17 +230,12 @@ _isMounted = true;
     }
     else{
         var  data = {};
-        data.id = this.state.item._id;
-        console.log(data.id);
-        axios.delete('http://localhost:2000/post_like',data)
+        data.likeInfo = this.state.likeInfo;
+        axios.post('http://localhost:2000/un_like',data,config)
         .then((response)=>{
             
-            this.setState({like:false});
-            var item = this.state.item;
-            item.likes = response.data.likes;
-            console.log(item.likes);
-            this.setState({item:item});
-        
+                this.setState({like:false});
+                this.setState({likeLoad:false})
         })
         .catch((error)=>{
             throw error;
