@@ -7,7 +7,8 @@ class People extends Component {
         super(props) ;
         this.state = {
             messagefrom : [],
-            requestfrom : []
+            requestfrom : [],
+            grouprequest : []
         }
     }
     getnoti=()=>{
@@ -15,7 +16,7 @@ class People extends Component {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
-          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:data.message , requestfrom: data.request})}})
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:data.message , requestfrom: data.request, grouprequest: data.groups})}})
           console.log(this.state) ;
     }
     componentDidMount(){ 
@@ -25,30 +26,51 @@ class People extends Component {
     componentWillUnmount(){
         this.ismounted = false ; 
     }
+    groupaccepted=(key)=>{
+        fetch("http://localhost:2000/verdict-groupaccepted", {
+            method: "POST",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include',
+            body : JSON.stringify(key)
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:[] , requestfrom: [] , grouprequest:[]})}})
+    }
+    groupdeclined=(key)=>{
+        fetch("http://localhost:2000/verdict-groupdeclined", {
+            method: "POST",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include',
+            body:JSON.stringify(key)
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:[] , requestfrom: [] , grouprequest:[]})}})    
+    }
     accepted=(key)=>{
         fetch("http://localhost:2000/verdict-accepted/"+key, {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
-          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:data.message , requestfrom: data.request})}})
-        
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:[] , requestfrom: [] , grouprequest:[]})}})
     }
     declined=(key)=>{
         fetch("http://localhost:2000/verdict-declined/"+key, {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
-          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:data.message , requestfrom: data.request})}})
-        
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({messagefrom:[] , requestfrom: [] , grouprequest:[]})}})    
     }
     showmessandreq=()=>{
-        if(this.state.messagefrom.length === 0 && this.state.requestfrom.length === 0){
+        if(this.state.messagefrom.length === 0 && this.state.requestfrom.length === 0 && this.state.grouprequest.length === 0){
             return (
                 <div>
                 No notifications yet !!
                 </div>
             );
         }else{
+            const groupreq = this.state.grouprequest.map((data)=>
+                    <li>
+                      <span>You have a new request from {data.from} to join {data.groupname} .</span>
+                      <button onClick = {()=>this.groupaccepted(data)}>Accept</button>
+                      <button onClick = {()=>this.groupdeclined(data)}>Decline</button> 
+                    </li>
+            )
             const reqfrom = this.state.requestfrom.map((data)=>
                     <li>
                       <span>You have a friend request from {data} .</span>
@@ -57,12 +79,15 @@ class People extends Component {
                     </li>
             )
             const messfrom = this.state.messagefrom.map((data,key)=>
-            <div>
+             <div>
                 You have a new message from {data} .
             </div>
             )
             return (
             <div> 
+               <ul>
+                    {groupreq}
+                </ul>
                <ul>
                     {reqfrom}
                 </ul>
@@ -82,7 +107,7 @@ class People extends Component {
                 <div>
                     <div>
                         NOTIFICATIONS :
-                    </div>                
+                    </div>
                     {this.showmessandreq()}
                     {console.log(this.state)}
                 </div>

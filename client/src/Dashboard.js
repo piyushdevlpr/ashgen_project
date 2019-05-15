@@ -19,6 +19,7 @@ class Dashboard extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.gotopeople = this.gotopeople.bind(this);
         this.gotonoti = this.gotonoti.bind(this);
+        this.gotogroups = this.gotogroups.bind(this);
         this.gotofriends = this.gotofriends.bind(this);
         this.filehandleChange = this.filehandleChange.bind(this)
     }
@@ -150,6 +151,15 @@ class Dashboard extends Component {
           }
         }) ;
     }
+    gotogroups=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/groups/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
     gotofriends=(event)=>{
         event.preventDefault() ;
         this.props.history.push({
@@ -170,6 +180,7 @@ class Dashboard extends Component {
                         <button onClick={this.gotopeople}>PEOPLE</button>
                         <button onClick={this.gotonoti}>NOTIFICATIONS</button>
                         <button onClick={this.gotofriends}>FRIENDS</button>
+                        <button onClick={this.gotogroups}>Groups</button>
                     </div>
                     <form onSubmit={this.uploadPost} encType="multipart/form-data">
                     <div className="form-group">

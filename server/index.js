@@ -12,9 +12,9 @@ var express     = require("express"),
     Message        = require("./models/message"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage        = require("./models/groupmessage"),
-    PGroup        = require("./models/pgroup"),
+    // PGroup        = require("./models/pgroup"),
     Notification = require("./models/notifications")
-    GMessage        = require("./models/gmessage"),
+    // GMessage        = require("./models/gmessage"),
     searchedFriend = {},
     whichPage2 = "six" ;
     frnames = [] ,
@@ -270,6 +270,59 @@ app.post("/team-profile",function(req, res){
       }
   });
 });
+app.post('/newgroup',function(req,res){
+  var groupname = req.body.newgroupname ;
+  var members = req.body.members ;
+  console.log(members) ;
+  var currentusers = []
+  var pus = {'username' : req.body.name} ;
+  currentusers.push(pus);
+  var newGroup = new PublicGroup({
+    groupname : groupname,
+    requestedusers : members,
+    users : currentusers
+  })
+  var success = false ;
+  var groupid = '' ; 
+  newGroup.save(function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      data = {mes:"group created"} ;
+      success = true ;
+      groupid = cuser._id ;
+      group = {groupid : groupid , groupname : groupname} ;
+      console.log(data) ;
+      console.log(cuser._id) ;
+      res.json(data) ;
+      User.findOneAndUpdate({username : req.body.name} , {$push : {groups:group}},function(err,cuser2){
+        if(err){
+          console.log(err) ;
+        }else{
+          console.log(cuser2) ;
+          for(var i = 0 ; i < members.length ; i++){
+            var usern = members[i].username ;
+            group = {'from' : req.body.name , 'groupname' : groupname , 'groupid' : groupid} ;
+            Notification.findOneAndUpdate({handlename : usern} , {$push : {groups : group}},function(err,cuser3){
+              if(err){
+                console.log(err) ;
+              }
+            })
+          }
+          var newGroupmessage = new GroupMessage({
+            groupname : cgroup.groupname,
+            groupid : cgroup._id 
+          });
+          newGroupmessage.save(function(err,cuser4){
+            if(err){
+              console.log(err) ;
+            }
+          }) ;
+        }
+      });
+    }
+  })
+})
 app.get('/people/:name',function(req,res){
   var name = '' ;
   name = req.params.name ;
@@ -311,13 +364,17 @@ app.get("/get-notifications",function(req,res){
     }else{
       message = [] ;
       request = [] ;
+      groupreq = [] ;
       cuser.messages.forEach(function(mes){
           message.push(mes['from']) ;
       });
       cuser.requests.forEach(function(mes){
         request.push(mes.from) ;
       });
-      var data = {message:message,request:request};
+      cuser.groups.forEach(function(mes){
+        groupreq.push(mes) ;
+      });
+      var data = {message:message,request:request,groups : groupreq};
       res.json(data) ;
       console.log(message);
       console.log(request);
@@ -376,6 +433,51 @@ app.get("/verdict-declined/:frname",function(req,res){
     }
   });
 });
+app.post("/verdict-groupaccepted",function(req,res){
+  var usernam = req.user.username ;
+  var group = req.body ;
+  console.log(group) ;
+  var not = group ;
+  Notification.findOneAndUpdate({handlename : usernam},{$pull: {groups : not}},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      //console.log(cuser);
+      var grouptobepushedtouserschema = {groupid:group.groupid,groupname:group.groupname} ;
+      var userna = {username : usernam} ; 
+      User.findOneAndUpdate({username:usernam},{$push: {groups : grouptobepushedtouserschema}},function(err,fuser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(fuser.username)
+        }
+      });
+      PublicGroup.findOneAndUpdate({_id : group.groupid},{$pull:{requestedusers:userna},$push:{users:userna}},function(err,guser){
+        if(err){
+          console.log(err);
+        }else{
+          console.log(guser) ;
+          res.json("accepted") ;
+        }
+      })
+    }
+  });
+});
+app.post("/verdict-groupdeclined",function(req,res){
+  var username = req.user.username ;
+  // var groupid = req.params.frname ;
+  console.log(req.body)
+  var not = req.body ;
+  Notification.findOneAndUpdate({handlename : username},{$pull: {groups : not}},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      console.log(cuser) ;
+      res.json("declined")
+    }
+  });
+});
+
 app.get("/get-friends",function(req,res){
   var username = req.user.username ;
   User.findOne({username:username},function(err,cuser){
@@ -386,6 +488,17 @@ app.get("/get-friends",function(req,res){
     }
   });
 });
+app.get("/get-groups",function(req,res){
+  var username = req.user.username ;
+  User.findOne({username:username},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      res.json(cuser.groups) ;
+    }
+  });
+});
+
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
@@ -422,7 +535,7 @@ socket.on("newmessage",function(data){
             console.log(cuser.messaged[cuser.messaged.length - 1]) ;
             io.to(friendname).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});               
             io.to(currentuser).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});
-          }
+          } 
         })
       });
 socket.on("remove-member",function(data2){

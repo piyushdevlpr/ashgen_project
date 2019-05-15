@@ -14,7 +14,14 @@ var NotificationSchema = new mongoose.Schema({
     }],
     requests :[{
         from : {type:String}                // user name who has sent the request
-    }]
+    }],
+    groups :[
+      {
+        from : {type:String},
+        groupname : {type:String},
+        groupid : {type:String}
+      }
+    ]
 });
 
 module.exports = mongoose.model("Notification", NotificationSchema);

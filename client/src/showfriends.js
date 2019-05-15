@@ -137,11 +137,11 @@ class People extends Component {
     }
 }
 var styles = {
-	backgroundColor:'grey',
+	backgroundColor:'#D3D3D3',
     overflow:'scroll',
     height:'350px',
     width:'300px'
 };
-
+ 
 
 export default People ;

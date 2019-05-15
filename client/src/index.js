@@ -10,6 +10,7 @@ import People from './People';
 import Shownotifications from './shownotifications';
 import Showfriends from './showfriends';
 import Dashboard from './Dashboard';
+import Group from './Group';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render((
@@ -22,6 +23,7 @@ ReactDOM.render((
        <Route path = "/people/" component = {People} />
        <Route path = "/notifications/" component = {Shownotifications} />
        <Route path = "/friends/" component = {Showfriends} />
+       <Route path = "/groups/" component = {Group} />
        </Switch>
  </Router>
 ), document.getElementById('root'));
