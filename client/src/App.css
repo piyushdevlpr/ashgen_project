@@ -47,6 +47,15 @@
   color: white;
 }
 
+[id^="demo"] {
+  display: none ;
+}
+
+[id^="demo"]:checked + label{
+  visibility: hidden;
+  display: none ;
+  font-family: 'Courier New', Courier, monospace
+}
 .App-link {
   color: #61dafb;
 }

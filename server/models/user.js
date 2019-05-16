@@ -17,9 +17,10 @@ var UserSchema = new mongoose.Schema({
     password: String,
     team:Boolean,
     // this is public group
-    pgrp : [
+    groups : [
       {
-        hashname:String
+        groupid : String,
+        groupname:String
       }
     ],
     // for any new message that is received by current user

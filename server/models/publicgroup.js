@@ -1,4 +1,3 @@
-// actually private group.....
 
 var mongoose = require("mongoose");
 
@@ -8,18 +7,13 @@ var PublicGroupSchema = new mongoose.Schema({
     auto: true,
   },
     groupname: String,
-    hashtag: String,
     admin:String,
-    subadmins: [
-    	{
-    		username:String
-    	}
-    ],
-    users: [
-      {
-        username:String
-      }
-    ]
+    requestedusers : [{
+      username : String
+    }],
+    users: [{
+      username : String
+    }]
 });
 
 module.exports = mongoose.model("PublicGroup", PublicGroupSchema);
