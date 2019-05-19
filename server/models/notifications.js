@@ -7,13 +7,16 @@ var NotificationSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,    
     auto: true,
   },                   
-    handlename: String,                     // name of team and user who will receive the notification
+    handlename: {type:String,index:true,auto:false},                     // name of team and user who will receive the notification
     team: Boolean,
     messages :[{
         from : {type:String}                // user name who has sent the msg
     }],
     requests :[{
         from : {type:String}                // user name who has sent the request
+    }],
+    requestsentto :[{
+      to : {type:String}                // user name to whom the request has been sent
     }],
     groups :[
       {

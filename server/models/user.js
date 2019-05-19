@@ -13,7 +13,7 @@ var UserSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-    username: String,
+    username: {type:String,index:true,auto:false},
     password: String,
     team:Boolean,
     // this is public group
@@ -29,16 +29,11 @@ var UserSchema = new mongoose.Schema({
       users:String
     }
     ],
-    // recent private messages
-     recentmessages: [
-    {
-      users:String
-    }
-    ],
     friends: [
       {  
          name: String,
          propic: String,
+         newmess: {type:Number,default:0}
       }
     ],
     email: {

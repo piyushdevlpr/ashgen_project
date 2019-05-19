@@ -7,10 +7,11 @@ class People extends Component {
         super(props) ;
         this.state = {
             people : '',
-            user : []
+            user : [],
+            friends : [],
+            peoplewithnotis : []
         }
         this.handlechange = this.handlechange.bind(this) ;
-        // this.sendnoti = this.sendnoti.bind(this) ;
     }
     sendnoti=(key)=>{
         //event.preventDefault();
@@ -19,19 +20,23 @@ class People extends Component {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
-          }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({signedup : data})}})
-          console.log(this.state) ;
-        
+          }).then(res => res.json()).then(data => {
+              console.log(data);
+              var list = this.state.peoplewithnotis ;
+              list[data.friendname] = 1 ;
+            this.setState({peoplewithnotis : list},function(){
+                console.log(this.state) ;
+            })})
     }
     handlechange=(event)=>{
         event.preventDefault();
         this.setState({
             [event.target.name]:event.target.value
+         },function(){
+            this.fetchdetails() ;
          })
-         this.fetchdetails() ;
     }
     fetchdetails=()=>{
-        //events.preventDefault();
         if(this.state.people === undefined){
             this.setState({
                 people:''
@@ -51,8 +56,16 @@ class People extends Component {
         .catch(error => console.log(error));
     }
     authuser=(key)=>{
-        if(key === this.props.location.state.username){
+        if(key.user === this.props.location.state.username){
             return null ;
+        }else if(this.state.friends[key.user] != null){
+            return(
+                <span>{key.user}</span>
+            );
+        }else if(this.state.peoplewithnotis[key.user] === 1){
+            return(
+                <span>{key.user}    sent</span>
+            );
         }else{
             return(
                 <span>{key.user}<button onClick={()=>this.sendnoti(key.user)}>AddFriend</button></span>
@@ -76,8 +89,38 @@ class People extends Component {
         );
         }
     }
+    getfriends=()=>{
+        fetch("http://localhost:2000/get-friends", {
+            method: "GET",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include'
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){
+            var result = data.reduce(function(map, obj) {
+                map[obj.name] = obj.propic;
+                return map;
+            }, {}); 
+            this.setState({friends:result},function(){console.log(this.state) })}
+            }
+            )
+    }
+    getpeoplewithnotis=()=>{
+        fetch("http://localhost:2000/get-notis", {
+            method: "GET",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include'
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){
+            var result = data.reduce(function(map, obj) {
+                map[obj.to] = 1;
+                return map;
+            }, {}); 
+            this.setState({peoplewithnotis:result},function(){console.log(this.state) })}
+            }
+            )
+    }
     componentDidMount(){ 
         this.ismounted = true ;     
+        this.getfriends() ;
+        this.getpeoplewithnotis() ; // get lsit of people u have already sent a request
     }
     componentWillUnmount(){
         this.ismounted = false ; 
@@ -95,9 +138,7 @@ class People extends Component {
                         {/* <button>Search</button> */}
                     </form>
                 </div>
-                
                     {this.showusers()}
-                
                 </div>
             );
         }        

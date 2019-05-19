@@ -8,7 +8,7 @@ var GroupMessageSchema = new mongoose.Schema({
     auto: true,
   },
     groupname: String,
-    groupid: String,
+    groupid: {type:String,index:true,auto:false},
     messaged: [
       {
         from:String,
