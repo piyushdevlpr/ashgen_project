@@ -20,7 +20,8 @@ var UserSchema = new mongoose.Schema({
     groups : [
       {
         groupid : String,
-        groupname:String
+        groupname:String,
+        newmess: {type:Number,default:0}
       }
     ],
     // for any new message that is received by current user
