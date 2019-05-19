@@ -11,6 +11,7 @@ class People extends Component {
         super(props) ;
         this.state = {
             name: this.props.location.state.username,
+            friendsnewmessage:[],
             creating : false ,
             showDone : false ,
             tochatwith: '',
@@ -43,6 +44,20 @@ class People extends Component {
             toshowgroupid:'',
             toshowgroupname:''
         })
+    }
+    updatecount=()=>{
+        var data = {groupid : this.state.tochatwithid , number: this.state.friendsnewmessage[this.state.tochatwithid]} ;
+        fetch("http://localhost:2000/update-new-message-number-group", {
+            // signal:this.abortController.signal,
+            method: "POST",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include',
+            body:JSON.stringify(data)
+          }).then(res=>res.json()).then(data=> {if(this._ismounted === true){console.log(data)}})
+          .catch(err=> {
+            //   if(err.name === 'AbortError') return
+              throw err
+          })
     }
     creategroup=(event)=>{
         event.preventDefault();
@@ -82,8 +97,13 @@ class People extends Component {
         socket.on("getgroupmessages",data=>{ this.setState({previousmess:data.messages})})
     }
     getmetochat=(friend_name)=>{        // set groupname with whom u have to chat as tochatwith and its id and then call getsockethere to get chat history
-        this.setState({previousgroupid : this.state.tochatwithid},function(){
-            this.setState({tochatwith : friend_name.groupname ,tochatwithid:friend_name.groupid, previousmess:[]},function(){this.getsockethere()}) ;
+        var list = this.state.friendsnewmessage ;
+        list[friend_name.groupid] = 0 ;
+        this.setState({previousgroupid : this.state.tochatwithid,friendsnewmessage:list},function(){
+            this.setState({tochatwith : friend_name.groupname ,tochatwithid:friend_name.groupid, previousmess:[]},function(){
+                this.getsockethere()
+                this.updatecount() ;
+            }) ;
         }) ;
     }
     getgroups=()=>{
@@ -91,7 +111,16 @@ class People extends Component {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
-          }).then(res => res.json()).then(data => {if(this.ismounted === true){this.setState({groups:data})}})
+          }).then(res => res.json()).then(data => {if(this.ismounted === true){
+              this.setState({groups:data},function(){
+                var map = this.state.friendsnewmessage;  
+                for(var i = 0 ; i < this.state.groups.length ; i++){
+                    map[this.state.groups[i].groupid] = this.state.groups[i].newmess ;
+                  }
+                  this.setState({friendsnewmessage : map},function(){
+                    console.log(this.state) ;
+                  })
+              })}})
           console.log(this.state) ;
     }
     addasmember=(member)=>{
@@ -118,7 +147,6 @@ class People extends Component {
               this.setState({groupusers:data.users , grouprequestedusers:data.requestedusers,admin:data.admin},function(){
                 console.log(this.state) ;
               })})
-          
     }
     getGroupInfo=(group)=>{
         this.setState({tochatwith:'',tochatwithid:'',toshowgroupid:group.groupid,toshowgroupname:group.groupname},function(){
@@ -128,7 +156,7 @@ class People extends Component {
     }
     showgroups=()=>{
         const list = this.state.groups.map((data,index)=>
-            <li><span onClick={()=>this.getGroupInfo(data)}>{data.groupname}</span><button onClick={()=>this.getmetochat(data)}>message</button></li>
+            <li><span onClick={()=>this.getGroupInfo(data)}>{data.groupname}</span><button onClick={()=>this.getmetochat(data)}>message</button><span>{this.state.friendsnewmessage[data.groupid] ? (<span> {this.state.friendsnewmessage[data.groupid]}  message received </span>): null}</span></li>
         );
         return list ;
     }
@@ -153,11 +181,13 @@ class People extends Component {
         socket.emit("join",{username : this.props.location.state.username}) ;
         socket.on("newgroupmessagereceived",data=>{
             this.setState(state => {
+                var list2 = this.state.friendsnewmessage ;
+                list2[data.messages.groupid]++ ;
                 const list = state.previousmess.slice();
                 list.push(data.messages);
                 console.log(data.messages.data) ;
                 return {
-                  previousmess:list
+                  previousmess:list,  friendsnewmessage:list2
                 };
               });
             }

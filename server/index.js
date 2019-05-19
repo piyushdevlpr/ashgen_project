@@ -584,7 +584,18 @@ app.post("/update-new-message-number",function(req,res){
         }
       })
 })
-
+app.post("/update-new-message-number-group",function(req,res){
+  var currentuser = req.user.username ;
+  console.log(req.body) ;
+    // for(var i = 0 ; i < req.body.length ; i++){
+      User.findOneAndUpdate({username : currentuser, 'groups.groupid' : req.body.groupid},{$set:{'groups.$.newmess' : req.body.number}},function(err,cuser){
+        if(err){
+          console.log(err) ;
+        }else{
+           console.log("hellllllllo") ;
+        }
+      })
+})
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
@@ -663,8 +674,24 @@ socket.on("newmessage",function(data){
             console.log(err) ;
           }else{
             console.log(cuser.messaged[cuser.messaged.length - 1]) ;
-            io.sockets.in(groupid).emit("newgroupmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});               
+            io.sockets.in(groupid).emit("newgroupmessagereceived",{groupid : cuser.groupid , messages:cuser.messaged[cuser.messaged.length - 1]});               
           } 
+        })
+        PublicGroup.findOne({_id : groupid},function(err,cuser0){
+          var arr = [];
+          console.log(cuser0);
+          arr = cuser0.users ;
+          for(var i = 0 ; i < arr.length ; i++){
+          if(arr[i].username !== currentuser){
+            User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$inc:{'groups.$.newmess' : 1 }},function(err,cuser){
+            if(err){
+              console.log(err) ;
+            }else{
+              console.log(cuser) ;
+            }
+          })
+        }
+        }
         })
       });
 });
