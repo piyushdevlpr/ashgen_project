@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import ChatText from './ChatText';
+import ChatPhoto from './ChatPhoto';
+import ChatVideo from './ChatVideo';
 import socketIOClient from "socket.io-client";
 const socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
+
 
 class People extends Component {
     abortController = new AbortController() ;    
@@ -139,7 +143,23 @@ class People extends Component {
     }
     showpreviousmessages=()=>{        
         const list = this.state.previousmess.map((data,index)=>
-            <li>{data.from} : {data.data.message}</li>
+        {
+            if(data.data.format=="text") 
+            {   
+               return( <ChatText data={data} />)
+
+            }
+            else if(data.data.format=="image")
+            {
+                return (<ChatPhoto data={data} />)
+            }
+            else if(data.data.format=="video")
+            {
+                return(<ChatVideo data={data} />)
+            }
+           
+            // <li>{data.from} : {data.data.message}</li>
+        }
             ); 
             return list ;
     }
