@@ -11,7 +11,11 @@ var MessageSchema = new mongoose.Schema({
     messaged: [
       {
         from:String,      //username
-        data:String       //message
+        data:{
+          format:{type:String},   //text photo video file
+          message: {type:String,default:''},
+          url    : {type:String,default:''}
+        }       //message
       }
     ]
 });

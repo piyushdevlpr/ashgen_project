@@ -186,8 +186,8 @@ const axios = require("axios");
         list = this.state.likes.map(function(item)
         {
             return(
-                <div>
-                    <p key={item._id}>{item.author.username}</p>
+                <div key={item._id}>
+                    <p>{item.author.username}</p>
                 </div>
             )
         })

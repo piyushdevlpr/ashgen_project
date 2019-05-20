@@ -19,6 +19,9 @@ var express     = require("express"),
     io = require("socket.io").listen(server),
     getUserRoute = require('./routes/getUser'),
     postRoute    = require('./routes/post');
+    var siofu = require("socketio-file-upload");
+    const fs = require('fs');
+
 
 
 
@@ -67,9 +70,13 @@ passport.deserializeUser(User.deserializeUser());
 //   res.locals.success     = req.flash("success");
 //   next();
 // });
+app.use(siofu.router)
 var port = process.env.PORT || 2000;
 app.use(getUserRoute);
 app.use(postRoute);
+
+
+
 // app.use(function(req, res, next){
 //    res.locals.currentUser = req.user;
 //    next();
@@ -640,10 +647,18 @@ socket.on("showgroupmessages",function(data){
 socket.on("newmessage",function(data){
         var currentuser = data.username ;
         var friendname = data.friendname ;
+        var file   =  data.file;
+        
+      if(file==null)
+      {
         var usercombo1 = currentuser+'/'+friendname ;
         var usercombo2 = friendname+'/'+currentuser ;
         var message = data.message ;
-        ms = { "from":currentuser,"data":message } ;
+        var obj = {};
+        obj.format="text";
+        obj.message = message;
+        obj.url = null;
+        ms = { "from":currentuser,"data":obj } ;
         // io.to(friendname).emit("newmessagereceived",{messages:ms});
         Message.findOneAndUpdate({$or:[{usercombo:usercombo1},{usercombo:usercombo2}]},{$push:{messaged:ms}},{new:true},function(err,cuser){
           if(err){
@@ -661,6 +676,47 @@ socket.on("newmessage",function(data){
             console.log(cuser) ;
           }
         })
+
+      }
+      else{
+        var fileName = data.fileName;
+        var DateNow = new Date().getTime();
+        fileName   = DateNow+fileName;
+        var fileType = data.fileType;
+        fs.writeFile(__dirname+"/public/uploads/chat/"+fileName,file, function(err) {
+          if(err) {
+              return console.log(err);
+          }
+        var usercombo1 = currentuser+'/'+friendname ;
+        var usercombo2 = friendname+'/'+currentuser ;
+        var message = data.message ;
+        var obj = {};
+        obj.format=fileType;
+        obj.message = message;
+        obj.url = "/public/uploads/chat/"+fileName;
+      
+        ms = { "from":currentuser,"data":obj } ;
+        // io.to(friendname).emit("newmessagereceived",{messages:ms});
+        Message.findOneAndUpdate({$or:[{usercombo:usercombo1},{usercombo:usercombo2}]},{$push:{messaged:ms}},{new:true},function(err,cuser){
+          if(err){
+            console.log(err) ;
+          }else{
+            console.log(cuser.messaged[cuser.messaged.length - 1]) ;
+            io.to(friendname).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});               
+            io.to(currentuser).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});
+          } 
+        })
+        User.findOneAndUpdate({username : friendname, 'friends.name' : currentuser},{$inc:{'friends.$.newmess' : 1 }},function(err,cuser){
+          if(err){
+            console.log(err) ;
+          }else{
+            console.log(cuser) ;
+          }
+        })
+    
+      })
+
+      }        
       });
   socket.on("newgroupmessage",function(data){
         var currentuser = data.username ;
@@ -673,13 +729,13 @@ socket.on("newmessage",function(data){
           if(err){
             console.log(err) ;
           }else{
-            console.log(cuser.messaged[cuser.messaged.length - 1]) ;
+            // console.log(cuser.messaged[cuser.messaged.length - 1]) ;
             io.sockets.in(groupid).emit("newgroupmessagereceived",{groupid : cuser.groupid , messages:cuser.messaged[cuser.messaged.length - 1]});               
           } 
         })
         PublicGroup.findOne({_id : groupid},function(err,cuser0){
           var arr = [];
-          console.log(cuser0);
+          // console.log(cuser0);
           arr = cuser0.users ;
           for(var i = 0 ; i < arr.length ; i++){
           if(arr[i].username !== currentuser){
@@ -687,7 +743,7 @@ socket.on("newmessage",function(data){
             if(err){
               console.log(err) ;
             }else{
-              console.log(cuser) ;
+              // console.log(cuser) ;
             }
           })
         }

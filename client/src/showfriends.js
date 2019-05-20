@@ -12,10 +12,12 @@ class People extends Component {
             friends : [],
             tochatwith : '',
             message : '',
-            previousmess : [{from:'',message:''}]
+            previousmess : [{from:'',message:''}],
+            file: null
         }
         this.handlechange=this.handlechange.bind(this);
         this.sendmsg=this.sendmsg.bind(this);
+        this.filehandleChange = this.filehandleChange.bind(this);  //function for file in chat
     }
     updatecount=()=>{
         var data = {friend : this.state.tochatwith , number: this.state.friendsnewmessage[this.state.tochatwith]} ;
@@ -98,18 +100,46 @@ class People extends Component {
         );
         return list ;
     }
+
+    filehandleChange(event)
+    {
+        event.preventDefault();
+        this.setState({[event.target.name]: event.target.files[0]},
+            ()=>{console.log(this.state.file)}
+            
+            );
+        
+
+    }
+
     sendmsg=(event)=>{
         event.preventDefault() ;
-        var msg = this.state.message ;
-        //var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
-        this.setState({message : ""},function(){
-            socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith , message:msg}) ;
-        }); 
+        if(this.state.file==null)
+        {
+            var msg = this.state.message ;
+            var file= this.state.file;     // only for checking at server if this is null
+            this.setState({message : ""},function(){
+                socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:file}) ;
+            });
+
+        }
+        else{
+            var msg = this.state.message ;
+            var file= this.state.file;
+            var fileName= file.name;
+            var fileType = file.type.split('/')[0];
+            //var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
+            this.setState({message : ""},function(){
+                socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:this.state.file,fileName,fileType}) ;
+            }); 
+
+        }
+     
         this.mainInput.value = "";
     }
     showpreviousmessages=()=>{        
         const list = this.state.previousmess.map((data,index)=>
-            <li>{data.from} : {data.data}</li>
+            <li>{data.from} : {data.data.message}</li>
             ); 
             return list ;
     }
@@ -165,7 +195,12 @@ class People extends Component {
                         <form onSubmit={this.sendmsg}>
                             <input ref={(ref) => this.mainInput= ref} required={true} placeholder='enter text' type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}></input>
                             <button >Send</button>
+                            <div className="form-group">
+                        <label for="exampleFormControlFile1">Choose File</label>
+                        <input type="file" name="file" onChange={this.filehandleChange} className="form-control-file" id="exampleFormControlFile1" />
+                         </div>
                         </form>
+                     
                         </div>
                     </div>    
                     )
