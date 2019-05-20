@@ -13,14 +13,15 @@ var UserSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-    username: String,
+    username: {type:String,index:true,auto:false},
     password: String,
     team:Boolean,
     // this is public group
     groups : [
       {
         groupid : String,
-        groupname:String
+        groupname:String,
+        newmess: {type:Number,default:0}
       }
     ],
     // for any new message that is received by current user
@@ -29,16 +30,11 @@ var UserSchema = new mongoose.Schema({
       users:String
     }
     ],
-    // recent private messages
-     recentmessages: [
-    {
-      users:String
-    }
-    ],
     friends: [
       {  
          name: String,
          propic: String,
+         newmess: {type:Number,default:0}
       }
     ],
     email: {
@@ -46,7 +42,6 @@ var UserSchema = new mongoose.Schema({
         validate: [validateEmail, 'Please fill a valid email address']
        // match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     }
-     
 });
 
 UserSchema.plugin(passportLocalMongoose)

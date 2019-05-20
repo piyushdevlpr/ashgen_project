@@ -7,11 +7,7 @@ var MessageSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-    usercombo1: String, //user1+user2
-    usercombo2: String, //user2+user1
-    fileSelected:{type:String, default:false},
-    fileType: {type:String},
-    fileUrl : {type:String},
+    usercombo: {type:String,index:true,auto:false},
     messaged: [
       {
         from:String,      //username

@@ -12,13 +12,7 @@ var express     = require("express"),
     Message        = require("./models/message"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage        = require("./models/groupmessage"),
-    // PGroup        = require("./models/pgroup"),
     Notification = require("./models/notifications")
-    // GMessage        = require("./models/gmessage"),
-    searchedFriend = {},
-    whichPage2 = "six" ;
-    frnames = [] ,
-   
     multer = require("multer"),
     path = require("path"),
     server= require("http").createServer(app),
@@ -279,6 +273,7 @@ app.post('/newgroup',function(req,res){
   currentusers.push(pus);
   var newGroup = new PublicGroup({
     groupname : groupname,
+    admin:req.body.name,
     requestedusers : members,
     users : currentusers
   })
@@ -288,14 +283,12 @@ app.post('/newgroup',function(req,res){
     if(err){
       console.log(err) ;
     }else{
-      data = {mes:"group created"} ;
       success = true ;
       groupid = cuser._id ;
-      group = {groupid : groupid , groupname : groupname} ;
-      console.log(data) ;
+      group2 = {groupid : groupid , groupname : groupname} ;
+      // console.log(data) ;
       console.log(cuser._id) ;
-      res.json(data) ;
-      User.findOneAndUpdate({username : req.body.name} , {$push : {groups:group}},function(err,cuser2){
+      User.findOneAndUpdate({username : req.body.name} , {$push : {groups:group2}},{new : true},function(err,cuser2){
         if(err){
           console.log(err) ;
         }else{
@@ -310,17 +303,61 @@ app.post('/newgroup',function(req,res){
             })
           }
           var newGroupmessage = new GroupMessage({
-            groupname : cgroup.groupname,
-            groupid : cgroup._id 
+            groupname : cuser.groupname,
+            groupid : cuser._id 
           });
           newGroupmessage.save(function(err,cuser4){
             if(err){
               console.log(err) ;
+            }else{
+              data = cuser2.groups ;
+              res.json(data) ;
             }
           }) ;
         }
       });
     }
+  })
+})
+app.post("/update-group-addmember/:groupid",function(req,res){
+  var groupid = req.params.groupid ;
+  console.log(req.body) ;
+  var membername = req.body.name ;
+  var pus = {'username' : req.body.name} ;
+  PublicGroup.findOneAndUpdate({_id : groupid},{$push:{requestedusers:pus}},{new:true},function(err,cuser){
+      if(err){
+        console.log(err)
+      }else{
+        group = {from : req.user.username,groupname:cuser.groupname , groupid : groupid}
+        Notification.findOneAndUpdate({handlename : membername} , {$push : {groups : group}},function(err,cuser3){
+          if(err){
+            console.log(err) ;
+          }else{
+            console.log("mukesh")
+            res.json(cuser) ;
+          }
+        })
+      }
+  })
+})
+app.post("/update-group-removemember/:groupid",function(req,res){
+  var groupid = req.params.groupid ;
+  var membername = req.body.username ;
+  var pus = {'username' : req.body.username} ;
+  PublicGroup.findOneAndUpdate({_id : groupid},{$pull:{users:pus}},{new:true},function(err,cuser){
+      if(err){
+        console.log(err)
+      }else{
+        group = {groupname:cuser.groupname , groupid : groupid}
+        User.findOneAndUpdate({username : membername} , {$pull : {groups : group}},function(err,cuser3){
+          if(err){
+            console.log(err) ;
+          }else{
+            console.log(cuser.users)
+            res.json(cuser) ;
+          }
+        })
+      }
   })
 })
 app.get('/people/:name',function(req,res){
@@ -348,10 +385,21 @@ app.get("/notification/:frname",function(req,res){
   var username = req.user.username ;
   var friend = req.params.frname ;
   var usern = {"from" : username} ;
+  var usern2 = {"to" : friend} ;
   Notification.findOneAndUpdate({handlename : friend},{$push: {requests: usern}},function(err,cuser){
     if(err){
       console.log(err);
     }else{
+      console.log(cuser);
+    }
+  })
+  Notification.findOneAndUpdate({handlename : username},{$push: {requestsentto: usern2}},function(err,cuser){
+    if(err){
+      console.log(err);
+    }else{
+      fr = {friendname : friend}
+      console.log(fr) ;
+      res.send(fr) 
       console.log(cuser);
     }
   })
@@ -409,13 +457,15 @@ app.get("/verdict-accepted/:frname",function(req,res){
           console.log(kuser)
         }
       });
-      var usercombo1 = usernam+frname ;
-      var usercombo2 = frname+usernam ;
-      var newChat = new Message({usercombo1:usercombo1,usercombo2:usercombo2}) ;
+      var usercombo = usernam+'/'+frname ;
+      // var usercombo2 = frname+usernam ;
+      var newChat = new Message({usercombo:usercombo}) ;
       //var newChat2 = new Message({from:frname,to:usernam}) ;
       newChat.save(function(err,c){
         if(err){
           console.log(err) ;
+        }else{
+          res.send({verdict:'success'}) ;
         }
       });
     }
@@ -429,6 +479,7 @@ app.get("/verdict-declined/:frname",function(req,res){
     if(err){
       console.log(err) ;
     }else{
+      res.send({verdict:'success'}) ;
       console.log(cuser) ;
     }
   });
@@ -457,7 +508,7 @@ app.post("/verdict-groupaccepted",function(req,res){
           console.log(err);
         }else{
           console.log(guser) ;
-          res.json("accepted") ;
+          res.send({verdict:'success'}) ;
         }
       })
     }
@@ -473,7 +524,7 @@ app.post("/verdict-groupdeclined",function(req,res){
       console.log(err) ;
     }else{
       console.log(cuser) ;
-      res.json("declined")
+      res.send({verdict:'success'}) ;
     }
   });
 });
@@ -488,6 +539,18 @@ app.get("/get-friends",function(req,res){
     }
   });
 });
+
+app.get("/get-notis",function(req,res){
+  var username = req.user.username ;
+  Notification.findOne({handlename:username},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      res.json(cuser.requestsentto) ;
+    }
+  });
+});
+
 app.get("/get-groups",function(req,res){
   var username = req.user.username ;
   User.findOne({username:username},function(err,cuser){
@@ -498,21 +561,62 @@ app.get("/get-groups",function(req,res){
     }
   });
 });
-
+app.get("/getgroup/:groupid",function(req,res){
+  var groupid = req.params.groupid ;
+  PublicGroup.findOne({_id:groupid},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      console.log(cuser)
+      res.json(cuser) ;
+    }
+  });
+});
+app.post("/update-new-message-number",function(req,res){
+  var currentuser = req.user.username ;
+  console.log(req.body) ;
+    // for(var i = 0 ; i < req.body.length ; i++){
+      User.findOneAndUpdate({username : currentuser, 'friends.name' : req.body.friend},{$set:{'friends.$.newmess' : req.body.number}},function(err,cuser){
+        if(err){
+          console.log(err) ;
+        }else{
+           console.log("hellllllllo") ;
+        }
+      })
+})
+app.post("/update-new-message-number-group",function(req,res){
+  var currentuser = req.user.username ;
+  console.log(req.body) ;
+    // for(var i = 0 ; i < req.body.length ; i++){
+      User.findOneAndUpdate({username : currentuser, 'groups.groupid' : req.body.groupid},{$set:{'groups.$.newmess' : req.body.number}},function(err,cuser){
+        if(err){
+          console.log(err) ;
+        }else{
+           console.log("hellllllllo") ;
+        }
+      })
+})
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
 socket.on('join', function (data) {    
   socket.join(data.username);               // make room by name of each user for each user.. when a user needs to send message to thid user, just enter its room.
 });
+socket.on('joingroup', function (data) {    
+  socket.join(data.groupid);               // make room by name of each user for each user.. when a user needs to send message to thid user, just enter its room.
+});
+socket.on('leave-socket-of-group', function (data) {    
+  socket.leave(data.groupid);               // make room by name of each user for each user.. when a user needs to send message to thid user, just enter its room.
+});
 socket.on("showmessages",function(data){
   var currentuser = data.username ;
         var friendname = data.friendname ;
-        var usercombo1 = currentuser+friendname ;
+        var usercombo1 = currentuser+'/'+friendname ;
+        var usercombo2 = friendname+'/'+currentuser ;
         console.log(usercombo1) ;
         //var message = data.message ;
         //ms = { "data": currentuser + " : " + message} ;
-        Message.findOne({$or:[{usercombo1:usercombo1},{usercombo2:usercombo1}]},function(err,cuser){
+        Message.findOne({$or:[{usercombo:usercombo1},{usercombo:usercombo2}]},function(err,cuser){
           if(err){
             console.log(err) ;
           }else{
@@ -521,14 +625,27 @@ socket.on("showmessages",function(data){
           }
         })
 })
+socket.on("showgroupmessages",function(data){
+        var currentgroup = data.groupid ;
+        var currentuser = data.username ;
+        GroupMessage.findOne({groupid : currentgroup},function(err,cuser){
+          if(err){
+            console.log(err) ;
+          }else{
+            console.log(cuser) ;
+            io.to(currentuser).emit("getgroupmessages",{messages:cuser.messaged});               
+          }
+        })
+})
 socket.on("newmessage",function(data){
         var currentuser = data.username ;
         var friendname = data.friendname ;
-        var usercombo1 = currentuser+friendname ;
+        var usercombo1 = currentuser+'/'+friendname ;
+        var usercombo2 = friendname+'/'+currentuser ;
         var message = data.message ;
         ms = { "from":currentuser,"data":message } ;
         // io.to(friendname).emit("newmessagereceived",{messages:ms});
-        Message.findOneAndUpdate({$or:[{usercombo1:usercombo1},{usercombo2:usercombo1}]},{$push:{messaged:ms}},{new:true},function(err,cuser){
+        Message.findOneAndUpdate({$or:[{usercombo:usercombo1},{usercombo:usercombo2}]},{$push:{messaged:ms}},{new:true},function(err,cuser){
           if(err){
             console.log(err) ;
           }else{
@@ -537,945 +654,46 @@ socket.on("newmessage",function(data){
             io.to(currentuser).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});
           } 
         })
-      });
-socket.on("remove-member",function(data2){
-        var grphashtag = {"hashname": data2.grpname};
-          var grouphashtag = {"username": data2.membername} ;
-          var isPresent = false ;
-          PublicGroup.findOne({hashtag: data2.grpname},function(err,cgroup){
-              if(err){
-                console.log(err);
-              }else{
-                cgroup.users.forEach(function(f){
-                    if(f.username === data2.membername){
-                      console.log(f.username) ;
-                      isPresent = true ;
-                    }
-                });
-                if(!isPresent){ 
-           var statement = "member does not exist";
-                          var output = {"user": data2.user , "state":statement};
-            io.emit("member-removed",output) ;
-          }else {
-         PublicGroup.findOneAndUpdate({hashtag: data2.grpname},{$pull: {users: grouphashtag,subadmins:grouphashtag}},
-                      function(err, cuser) {
-                        if(err){console.log(err);}
-                        else{
-                           User.findOneAndUpdate({ username : data2.membername},{$pull: {publicgrp: grphashtag}},function(err,fuser){
-                           if(err){
-                          console.log(err);
-                          }else{
-                              console.log(fuser) ;                                   
-                                    var statement = "member does not exist";
-                          var output = {"user": data2.user , "state":statement};
-                                    io.emit("member-removed",output);
-                                  }             
-                      });
-                  }
-         });
-       }
-              }
-          });          
-       });
-//---------------------REmoving a member from the post of subadmin in private group---------------
-         socket.on("remove-subadmin",function(data2){
-          var grouphashtag = {"username": data2.membername} ;
-          var isPresent = false ;
-          PublicGroup.findOne({hashtag: data2.grpname},function(err,cgroup){
-              cgroup.subadmins.forEach(function(f){
-                if(f.username === data2.membername){
-                    isPresent = true ;
-                }
-              });
-              if(isPresent){
-                  PublicGroup.findOneAndUpdate({hashtag:data2.grpname},{$pull: {subadmins: grouphashtag}},
-                      function(err, cuser) {
-                        if(err){
-                          console.log(err);
-                        }else{
-                          var statement = "member removed as a subadmin";
-                          var output = {"user": data2.user , "state":statement};
-
-                          io.emit("subadmin-removed",output);
-                        }
-                      });
-              }else{
-                 var statement = "no such subadmin exists";
-                          var output = {"user": data2.user , "state":statement};
-                  io.emit("subadmin-removed", output);
-              }
-          });   
-          
-       });
-//-------------------Adding a new member to private group---------------------------------------------
-      socket.on("add-member",function(data2){
-          User.find({ username : data2.membername}).count({},function(err,count){
-              if(count===0){
-                var statement = "no such user" ;
-                io.emit("add-member-result",statement) ;
-              }
-              else{
-                var isP = false;
-                var grphashtag = {"hashname": data2.grpname};
-                 User.findOne({ username : data2.membername},function(err,cuser){
-                  cuser.publicgrp.forEach(function(f){
-                    if(f.hashname === data2.grpname){
-                      isP = true ;
-                    }
-                  });
-                  if(!isP){
-                    User.findByIdAndUpdate(cuser._id,{$addToSet: {publicgrp: grphashtag}},
-                      function(err, cuser) {if(err){
-                        console.log(err);
-                      }
-                      });
-                  }
-                
-                 });
-                 var isPresent = false ;
-                var grouphashtag = {"username": data2.membername} ;
-                PublicGroup.findOne({hashtag : data2.grpname},function(err,cgroup){
-                  var id = cgroup._id ;
-                  cgroup.users.forEach(function(f){
-                      if(f.username ===data2.membername){
-                        isPresent = true ;
-                      }
-
-                  });
-                  if(!isPresent){
-                  PublicGroup.findByIdAndUpdate(id,{$addToSet: {users: grouphashtag}},
-                      function(err, cuser) {
-                        if(err){
-                          console.log(err);
-                        }
-                        else{
-                          var statement = "member added succesfully";
-                          var output = {"user": data2.user , "state":statement};
-                          io.emit("add-member-result",output);
-                        }
-                      });
-                }
-                else{
-                  var statement = "member already present";
-                  var output = {"user": data2.user , "state":statement};
-                          io.emit("add-member-result",output);
-                }
-                });
-              }
-          });
-      });
-//-------------Making an existing member a sub admin -----------------------------------------
-       socket.on("add-subadmin",function(data2){
-          var grouphashtag = {"username": data2.membername} ;
-          var isPresent = false ;
-          PublicGroup.findOne({hashtag: data2.grpname},function(err,cgroup){
-              cgroup.users.forEach(function(f){
-                if(f.username === data2.membername){
-                    isPresent = true ;
-                }
-              });
-              if(isPresent){
-                  PublicGroup.findOneAndUpdate({hashtag:data2.grpname},{$addToSet: {subadmins: grouphashtag}},
-                      function(err, cuser) {
-                        if(err){
-                          console.log(err);
-                        }else{
-                          var statement = "member made subadmin" ;
-                          var output = {"user":data2.user , "state":statement};
-                          io.emit("subadmin",output);
-                        }
-                      });
-              }else{
-                  var statement = "no such member exists" ;
-                  var output = {"user":data2.user , "state":statement};
-                  io.emit("subadmin", output );
-              }
-          });
-      });
-//-------------The settings to show to the user of a private group based on whether he is subadmin, admin or a normal member-------------
-        socket.on("settings-to-show",function(data2){
-          PublicGroup.findOne({hashtag:data2},function(err,cgroup){
-              io.emit("settings-emitted",cgroup);
-          });
-        });
-//-----------Emitting list of private groups of the user -----------------------------------------------------
-      socket.on("clickedpublicgroups",function(data2){
-          User.findById(data2.id,function(err,cuser){
-              if(err){
-                console.log(err);
-              }
-              else{
-                io.emit("herearethegroups",cuser);
-              }
-          });
-      });
-//-----------Emitting list of public groups of the user -------------------------------------------------------
-     socket.on("clickedpgroups",function(data2){
-          User.findById(data2.id,function(err,cuser){
-              if(err){
-                console.log(err);
-              }
-              else{
-                io.emit("herearethepgroups",cuser);
-              }
-          });
-      });
-//------------creating a public group --------------------------------------------------------------------------
-     socket.on("createpubgroup",function(data2){
-          console.log(data2);
-          var userss = {"username": data2.maker };
-          var output = {"name":data2.maker , "state":""} ;
-           PGroup.find({hashtag : data2.hashtagname}).count({},function(err,count1){
-
-
-          console.log(count1);
-                PublicGroup.find({ hashtag : data2.hashtagname}).count({},function(err,count){
-                  
-                    
-                  
-                   if(err || count !== 0 || count1!== 0){
-                    statement = "group already exists";
-                    output = {"name":data2.maker , "state":statement} ;
-                      io.emit("groupcreated",output) ; 
-                  } 
-                  else{
-                      grouphashtag = {"hashname" :data2.hashtagname};
-                      User.findByIdAndUpdate(data2.id,
-                      {$addToSet: {publicgrp: grouphashtag}},
-                      function(err, cuser) {
-                        if(err){
-                          console.log(err);
-                        }
-
-                      });
-                      var newpubgroup = new PublicGroup({groupname :data2.groupname, hashtag:data2.hashtagname,admin:data2.maker,users: userss }); 
-                      newpubgroup.save(function(err){
-                        if(err){
-                            console.log(err);
-                            }
-                      });
-                      var newgroupmessage = new GroupMessage({to : data2.hashtagname});
-                      newgroupmessage.save(function(err){
-                        if(err){
-                            console.log(err);
-                            }
-                      });
-                      statement = "group created";
-                      output = {"name":data2.maker , "state":statement} ;
-
-                      io.emit("groupcreated",output) ; 
-                  }
-                });
-          });    
-              
-           
-    });
-//-----------------------Send the list of friends of the user ---------------------------------------
-    socket.on("show-friend-list",function(data2){
-      User.findById( data2.id,function(err,cuser){
-        if(err){
-          console.log(err);
-        }else{
-          io.emit("friend-list-emitted",cuser) ;  
-        }
-          });
-      
-    });
-//------------------------Add a new friend to the users' account--------------------------------------0
-    socket.on("add-friend-name",function(data2){
-      User.findOne({ username : data2.friendname},function(err,fuser){
-    if (err) {
-         res.send("fu");
-             }
-    else{
-         User.find({ username : data2.friendname}).count({},function(err,count){
-        if(!err && count!==0){
-           var isPresent = false ;
-           var friend = {"name": fuser.username, "propic":fuser.profileImage} ;
-           User.findById(data2.id,function(err,cuser2){
-            
-              cuser2.friends.forEach(function(f){
-                if( data2.friendname===f.name){
-                  isPresent = true ;
-                
-                }
-                
-              });
-                  if(!isPresent){
-    User.findByIdAndUpdate(data2.id,
-    {$addToSet: {friends: friend}},
-    function(err, cuser) {
-        if(err){
-           console.log(err);
-        }else{
-             console.log(cuser);
-            var newMessage = new Message({from :cuser.username, to:fuser.username }); 
-            newMessage.save(function(err){
-              if(err){
-                console.log(err);
-              }
-            });
-             var newMessage2 = new Message({from :fuser.username, to:cuser.username }); 
-            newMessage2.save(function(err){
-              if(err){
-                console.log(err);
-              }
-            });
-            var friend2 = {"name": cuser.username, "propic":cuser.profileImage} ;
-           console.log(friend2.message);
-           User.findByIdAndUpdate(fuser._id,
-           {$addToSet: {friends: friend2}},function(err,data){
-            if(err){
-              console.log(err);
-            }else{
-              console.log(data);
-            var addedFriend = "friend successfully added";
-            whichPage="two" ;
-            whichPage2 = "six" ;
-            io.emit("friend-added",addedFriend);
-            }
-           });
-         }
-      });
-    }
-    else{
-      var addedFriend = "friend exists"; 
-      io.emit("friend-added",addedFriend);
-    }
-           });
-  }
-     else{
-       var addedFriend = "no such  friend can be added";
-       whichPage="two" ;
-       whichPage2 = "six" ;
-       io.emit("friend-added",addedFriend);
-         }
-          });
-        }
-    });
-  });
-//----------------Call to search a friend from friend list of the user --------------------------------------------------
-     socket.on("search-friend-name",function(data2){
-      var isFriend = false ;
-      var output = {statement:"" , name:"" , user:""};
-      var isGroup = false ;
-        User.findById(data2.id,function(err,cuser){
-    if(err){
-      console.log(err);
-    }
-    else{
-      PGroup.findOne({hashtag:data2.friendname},function(err,cgroup){
-      console.log(cgroup);
-            if(cgroup !== null){
-              isGroup= true ;
-              output = {statement:"" , name:data2.friendname , user: data2.from};
-              io.emit("group-searched",output);
-            }
-        });
-      cuser.friends.forEach(function(f){
-          
-           if(f.name===data2.friendname){
-                
-                isFriend = true ;
-                output =  {statement:"" , name:f.name ,user: data2.from};
-          
-              } 
-      }) ;
-      } 
-      if(isFriend){
-        console.log(searchedFriend.name);
-        io.emit("friend-searched", output);
-        }
-        console.log(isFriend);
-        console.log(isGroup);
-        if(isFriend===false && isGroup===false){
-          output = {statement:"No such" , name:"" , user:data2.from};
-          io.emit("friend-searched",output) ;
-        }
-      });
-
-
-  });
-//----------------Call by the user to join a public group ------------------------------------------------------
-socket.on("requesttojoin",function(data2){
-   var newuser = {"username":data2.name} ;
-   var newgroup = {"hashname":data2.grpname} ;
-
-   PGroup.findOne({hashtag:data2.grpname},function(err,cgroup){
-    if(!err){
-      cgroup.update({$addToSet:{users:newuser}},{new:true},function(err,kgroup){
-
-
-      console.log(cgroup);
-      User.findOne({username:data2.name},function(err,cuser){
-          if(!err){
-            cuser.update({$addToSet:{pgrp:newgroup}},{new:true},function(err,guser){
-                          io.emit("groupjoined",{statement:"groupjoined",name:data2.name});
-            });
-
-          }
-      });
-      }) ;
-    }
-  });
-});
-//-----------------User has clicked the Search option for public groups and friends -----------------------------
-socket.on("clickedpublicsearch",function(data2){
-  PGroup.findOne({hashtag:data2.grpname},function(err,cgroup){
-    if(!err){
-      var isMember = false ;
-      cgroup.users.forEach(function(f){
-        if(data2.name===f.username){
-          isMember = true ;
-        }
-      });
-      if(isMember){
-        var output = {statement:"already a member",name:data2.name};
-        
-        io.emit("joingroup",output);
-      }
-      else{
-var output = {statement:"" , name:data2.name};
-       io.emit("joingroup",output); 
-      }
-    }
-  });
-});
-
-//-------------------------------------------------------------------------------------21444444444444444444444444443333
- socket.on("getimg",function(data2){
-      User.findOne({username:data2.frname},function(err,fuser){
-        if(!err){
-        Message.findOne({from:data2.frname},function(err,guser){
-        if(!err){
-        io.emit("frimg2",{lmsg:guser ,frname:fuser,usname1:data2.usname});
-      }
-
-      });
-      }  
-  });
-      
- });
-// --------------Load previous messages of a user with another user -----------------------------------
-  socket.on("loaded-message",function(data2){
-             User.findOne({username:data2.from},function(err,fuser){
-            if(err){console.log(err);}
-            else{
-              var messagefrom = {"users":data2.to};
-              User.findByIdAndUpdate(fuser._id,{$pull:{newmessages:messagefrom}},{new:true},
-                function(err,cuser){
-                  if(err){console.log(err);}
-                  else{
-                    io.emit("newmessagefrom",cuser) ;
-                  }
-              });
-            }
-         });
-              User.findOne({username:data2.to},function(err,fuser){
-            if(err){console.log(err);}
-            else{
-                io.emit("friendimage",fuser);
-            }
-          });
-    Message.findOne({from:data2.from,to:data2.to},function(err,cuser){
-        if(err){
-          console.log(err);
-        }else{
-          io.emit("previous-message",cuser);
-        }
-      });
-  });
-  //------------------Emitting the member names of a public group-------------------------------- 
-  socket.on("member-names",function(data2){
-     console.log(data2);
-      PublicGroup.findOne({hashtag:data2},function(err,cgroup){
+        User.findOneAndUpdate({username : friendname, 'friends.name' : currentuser},{$inc:{'friends.$.newmess' : 1 }},function(err,cuser){
           if(err){
-            console.log(err);
+            console.log(err) ;
+          }else{
+            console.log(cuser) ;
           }
-          else{
-            io.emit("names-here",cgroup);
-          }
+        })
       });
-  });
-  //-------------------Loading the previous messages of a specific private group ------------------------- 
- socket.on("loaded-message-group",function(data2){
-   User.findOne({username:data2.from},function(err,fuser){
-            if(err){console.log(err);}
-            else{
-              var messagefrom = {"users":data2.to};
-              User.findByIdAndUpdate(fuser._id,{$pull:{newmessages:messagefrom}},{new:true},
-                function(err,cuser){
-                  if(err){console.log(err);}
-                  else{
-                    io.emit("newmessagefrom",cuser) ;
-                  }
-              });
+  socket.on("newgroupmessage",function(data){
+        var currentuser = data.username ;
+        var groupid = data.groupid ;
+        // var usercombo1 = currentuser+friendname ;
+        var message = data.message ;
+        ms = { "from":currentuser,"data":message } ;
+        // io.to(friendname).emit("newmessagereceived",{messages:ms});
+        GroupMessage.findOneAndUpdate({groupid : groupid},{$push:{messaged:ms}},{new:true},function(err,cuser){
+          if(err){
+            console.log(err) ;
+          }else{
+            console.log(cuser.messaged[cuser.messaged.length - 1]) ;
+            io.sockets.in(groupid).emit("newgroupmessagereceived",{groupid : cuser.groupid , messages:cuser.messaged[cuser.messaged.length - 1]});               
+          } 
+        })
+        PublicGroup.findOne({_id : groupid},function(err,cuser0){
+          var arr = [];
+          console.log(cuser0);
+          arr = cuser0.users ;
+          for(var i = 0 ; i < arr.length ; i++){
+          if(arr[i].username !== currentuser){
+            User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$inc:{'groups.$.newmess' : 1 }},function(err,cuser){
+            if(err){
+              console.log(err) ;
+            }else{
+              console.log(cuser) ;
             }
-         });
-     GroupMessage.findOne({to:data2.to},function(err,cuser){
-        if(err){
-          console.log(err);
-        }else{
-          console.log(cuser);
-          io.emit("previous-group-message",cuser);
+          })
         }
-      });
-  });
-//-----------------------Loading the previous messages of a specific public group ------------------------- 
-socket.on("loaded-message-p-group",function(data2){
-   User.findOne({username:data2.from},function(err,fuser){
-            if(err){console.log(err);}
-            else{
-              var messagefrom = {"users":data2.to};
-              User.findByIdAndUpdate(fuser._id,{$pull:{newmessages:messagefrom}},{new:true},
-                function(err,cuser){
-                  if(err){console.log(err);}
-                  else{
-                    io.emit("newmessagefrom",cuser) ;
-                  }
-              });
-            }
-         });
-     GMessage.findOne({to:data2.to},function(err,cuser){
-        if(err){
-          console.log(err);
-        }else{
-          console.log(cuser);
-          io.emit("previous-group-p-message",cuser);
         }
+        })
       });
-  });
-
-//-----------Emitting any newmessages to the user since the session he last logged in -----------------------------
-  socket.on("userloggedin",function(data2){
-     User.findOne({username:data2},function(err,fuser){
-            if(err){console.log(err);}
-            else{
-              console.log(fuser);
-              io.emit("newmessagefrom",fuser);
-            }
-         });
-  });
-//-------------Sending message to a specific user ------------------------------------------------------------------
-  socket.on("send-message",function(data1){
-         console.log(data1.msg);
-         var messagefrom = {"users":data1.from};
-         User.findOne({username:data1.to},function(err,fuser){
-      //---------------------Saving the message as recently sent for both current user and receiving user-------------
-            if(err){console.log(err);}
-            else{
-              var isPresent  = false ;
-              var isPresent1 = false ;
-              fuser.newmessages.forEach(function(f){
-                if(data1.from === f.users){
-                  isPresent = true ;
-                }
-              });
-                fuser.recentmessages.forEach(function(f){
-                if(data1.from === f.users){
-                  isPresent1 = true ;
-                }
-              });
-              console.log(isPresent) ;
-              ////////////////////////////////////////
-              if(!isPresent1){
-                          
-                User.findOne({ username:data1.to},function(err,duser){
-                  if(duser.recentmessages.length===10){
-                    var lastname = {"users": duser.recentmessages[9].users} ;
-                    console.log(duser.recentmessages[9].users);
-                       duser.update({$pull : {recentmessages:lastname}},{new:true},function(err,guser){
-                          if(!err){
-                            console.log(guser);
-                          User.findOneAndUpdate({username:data1.to},{$addToSet:{recentmessages:messagefrom}},{new:true},function(err,huser){
-                           io.emit("recentmessage",huser);
-                          });
-                        }
-                       });
-
-                  }
-                else{
-                   User.findOneAndUpdate({username:data1.to},{$addToSet:{recentmessages:messagefrom}},{new:true},function(err,huser){
-                            io.emit("recentmessage",huser);
-                          });
-                }  
-                
-                });
-              }
-              ///////////////////////////////////////////
-              else{
-
-              
-                  User.findOneAndUpdate({ username:data1.to},{$pull:{recentmessages:messagefrom}},function(err,duser){
-                  if(duser.recentmessages.length===10){
-                    var lastname = {"users": duser.recentmessages[9].users} ;
-                    console.log(duser.recentmessages[9].users);
-                       duser.update({$pull : {recentmessages:lastname}},{new:true},function(err,guser){
-                          if(!err){
-                           User.findOneAndUpdate({username:data1.to},{$addToSet:{recentmessages:messagefrom}},{new:true},function(err,huser){
-                           io.emit("recentmessage",huser);
-                          });
-                        }
-                       });
-
-                  }
-                else{
-                   User.findOneAndUpdate({username:data1.to},{$addToSet:{recentmessages:messagefrom}},{new:true},function(err,huser){
-                            io.emit("recentmessage",huser);
-                          });
-                }  
-                
-                });
-              }
-              ///////////////////////////////////////////
-              if(!isPresent){
-              
-              User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
-                function(err,cuser){
-                  if(err){console.log(err);}
-                  else{
-                    io.emit("newmessagefrom",cuser) ;
-                  }
-                }
-                );
-            }
-          }
-         });
-         var newmessage2 = {"users": data1.to};
-      
-      User.findOne({username:data1.from},function(err,fuser){
- if(err){console.log(err);}
-            else{
-          
-              var isPresent1 = false ;
-                fuser.recentmessages.forEach(function(f){
-                if(data1.to === f.users){
-                  isPresent1 = true ;
-                }
-              });
-                    if(!isPresent1){
-                User.findOne({ username:data1.from},function(err,duser){
-                  if(duser.recentmessages.length===10){
-                    var lastname = {"users": duser.recentmessages[9].users} ;
-                    console.log(duser.recentmessages[9].users);
-                       duser.update({$pull : {recentmessages:lastname}},{new:true},function(err,guser){
-                          if(!err){
-                            console.log(guser);
-                          User.findOneAndUpdate({username:data1.from},{$addToSet:{recentmessages:newmessage2}},{new:true},function(err,huser){
-                           io.emit("recentmessage",huser);
-                          });
-                        }
-                       });
-
-                  }
-                else{
-                   User.findOneAndUpdate({username:data1.from},{$addToSet:{recentmessages:newmessage2}},{new:true},function(err,huser){
-                            io.emit("recentmessage",huser);
-                          });
-                }  
-                
-                });
-              }
-              ///////////////////////////////////////////
-              else{
-
-                  User.findOneAndUpdate({ username:data1.from},{$pull:{recentmessages:newmessage2}},{new:true},function(err,duser){
-                  if(duser.recentmessages.length===10){
-                    var lastname = {"users": duser.recentmessages[9].users} ;
-                    console.log(duser.recentmessages[9].users);
-                       duser.update({$pull : {recentmessages:lastname}},{new:true},function(err,guser){
-                          if(!err){
-                           User.findOneAndUpdate({username:data1.from},{$addToSet:{recentmessages:newmessage2}},{new:true},function(err,huser){
-                           io.emit("recentmessage",huser);
-                          });
-                        }
-                       });
-
-                  }
-                else{
-                   User.findOneAndUpdate({username:data1.from},{$addToSet:{recentmessages:newmessage2}},{new:true},function(err,huser){
-                            io.emit("recentmessage",huser);
-                          });
-                }  
-                
-                });
-              }
-            }
-      });
-      //-------------storing message to database -------------------------------------------------------------------------
- Message.findOne({from:data1.to,to:data1.from},function(err,cuser){
-
-        if(err){
-          console.log(err);
-        }else{
-              ms = { "data": data1.from + " : " + data1.msg} ;
-              
-              Message.findOneAndUpdate({_id : cuser._id},{$push: { messaged : ms}},function(err,duser){
-                if(err){
-                  console.log(err);
-                }
-              });
-            }
-          });
-
-     Message.findOne({from:data1.from,to:data1.to},function(err,cuser){
-
-        if(err){
-          console.log(err);
-        }else{
-              ms = { "data": data1.from + " : " + data1.msg} ;
-              
-              Message.findOneAndUpdate({_id : cuser._id},{$push: { messaged : ms}},{new:true},function(err,duser){
-                if(err){
-                  console.log(err);
-                }
-                // else{
-                    console.log(duser);
-                   io.emit("new-message",duser);
-                // }
-
-              });
-            }
-});        
-
-       });
-      
-
-//-----------------sending new message to a public group-------------------------------------------------------------
-socket.on("send-message-p-grp",function(data1){
-    var messagefrom = {"users":data1.to};
-
-    PGroup.findOne({hashtag:data1.to},function(err,cgroup){
-      if(err){
-        console.log(err);
-      }
-      else{
-        cgroup.users.forEach(function(f){
-          if(f.username !== data1.from){
-
-         User.findOne({username:f.username},function(err,fuser){
-            if(err){console.log(err);}
-            else{
-              var isPresent  = false ;
-              fuser.newmessages.forEach(function(g){
-                if(data1.to === g.users){
-                  isPresent = true ;
-                }
-              });
-              console.log(isPresent) ;
-              if(!isPresent){
-          
-              User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
-                function(err,cuser){
-                  if(err){console.log(err);}
-                  else{
-                    io.emit("newmessagefrom",cuser) ;
-                  }
-                });
-            }
-          }
-
-         });
-          }
-        });
-          }
-       
-
-
-     GMessage.findOne({to:data1.to},function(err,cuser){
-
-        if(err){
-          console.log(err);
-        }else{
-              ms = { "data": data1.from + " : " + data1.msg} ;
-              
-              GMessage.findOneAndUpdate({_id : cuser._id},{$push: { messaged : ms}},{new:true},function(err,duser){
-                if(err){
-                  console.log(err);
-                }
-                // else{
-                    
-                   io.emit("new-message-p-grp",{getmsg:duser,getusers:cgroup});
-                // }
-
-              });
-            }
-          });
-
-       });         
-  });
-
-// ----------------------------sending message to a private group ---------------------------------------------------------
-  socket.on("send-message-grp",function(data1){
-    var messagefrom = {"users":data1.to};
-    //-----------------------storing as recent private group meessage ------------------------------------------------------
-        PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
-      if(err){
-        console.log(err);
-      }
-      else{
-        cgroup.users.forEach(function(f){
-
-         User.findOne({username:f.username},function(err,fuser){
-            if(err){console.log(err);}
-            else{
-              var isPresent  = false ;
-              fuser.recentgpmessages.forEach(function(g){
-                if(data1.to === g.users){
-                  isPresent = true ;
-                }
-              });
-              console.log(isPresent) ;
-              User.findById(fuser._id,function(err,usser){
-             if(!err){
-             var lastman = {"users" : usser.recentgpmessages[9]} ;
-              if(usser.recentgpmessages.length===10){
-                usser.update({$pull:{recentgpmessages:lastman}});
-              }
-            }
-          });
-              if(!isPresent){
-          
-              User.findByIdAndUpdate(fuser._id,{$addToSet:{recentgpmessages:messagefrom}},{new:true},
-                function(err,tuser){
-                  if(err){console.log(err);}
-                  else{
-                    io.emit("recentgrpmsg",tuser) ;
-                  }
-                });
-            }
-            else{
-                    User.findByIdAndUpdate(fuser._id,{$pull:{recentgpmessages:messagefrom}},{new:true},
-                function(err,kuser){
-                  if(err){console.log(err);}
-                });
-                      User.findByIdAndUpdate(fuser._id,{$addToSet:{recentgpmessages:messagefrom}},{new:true},
-                function(err,tuser){
-                  if(err){console.log(err);}
-                  else{
-                    io.emit("recentgrpmsg",tuser) ;
-                  }
-                });
-            }
-          }
-
-         });
-          
-        });
-          }
-        });
-
-    PublicGroup.findOne({hashtag:data1.to},function(err,cgroup){
-      if(err){
-        console.log(err);
-      }
-      else{
-        cgroup.users.forEach(function(f){
-          if(f.username !== data1.from){
-
-         User.findOne({username:f.username},function(err,fuser){
-            if(err){console.log(err);}
-            else{
-              var isPresent  = false ;
-              fuser.newmessages.forEach(function(g){
-                if(data1.to === g.users){
-                  isPresent = true ;
-                }
-              });
-              console.log(isPresent) ;
-              if(!isPresent){
-          
-              User.findByIdAndUpdate(fuser._id,{$addToSet:{newmessages:messagefrom}},{new:true},
-                function(err,cuser){
-                  if(err){console.log(err);}
-                  else{
-                    io.emit("newmessagefrom",cuser) ;
-                  }
-                });
-            }
-          }
-
-         });
-          }
-        });
-          }
-       
-
-      //----------------------saving message to database --------------------------------------------------------------
-     GroupMessage.findOne({to:data1.to},function(err,cuser){
-
-        if(err){
-          console.log(err);
-        }else{
-              ms = { "data": data1.from + " : " + data1.msg} ;
-              
-              GroupMessage.findOneAndUpdate({_id : cuser._id},{$push: { messaged : ms}},{new:true},function(err,duser){
-                if(err){
-                  console.log(err);
-                }
-                // else{
-                   io.emit("new-message-grp",{getmsg:duser,getusers:cgroup});
-                // }
-              });
-            }
-          });
-       });         
-  });
-
-//-----------------------------------------------------------------------------444444444444444444444444444444444444444444444444
-  socket.on("getgrpmsg",function(data1){
-    GroupMessage.findOne({to:data1.grpname},function(err,cgroup){
-        if(!err){
-          io.emit("grpmsg",{grp:cgroup,usname1:data1.usname});
-        }
-    });
-  });
-
-  io.emit("react",{data:"well done boy"}) ;
-  socket.on("incoming",function(data){
-    console.log(data) ;
-  })
-//-----------------------------creating a public group ----------------------------------------------------------------------
-socket.on("createpgroup",function(data2){
-          console.log(data2);
-          var userss = {"username": data2.maker };
-          var output = {"name":data2.maker , "state":""} ;
-             PublicGroup.find({hashtag:data2.hashtagname}).count({},function(err,count1){
-                console.log(count1);
-                PGroup.find({ hashtag : data2.hashtagname}).count({},function(err,count){
-                   if(err || count !== 0 || count1 !==0){
-                    statement = "group already exists";
-                    output = {"name":data2.maker , "state":statement} ;
-                      io.emit("pgroupcreated",output) ; 
-                  } 
-                  else{
-                      grouphashtag = {"hashname" :data2.hashtagname};
-                      User.findByIdAndUpdate(data2.id,
-                      {$addToSet: {pgrp: grouphashtag}},
-                      function(err, cuser) {
-                        if(err){
-                          console.log(err);
-                        }
-                      });
-                      var newpubgroup = new PGroup({groupname :data2.groupname, hashtag:data2.hashtagname,admin:data2.maker,users: userss }); 
-                      newpubgroup.save(function(err){
-                        if(err){
-                            console.log(err);
-                            }
-                      });
-                      var newgroupmessage = new GMessage({to : data2.hashtagname});
-                      newgroupmessage.save(function(err){
-                        if(err){
-                            console.log(err);
-                            }
-                      });
-                      statement = "group created";
-                      output = {"name":data2.maker , "state":statement} ;
-                      io.emit("pgroupcreated",output) ; 
-                  }
-                });
-            });      
-    });
 });
 
 //------------------------------------listen to local port -----------------------------------------------------------------------------
