@@ -669,14 +669,21 @@ socket.on("newmessage",function(data){
             io.to(currentuser).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});
           } 
         })
-        User.findOneAndUpdate({username : friendname, 'friends.name' : currentuser},{$inc:{'friends.$.newmess' : 1 }},function(err,cuser){
+         User.findOneAndUpdate({username : friendname, 'friends.name' : currentuser},{$set:{'friends.$.lastUpdatedAt':Date.now()},$inc:{'friends.$.newmess' : 1}},{new:true},function(err,cuser){
           if(err){
             console.log(err) ;
           }else{
-            console.log(cuser) ;
+            console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
+            // User.findOneAndUpdate({username : friendname},{$pullAll:{friends}}) ;
+            User.findOneAndUpdate({username : currentuser, 'friends.name' : friendname},{$set:{'friends.$.lastUpdatedAt':Date.now()}},{$sort:{'friends.lastUpdatedAt' : -1}},function(err,cuser2){
+              if(err){
+                console.log(err) ;
+              }else{
+                 console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
+              }
+            })
           }
         })
-
       }
       else{
         var fileName = data.fileName;

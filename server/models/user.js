@@ -34,7 +34,8 @@ var UserSchema = new mongoose.Schema({
       {  
          name: String,
          propic: String,
-         newmess: {type:Number,default:0}
+         newmess: {type:Number,default:0},
+         lastUpdatedAt : {type:Number , default:Date.now()}
       }
     ],
     email: {
