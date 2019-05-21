@@ -728,32 +728,89 @@ socket.on("newmessage",function(data){
         var groupid = data.groupid ;
         // var usercombo1 = currentuser+friendname ;
         var message = data.message ;
-        ms = { "from":currentuser,"data":message } ;
-        // io.to(friendname).emit("newmessagereceived",{messages:ms});
-        GroupMessage.findOneAndUpdate({groupid : groupid},{$push:{messaged:ms}},{new:true},function(err,cuser){
-          if(err){
-            console.log(err) ;
-          }else{
-            // console.log(cuser.messaged[cuser.messaged.length - 1]) ;
-            io.sockets.in(groupid).emit("newgroupmessagereceived",{groupid : cuser.groupid , messages:cuser.messaged[cuser.messaged.length - 1]});               
-          } 
-        })
-        PublicGroup.findOne({_id : groupid},function(err,cuser0){
-          var arr = [];
-          // console.log(cuser0);
-          arr = cuser0.users ;
-          for(var i = 0 ; i < arr.length ; i++){
-          if(arr[i].username !== currentuser){
-            User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$inc:{'groups.$.newmess' : 1 }},function(err,cuser){
+        var file   =  data.file;
+        if(file==null)
+        {
+          var obj ={};
+          obj.format = "text";
+          obj.message = message;
+          obj.url = null;
+          
+          ms = { "from":currentuser,"data":obj } ;
+          // io.to(friendname).emit("newmessagereceived",{messages:ms});
+          GroupMessage.findOneAndUpdate({groupid : groupid},{$push:{messaged:ms}},{new:true},function(err,cuser){
             if(err){
               console.log(err) ;
             }else{
-              // console.log(cuser) ;
-            }
+              // console.log(cuser.messaged[cuser.messaged.length - 1]) ;
+              io.sockets.in(groupid).emit("newgroupmessagereceived",{groupid : cuser.groupid , messages:cuser.messaged[cuser.messaged.length - 1]});               
+            } 
           })
+          PublicGroup.findOne({_id : groupid},function(err,cuser0){
+            var arr = [];
+            // console.log(cuser0);
+            arr = cuser0.users ;
+            for(var i = 0 ; i < arr.length ; i++){
+            if(arr[i].username !== currentuser){
+              User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$inc:{'groups.$.newmess' : 1 }},function(err,cuser){
+              if(err){
+                console.log(err) ;
+              }else{
+                // console.log(cuser) ;
+              }
+            })
+          }
+          }
+          })
+
         }
+        else{
+
+          var fileName = data.fileName;
+          var DateNow = new Date().getTime();
+          fileName   = DateNow+fileName;
+          var fileType = data.fileType;
+          fs.writeFile(__dirname+"/public/uploads/chat/"+fileName,file, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+            var obj ={};
+            obj.format = fileType;
+            obj.message = message;
+            obj.url = "/public/uploads/chat/"+fileName;
+            
+            ms = { "from":currentuser,"data":obj } ;
+            // io.to(friendname).emit("newmessagereceived",{messages:ms});
+            GroupMessage.findOneAndUpdate({groupid : groupid},{$push:{messaged:ms}},{new:true},function(err,cuser){
+              if(err){
+                console.log(err) ;
+              }else{
+                // console.log(cuser.messaged[cuser.messaged.length - 1]) ;
+                io.sockets.in(groupid).emit("newgroupmessagereceived",{groupid : cuser.groupid , messages:cuser.messaged[cuser.messaged.length - 1]});               
+              } 
+            })
+            PublicGroup.findOne({_id : groupid},function(err,cuser0){
+              var arr = [];
+              // console.log(cuser0);
+              arr = cuser0.users ;
+              for(var i = 0 ; i < arr.length ; i++){
+              if(arr[i].username !== currentuser){
+                User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$inc:{'groups.$.newmess' : 1 }},function(err,cuser){
+                if(err){
+                  console.log(err) ;
+                }else{
+                  // console.log(cuser) ;
+                }
+              })
+            }
+            }
+            })
+
+
+          });
+          
         }
-        })
+       
       });
 });
 

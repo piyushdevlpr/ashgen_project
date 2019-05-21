@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import GetGroup from './GetGroup';
+import ChatText from './ChatText';
+import ChatPhoto from './ChatPhoto';
+import ChatVideo from './ChatVideo';
 import socketIOClient from "socket.io-client";
 const socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
         
@@ -26,13 +29,17 @@ class People extends Component {
             newgroupname : '',
             groups:[],
             friends: [],
-            previousmess:[]
+            previousmess:[],
+            file: null
+
         }
         this.handlechange = this.handlechange.bind(this);
         this.getCreating = this.getCreating.bind(this);
         this.creategroup = this.creategroup.bind(this);
         this.sendmsg = this.sendmsg.bind(this);
         this.getGroupInfo = this.getGroupInfo.bind(this);
+        this.filehandleChange = this.filehandleChange.bind(this);  //function for file in chat
+
     }
     getCreating=(event)=>{
         event.preventDefault();
@@ -195,17 +202,59 @@ class People extends Component {
     }
     showpreviousmessages=()=>{        
         const list = this.state.previousmess.map((data,index)=>
-            <li>{data.from} : {data.data}</li>
+        {
+            if(data.data.format=="text") 
+            {   
+               return( <ChatText key={index} data={data} />)
+
+            }
+            else if(data.data.format=="image")
+            {
+                return (<ChatPhoto key={index} data={data} />)
+            }
+            else if(data.data.format=="video")
+            {
+                return(<ChatVideo key={index} data={data} />)
+            }
+        }
             ); 
             return list ;
     }
+
+    filehandleChange(event)
+    {
+        event.preventDefault();
+        this.setState({[event.target.name]: event.target.files[0]},
+            ()=>{console.log(this.state.file)}
+            
+            );
+    
+    }
+
     sendmsg=(event)=>{
         event.preventDefault() ;
-        var msg = this.state.message ;
-        //var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
-        this.setState({message : ""},function(){
-            socket.emit("newgroupmessage",{username:this.props.location.state.username,groupid:this.state.tochatwithid , message:msg}) ;
-        }); 
+        if(this.state.file==null)
+        {
+            var msg = this.state.message ;
+            var file = this.state.file;   // only for checking at server if this is null
+            //var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
+            this.setState({message : ""},function(){
+                socket.emit("newgroupmessage",{username:this.props.location.state.username,groupid:this.state.tochatwithid , message:msg, file:file}) ;
+            }); 
+
+        }
+        else{
+            var msg = this.state.message ;
+            var file = this.state.file;   // only for checking at server if this is null
+            var fileName= file.name;
+            var fileType = file.type.split('/')[0];
+            //var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
+            this.setState({message : ""},function(){
+                socket.emit("newgroupmessage",{username:this.props.location.state.username,groupid:this.state.tochatwithid , message:msg,file:this.state.file,fileName,fileType}) ;
+            }); 
+
+        }
+     
         this.mainInput.value = "";
     }
     removeMemberToUpdateGroup=(data)=>{
@@ -320,6 +369,10 @@ class People extends Component {
                         <form onSubmit={this.sendmsg}>
                             <input ref={(ref) => this.mainInput= ref} required={true} placeholder='enter text' type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}></input>
                             <button >Send</button>
+                            <div className="form-group">
+                        <label for="exampleFormControlFile1">Choose File</label>
+                        <input type="file" name="file" onChange={this.filehandleChange} className="form-control-file" id="exampleFormControlFile1" />
+                         </div>
                         </form>
                         </div>
                     </div>    

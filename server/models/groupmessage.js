@@ -12,7 +12,11 @@ var GroupMessageSchema = new mongoose.Schema({
     messaged: [
       {
         from:String,
-        data:String
+        data:{
+          format:{type:String},   //text photo video file
+          message: {type:String,default:''},
+          url    : {type:String,default:''}
+        } 
       }
     ]
 });
