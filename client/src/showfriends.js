@@ -16,7 +16,7 @@ class People extends Component {
             friends : [],
             tochatwith : '',
             message : '',
-            previousmess : [{from:'',message:''}],
+            previousmess : [{from:'',data:''}],
             file: null
         }
         this.handlechange=this.handlechange.bind(this);
@@ -54,13 +54,16 @@ class People extends Component {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
-          }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({friends:data},function(){
+          }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({friends:data.sort(function(m1,m2){return m2.lastUpdatedAt - m1.lastUpdatedAt})},function(){
             
             var map = this.state.friendsnewmessage;  
             for(var i = 0 ; i < this.state.friends.length ; i++){
                 map[this.state.friends[i].name] = this.state.friends[i].newmess ;
               }
-              this.setState({friendsnewmessage : map},function(){
+            //   var x = []
+            //   x = this.state.friends ;
+            //   x.sort(function(m1,m2){return m2.lastUpdatedAt - m1.lastupdatedAt});
+              this.setState({friendsnewmessage : map },function(){
                 console.log(this.state) ;
               })
           })}}).catch(err=> {
@@ -75,21 +78,6 @@ class People extends Component {
         }
         socket.on("getmessages",data=>{ this.setState({previousmess:data.messages})})
     }
-    // allonsockets=()=>{
-    //     socket.on("getmessages",data=>{ this.setState({previousmess:data.messages})}); 
-    //     socket.on("newmessagereceived",data=>{
-    //         this.setState(state => {
-    //             const list = state.previousmess.slice();
-    //             list.push(data.messages);
-    //             console.log(data.messages) ;
-    //             return {
-    //               previousmess:list
-    //             };
-    //           });
-    //         }
-    //         );
-    //     // this.setState({previousmess:this.state.previousmess.push(data.messages)})});
-    // }
     getmetochat=(friend_name)=>{
         var list = this.state.friendsnewmessage ;
         list[friend_name] = 0 ;
@@ -110,10 +98,7 @@ class People extends Component {
         event.preventDefault();
         this.setState({[event.target.name]: event.target.files[0]},
             ()=>{console.log(this.state.file)}
-            
             );
-        
-
     }
 
     sendmsg=(event)=>{
@@ -173,19 +158,45 @@ class People extends Component {
                 // if(data.message.from !== this.state.tochatwith && data.message.from === this.props.location.state.username){
                 //     return ;
                 // }
-                if(data.messages.from !== this.state.tochatwith && data.messages.from !== this.props.location.state.username){
+
+                if(data.messages.from !== this.state.tochatwith && data.messages.from !== this.props.location.state.username){ //if currentuser is not the one who has sent msg and the person with whom the user is chatting has not sent the message
                     var list2 = this.state.friendsnewmessage ;
                     list2[data.messages.from]++ ;
+                    var x = {} ;
+                    var z = []
+                    z = this.state.friends ;
+                    for(var i = 0 ; i < z.length ; i++){
+                        if(z[i].name == data.messages.from){
+                            x = z[i] ;
+                            z.splice(i,1) ;
+                            break ;
+                        }
+                    }
+                    z.unshift(x) ;
                     return {
-                        friendsnewmessage:list2
+                        friendsnewmessage:list2,
+                        friends : z
                     };  
                 }
-
                 const list = state.previousmess.slice();
-                list.push(data.messages);
+                list.push(data.messages);           // add new msg to previous ones only if currentuser is the one who has sent msg or to whom msg has been sent
                 console.log(data.messages.data) ;
+                var z = []
+                z = this.state.friends ;
+                if(data.messages.from === this.props.location.state.username){
+                    var x = {} ;
+                    for(var i = 0 ; i < z.length ; i++){
+                        if(z[i].name == this.state.tochatwith){
+                            x = z[i] ;
+                            z.splice(i,1) ;
+                            break ;
+                        }
+                    }
+                    z.unshift(x) ;
+                }
                 return {
-                  previousmess:list
+                  previousmess:list,
+                  friends : z 
                 };
               });
             }
