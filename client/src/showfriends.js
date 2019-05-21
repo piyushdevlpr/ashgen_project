@@ -146,16 +146,16 @@ class People extends Component {
         {
             if(data.data.format=="text") 
             {   
-               return( <ChatText data={data} />)
+               return( <ChatText key={index} data={data} />)
 
             }
             else if(data.data.format=="image")
             {
-                return (<ChatPhoto data={data} />)
+                return (<ChatPhoto key={index} data={data} />)
             }
             else if(data.data.format=="video")
             {
-                return(<ChatVideo data={data} />)
+                return(<ChatVideo key={index} data={data} />)
             }
            
             // <li>{data.from} : {data.data.message}</li>
