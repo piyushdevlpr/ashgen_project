@@ -703,7 +703,7 @@ socket.on("newmessage",function(data){
         obj.url = "/public/uploads/chat/"+fileName;
       
         ms = { "from":currentuser,"data":obj } ;
-        // io.to(friendname).emit("newmessagereceived",{messages:ms});
+            // io.to(friendname).emit("newmessagereceived",{messages:ms});
         Message.findOneAndUpdate({$or:[{usercombo:usercombo1},{usercombo:usercombo2}]},{$push:{messaged:ms}},{new:true},function(err,cuser){
           if(err){
             console.log(err) ;
@@ -720,9 +720,7 @@ socket.on("newmessage",function(data){
             console.log(cuser) ;
           }
         })
-    
       })
-
       }        
       });
   socket.on("newgroupmessage",function(data){
