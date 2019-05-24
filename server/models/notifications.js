@@ -24,7 +24,10 @@ var NotificationSchema = new mongoose.Schema({
         groupname : {type:String},
         groupid : {type:String}
       }
-    ]
+    ],
+    teamrequests :[{
+      team :{type:String}
+    }]
 });
 
 module.exports = mongoose.model("Notification", NotificationSchema);

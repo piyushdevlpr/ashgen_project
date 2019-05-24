@@ -53,6 +53,7 @@ class Profileind extends Component {
         }else{
         return(
             <div>
+                <h1>YOUR PROFILE</h1>
                 <form onSubmit={this.gotohome}>
                 <input name='first_name' value={this.state.first_name} onChange={this.handleChange} placeholder='first name'/><br/>
                     <input name='last_name' value={this.state.last_name} onChange={this.handleChange} placeholder='Last Name'/><br/>

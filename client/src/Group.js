@@ -119,7 +119,7 @@ class People extends Component {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
           }).then(res => res.json()).then(data => {if(this.ismounted === true){
-              this.setState({groups:data},function(){
+              this.setState({groups:data.sort(function(m1,m2){return m2.lastUpdatedAt - m1.lastUpdatedAt})},function(){
                 var map = this.state.friendsnewmessage;  
                 for(var i = 0 ; i < this.state.groups.length ; i++){
                     map[this.state.groups[i].groupid] = this.state.groups[i].newmess ;
@@ -188,17 +188,40 @@ class People extends Component {
         socket.emit("join",{username : this.props.location.state.username}) ;
         socket.on("newgroupmessagereceived",data=>{
             this.setState(state => {
-                var list2 = this.state.friendsnewmessage ;
-                list2[data.messages.groupid]++ ;
                 const list = state.previousmess.slice();
                 list.push(data.messages);
                 console.log(data.messages.data) ;
                 return {
-                  previousmess:list,  friendsnewmessage:list2
+                  previousmess:list
                 };
               });
             }
             );
+        socket.on("newnotification",data=>{  
+            this.setState(state => {
+
+                    var list2 = this.state.friendsnewmessage ;
+                    if(this.state.tochatwithid !== data.groupid && data.from !== this.props.location.state.username){  // if current group is not opened nor is the user the sender of the message,  increment the message number
+                    list2[data.groupid]++ ;
+                    }
+                    var x = {} ;
+                    var z = []
+                    z = this.state.groups ;
+                    for(var i = 0 ; i < z.length ; i++){
+                        if(z[i].groupid == data.groupid){
+                            x = z[i] ;
+                            z.splice(i,1) ;
+                            break ;
+                        }
+                    }
+                    z.unshift(x) ;
+                    return {
+                      friendsnewmessage:list2 , groups : z
+                    };
+                  });
+                
+                });
+        
     }
     showpreviousmessages=()=>{        
         const list = this.state.previousmess.map((data,index)=>

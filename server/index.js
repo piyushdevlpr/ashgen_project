@@ -31,7 +31,8 @@ var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
   mongoose.connect("mongodb://localhost/login-ashgen",{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
-  var whitelist = ['http://localhost:3000', 'http://localhost:3000/your-profile/','http://localhost:3000/people/']
+  var whitelist = [];
+  whitelist = ['http://localhost:3000', 'http://localhost:3000/your-profile/','http://localhost:3000/team-profile/','http://localhost:3000/people/']
   var corsOptions = {
     credentials:true,                           //using credentials from frontend aftr authentication
     origin: function (origin, callback) {
@@ -128,112 +129,50 @@ app.post("/register",function(req, res,next){
             }
             passport.authenticate("userlocal")(req, res, function(){
               var newnoti = new Notification({handlename : req.body.username,team:req.body.team}) ;
+              
               newnoti.save(function(err,record){
+              
                 if(err){
                   console.log(err) ;
                 }
               })
-              var user = {'id':req.user._id , 'username' : req.user.username, 'team':req.body.team}
-              var newUser = new Yourprofile({
-              user: user ,
-              first_name: '',
-              Last_Name:'',
-              Specialisation:'',
-              College:'',
-              Teams:'',
-              Short_Bio:'',
-              Message_Request_Option:'',
-              Projects_and_competitions:'',
-              Achievements_in_competitions:'',
-              open_to_which_type_of_company_projects:'',
-              Open_to_which_type_of_collabs:''
-            });
-            newUser.save(function(err,cuser){
+              if(tof === false){
+                var user = {'id':req.user._id , 'username' : req.user.username, 'team':req.body.team}
+              
+                var newUser = new Yourprofile({
+              user: user 
+                });
+              newUser.save(function(err,cuser){
               if(err){
                 console.log(err);
               }else{
                 console.log(cuser) ;
               }
-            });
+              });
+              }else{
+                var user = req.user.username ;
+              
+                var newUser = new Teamprofile({
+                  username: user 
+                    });
+                  newUser.save(function(err,cuser){
+                  if(err){
+                    console.log(err);
+                  }else{
+                    console.log(cuser) ;
+                  }
+                  });
+              }
               console.log("true");  
               res.json("true") ;
               //   res.redirect("/signedin"); 
             });
         });
 });
-//        }
-//      }
-//    });
-//});
-// app.post("/loginteam", passport.authenticate("teamlocal", 
-//     {
-//         successRedirect: "/loggedin",
-//         failureRedirect: "/wrong"
-//     }), function(req, res){
-// });
-
-// app.post("/registerteam",function(req, res,next){
-//   //var newUser = new User({username: req.body.username,email:req.body.emailid,profileImage: req.file.filename});
-//   console.log("hello") ;
-//   console.log(req.body) ;
-//   var usern = req.body.username ; 
-//   var newUser = new Team({username: req.body.username,email:req.body.emailid});
-//   User.find({username : usern},function(err,cuser){
-//     if(err){
-//       console.log(err) ;
-//     }else{
-//       if(cuser.length === 0){
-//         Team.register(newUser, req.body.password, function(err, user){
-//           if(err){
-//               console.log(err);
-//               console.log("false");
-//               return res.json("false") ;
-//               //return res.render("register.ejs");
-//           }
-//           passport.authenticate("teamlocal")(req, res, function(){
-//             var newnoti = new Notification({handlename : req.body.username}) ;
-//             newnoti.save(function(err,record){
-//               if(err){
-//                 console.log(err) ;
-//               }
-//             })
-//             var user = {'id':req.user._id , 'username' : req.user.username}
-//             var newUser = new Teamprofile({
-//             user: user ,
-//             first_name: '',
-//             Last_Name:'',
-//             Specialisation:'',
-//             College:'',
-//             Teams:'',
-//             Short_Bio:'',
-//             Message_Request_Option:'',
-//             Projects_and_competitions:'',
-//             Achievements_in_competitions:'',
-//             open_to_which_type_of_company_projects:'',
-//             Open_to_which_type_of_collabs:''
-//           });
-//           newUser.save(function(err,cuser){
-//             if(err){
-//               console.log(err);
-//             }else{
-//               console.log(cuser) ;
-//             }
-//           })
-//             console.log("true");  
-//             res.json("true") ;
-//             //   res.redirect("/signedin"); 
-//           });
-//       });
-//       }
-//     }
-//   });
-  
-// });
-
 app.post("/your-profile",function(req, res){
     console.log("hello") ;
   console.log(req.user) ;
-  var user = {'id':req.user._id , 'username' : req.user.username}
+  var user = {'username' : req.user.username}
   Yourprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
     Last_Name:req.body.Last_Name,
     Specialisation:req.body.Specialisation,
@@ -253,21 +192,41 @@ app.post("/your-profile",function(req, res){
 
 app.post("/team-profile",function(req, res){
   console.log("hello") ;
-  console.log(req.body) ;
-  var user = {id:req.user.id , username : req.user.username}
-  Yourprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
-    Last_Name:req.body.Last_Name,
+  console.log(req.user) ;
+  var user = req.body.username ;
+  mem = []
+  for(var i = 0 ; i < req.body.members.length ; i++){
+    ob = {};
+    ob.name = req.body.members[i];
+    ob.status = false;
+    mem.push(ob);
+  }
+  Teamprofile.findOneAndUpdate({username:user},{$set: {  
     Specialisation:req.body.Specialisation,
     College:req.body.College,
-    Teams:req.body.Teams,
     Short_Bio:req.body.Short_Bio,
     Message_Request_Option:req.body.Message_Request_Option,
     Projects_and_competitions:req.body.Projects_and_competitions,
     Achievements_in_competitions:req.body.Achievements_in_competitions,
     open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-    Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs}},function(err,cuser){
+    Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs},$push:{
+      Departments :{$each : req.body.dep} ,
+      members : {$each : mem}
+      }},{new:true},function(err,cuser){
       if(err){
         console.log(err) ;
+      }else{
+        for(var i = 0 ; i < req.body.members.length ; i++){
+          ob2 = {} ;
+          ob2.team = req.body.username ;       
+          // ob2.head = ;
+        Notification.findOneAndUpdate({handlename : req.body.members[i]},{$push:{teamrequests : ob2}},function(err,fuser){
+            if(err){
+              console.log(err) ;
+            }
+          });
+        }
+        res.json({data:"send"}) ;
       }
   });
 });
@@ -420,6 +379,7 @@ app.get("/get-notifications",function(req,res){
       message = [] ;
       request = [] ;
       groupreq = [] ;
+      teamrequests = [] ;
       cuser.messages.forEach(function(mes){
           message.push(mes['from']) ;
       });
@@ -429,7 +389,10 @@ app.get("/get-notifications",function(req,res){
       cuser.groups.forEach(function(mes){
         groupreq.push(mes) ;
       });
-      var data = {message:message,request:request,groups : groupreq};
+      cuser.teamrequests.forEach(function(mes){
+        teamrequests.push(mes) ;
+      });
+      var data = {message:message,request:request,groups : groupreq,teamrequests : teamrequests};
       res.json(data) ;
       console.log(message);
       console.log(request);
@@ -536,6 +499,61 @@ app.post("/verdict-groupdeclined",function(req,res){
   });
 });
 
+app.get("/verdict-team-accepted/:key",function(req,res){
+  var usernam = req.user.username ;
+  var ob = {} ;
+  ob.team = req.params.key ;
+  console.log(ob) ;
+  Notification.findOneAndUpdate({handlename : usernam},{$pull: {teamrequests : ob}},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      // var userna = {username : usernam} ; 
+      User.findOneAndUpdate({username:usernam},{$push: {teams : ob}},function(err,fuser){
+        if(err){
+          console.log(err);
+        }else{
+          var m = {name:req.user.username,status:"member"} ;
+          var m0 = {name:req.user.username,status:"requested"} ;
+          var m1 = "member" ;
+          console.log(req.params.key + '/' + req.user.username + '/' + usernam) ;
+          Teamprofile.findOneAndUpdate({username : req.params.key , 'members.name':req.user.username},{$set:{'members.$.status' : true }},{new:true},function(err,kuser){
+            if(err){
+              console.log(err) ;
+            }else{
+              console.log(kuser)
+              res.send({verdict:'success'}) ;
+            }
+          })
+        }
+      });
+    }
+  });
+});
+
+app.get("/verdict-team-declined/:key",function(req,res){
+  var username = req.user.username ;
+  // var groupid = req.params.frname ;
+  console.log(req.user)
+  var ob = {} ;
+  ob.team = req.params.key ;
+  Notification.findOneAndUpdate({handlename : username},{$pull: {teamrequests : ob}},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      member = {};
+      member.name = username;
+      member.status = false ;
+      Teamprofile.findOneAndUpdate({username : req.params.key},{$pull:{members:member,department:{'head':username}}},function(err,kuser){
+        if(err){
+          console.log(err) ;
+        }else{
+          res.send({verdict:'success'}) ;
+        }
+      })
+    }
+  });
+});
 app.get("/get-friends",function(req,res){
   var username = req.user.username ;
   User.findOne({username:username},function(err,cuser){
@@ -713,13 +731,21 @@ socket.on("newmessage",function(data){
             io.to(currentuser).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});
           } 
         })
-        User.findOneAndUpdate({username : friendname, 'friends.name' : currentuser},{$inc:{'friends.$.newmess' : 1 }},function(err,cuser){
+        User.findOneAndUpdate({username : friendname, 'friends.name' : currentuser},{$set:{'friends.$.lastUpdatedAt':Date.now()},$inc:{'friends.$.newmess' : 1}},{new:true},function(err,cuser){
           if(err){
             console.log(err) ;
           }else{
-            console.log(cuser) ;
+            console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
+            // User.findOneAndUpdate({username : friendname},{$pullAll:{friends}}) ;
+            User.findOneAndUpdate({username : currentuser, 'friends.name' : friendname},{$set:{'friends.$.lastUpdatedAt':Date.now()}},{$sort:{'friends.lastUpdatedAt' : -1}},function(err,cuser2){
+              if(err){
+                console.log(err) ;
+              }else{
+                 console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
+              }
+            })
           }
-        })
+        }) 
       })
       }        
       });
@@ -744,6 +770,7 @@ socket.on("newmessage",function(data){
             }else{
               // console.log(cuser.messaged[cuser.messaged.length - 1]) ;
               io.sockets.in(groupid).emit("newgroupmessagereceived",{groupid : cuser.groupid , messages:cuser.messaged[cuser.messaged.length - 1]});               
+              
             } 
           })
           PublicGroup.findOne({_id : groupid},function(err,cuser0){
@@ -751,18 +778,26 @@ socket.on("newmessage",function(data){
             // console.log(cuser0);
             arr = cuser0.users ;
             for(var i = 0 ; i < arr.length ; i++){
-            if(arr[i].username !== currentuser){
-              User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$inc:{'groups.$.newmess' : 1 }},function(err,cuser){
+          if(arr[i].username !== currentuser){
+            io.sockets.in(arr[i].username).emit("newnotification",{from : currentuser ,groupid : groupid})
+            User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$set:{'groups.$.lastUpdatedAt':Date.now()},$inc:{'groups.$.newmess' : 1}},{new:true},function(err,cuser){
               if(err){
                 console.log(err) ;
               }else{
-                // console.log(cuser) ;
+                console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
               }
             })
           }
+          User.findOneAndUpdate({username : currentuser, 'groups.groupid' : groupid},{$set:{'groups.$.lastUpdatedAt':Date.now()}},{new:true},function(err,cuser){
+            io.sockets.in(currentuser).emit("newnotification",{from : currentuser ,groupid : groupid})
+            if(err){
+              console.log(err) ;
+            }else{
+              console.log(cuser+">>>>>>") ;
+            }
+          })
           }
           })
-
         }
         else{
 
@@ -791,19 +826,28 @@ socket.on("newmessage",function(data){
             })
             PublicGroup.findOne({_id : groupid},function(err,cuser0){
               var arr = [];
-              // console.log(cuser0);
               arr = cuser0.users ;
               for(var i = 0 ; i < arr.length ; i++){
-              if(arr[i].username !== currentuser){
-                User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$inc:{'groups.$.newmess' : 1 }},function(err,cuser){
+            if(arr[i].username !== currentuser){
+              io.sockets.in(arr[i].username).emit("newnotification",{from : currentuser ,groupid : groupid})
+              User.findOneAndUpdate({username : arr[i].username, 'groups.groupid' : groupid},{$set:{'groups.$.lastUpdatedAt':Date.now()},$inc:{'groups.$.newmess' : 1}},{new:true},function(err,cuser){
                 if(err){
                   console.log(err) ;
                 }else{
-                  // console.log(cuser) ;
+                  console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
                 }
               })
             }
+            User.findOneAndUpdate({username : currentuser, 'groups.groupid' : groupid},{$set:{'groups.$.lastUpdatedAt':Date.now()}},{new:true},function(err,cuser){
+              io.sockets.in(currentuser).emit("newnotification",{from : currentuser ,groupid : groupid})
+              if(err){
+                console.log(err) ;
+              }else{
+                console.log(cuser+">>>>>>") ;
+              }
+            })
             }
+            // }
             })
 
 

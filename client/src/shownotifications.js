@@ -9,6 +9,7 @@ class People extends Component {
             messagefrom : [],
             requestfrom : [],
             grouprequest : [],
+            teamrequests : [],
             responded : []
         }
     }
@@ -18,7 +19,7 @@ class People extends Component {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
           }).then(res => res.json()).then(data => {if(this.ismounted === true){
-            this.setState({messagefrom:data.message , requestfrom: data.request, grouprequest: data.groups})}})
+            this.setState({messagefrom:data.message , requestfrom: data.request, grouprequest: data.groups , teamrequests : data.teamrequests})}})
           console.log(this.state) ;
     }
     componentDidMount(){ 
@@ -70,6 +71,26 @@ class People extends Component {
             list[key]=1 ;
             this.setState({responded : list})}})
     }
+    teamaccepted=(key)=>{
+        fetch("http://localhost:2000/verdict-team-accepted/"+key.team, {
+            method: "GET",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include'
+          }).then(res => res.json()).then(data => {if(data.verdict === "success"){
+            var list = this.state.responded ;
+            list[key.team+'team']=1 ;
+            this.setState({responded : list})}})
+    }
+    teamdeclined=(key)=>{
+        fetch("http://localhost:2000/verdict-team-declined/"+key.team, {
+            method: "GET",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include'
+          }).then(res => res.json()).then(data => {if(data.verdict === "success"){
+            var list = this.state.responded ;
+            list[key.team+'team']=1 ;
+            this.setState({responded : list})}})
+    }
     authuser=(data)=>{
        if(this.state.responded[data.groupid] !== data.groupname){
             return (<li>
@@ -89,8 +110,17 @@ class People extends Component {
               </li>)
         }
      }
+     authuser3=(data)=>{
+        if(this.state.responded[data.team+'team'] !== 1){
+             return (<li>
+                <span>You have a request to join team {data.team} .</span>
+                <button onClick = {()=>this.teamaccepted(data)}>Accept</button>
+                <button onClick = {()=>this.teamdeclined(data)}>Decline</button> 
+              </li>)
+        }
+     }
     showmessandreq=()=>{
-        if((this.state.messagefrom.length === 0 && this.state.requestfrom.length === 0 && this.state.grouprequest.length === 0) || (this.state.responded.length === (this.state.messagefrom.length + this.state.requestfrom.length + this.state.grouprequest.length))){
+        if((this.state.messagefrom.length === 0 && this.state.requestfrom.length === 0 && this.state.teamrequests.length === 0 && this.state.grouprequest.length === 0) || (this.state.responded.length === (this.state.messagefrom.length + this.state.requestfrom.length + this.state.grouprequest.length + this.state.teamrequests.length))){
             return (
                 <div>
                 No notifications yet !!
@@ -102,6 +132,9 @@ class People extends Component {
             )
             const reqfrom = this.state.requestfrom.map((data)=>
                     this.authuser2(data) 
+            )
+            const teamfrom = this.state.teamrequests.map((data)=>
+                    this.authuser3(data) 
             )
             const messfrom = this.state.messagefrom.map((data,key)=>
              <div>
@@ -118,6 +151,9 @@ class People extends Component {
                 </ul>
                 <ul>
                     {messfrom}
+                </ul>
+                <ul>
+                    {teamfrom}
                 </ul>
             </div>
             ) ;

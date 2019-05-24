@@ -16,19 +16,18 @@ var UserSchema = new mongoose.Schema({
     username: {type:String,index:true,auto:false},
     password: String,
     team:Boolean,
-    // this is public group
     groups : [
       {
         groupid : String,
         groupname:String,
-        newmess: {type:Number,default:0}
+        newmess: {type:Number,default:0},
+        lastUpdatedAt : {type:Number , default:Date.now()}
       }
     ],
-    // for any new message that is received by current user
-    newmessages: [
-    {
-      users:String
-    }
+    teams : [
+      {
+        team:{type : String, default:''},
+      }
     ],
     friends: [
       {  

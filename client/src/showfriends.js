@@ -109,8 +109,7 @@ class People extends Component {
             var file= this.state.file;     // only for checking at server if this is null
             this.setState({message : ""},function(){
                 socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:file}) ;
-            });
-
+            })
         }
         else{
             var msg = this.state.message ;
@@ -121,33 +120,33 @@ class People extends Component {
             this.setState({message : ""},function(){
                 socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:this.state.file,fileName,fileType}) ;
             }); 
-
+        
         }
-     
+        
         this.mainInput.value = "";
-    }
+    }   
     showpreviousmessages=()=>{        
         const list = this.state.previousmess.map((data,index)=>
         {
             if(data.data.format=="text") 
             {   
-               return( <ChatText key={index} data={data} />)
+               return( <ChatText data={data} />)
 
             }
             else if(data.data.format=="image")
             {
-                return (<ChatPhoto key={index} data={data} />)
+                return (<ChatPhoto data={data} />)
             }
             else if(data.data.format=="video")
             {
-                return(<ChatVideo key={index} data={data} />)
+                return(<ChatVideo data={data} />)
             }
            
             // <li>{data.from} : {data.data.message}</li>
         }
             ); 
             return list ;
-    }
+    }   
     componentWillMount(){ 
         // this._ismounted = true ;     
         this.getfriends() ;
