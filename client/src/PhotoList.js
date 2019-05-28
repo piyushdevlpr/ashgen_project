@@ -16,6 +16,7 @@ _isMounted = true;
            commentLoad : false,
            likeLoad    : false,
            likeInfo : {}, // if user liked the post then LikeSchema will be stored here
+           commentToggle: false,   //show comment box on comment button click
 
            
         }
@@ -146,8 +147,10 @@ _isMounted = true;
         {
             return(
                 <div key={item._id}>
-                    <h5>comment by {item.author.username}</h5>
-                    <p>{item.comment}</p>
+                    <div >
+                    <p style={{display:'inline'}}>{item.author.username}</p>
+                    <p style={{display:'inline', marginLeft:'20px'}}>{item.comment}</p>
+                    </div>
                 </div>
             )
         })
@@ -186,8 +189,8 @@ _isMounted = true;
         list = this.state.likes.map(function(item)
         {
             return(
-                <div key={item._id}>
-                    <p>{item.author.username}</p>
+                <div style={{display:'inline', marginRight:'5px'}} key={item._id}>
+                    <p style={{display:'inline'}}>{item.author.username}</p>
                 </div>
             )
         })
@@ -285,44 +288,59 @@ _isMounted = true;
     {
         
         return(
-            <div className="container">
-            <div className="jumbotron">
-            <div>
-                <p>{this.state.item.author.username}</p>
-            </div>
-            <div>
-                <p>{this.state.item.desc}</p>
-            </div>
-            <div className="post-image">
-            <img src="https://envato-shoebox-0.imgix.net/4646/3935-85f4-41a0-b940-708875ee0a15/tajak+019.jpg?w=500&h=278&fit=crop&crop=edges&auto=compress%2Cformat&s=c45335aca948555287bc4229b1632950" alt="..." className="img-thumbnail" />
-            </div>
-            <div className="like-button">
-            <button style={{backgroundColor:this.state.like?'red':'#fff'}} onClick={this.toggleLike}     type="button" className="btn btn-light">Like</button>
-            <p>Liked by</p>
-            <div>
-                {this.fetchLikes()}
-            </div>
-            </div>
+            <div className="container" style={{marginTop:"25px", marginBottom:"25px"}}>
+                <div className="card">
 
-            <div className="share-button">
-            <button type="button" onClick={this.postShare} className="btn btn-danger">Share</button>
-            <p>Shared by</p>
-            <div>
-                {this.fetchShare()}
-            </div>
-            </div>
-            <div className="comment">
-                <form onSubmit={this.postComment}>
-                <div className="form-group" >
-                <input type="comment" onChange={this.OnCommentChange} name="comment" value={this.state.comment} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Comment" />
+                <div>
+                <img style={{display:'inline', height:40,width:40, marginRight:'20px' }} src="https://envato-shoebox-0.imgix.net/4646/3935-85f4-41a0-b940-708875ee0a15/tajak+019.jpg?w=500&h=278&fit=crop&crop=edges&auto=compress%2Cformat&s=c45335aca948555287bc4229b1632950" alt="..." class="rounded-circle" />
+
+                <p style={{display:'inline'}}>{this.state.item.author.username}</p>
                 </div>
-                <button type="submit" className="btn btn-primary">Comment</button>
+                    <div style={{marginTop:'10px'}}>
+                <p class="card-text">{this.state.item.desc}</p>
+                </div>
+
+                 <img src="https://envato-shoebox-0.imgix.net/4646/3935-85f4-41a0-b940-708875ee0a15/tajak+019.jpg?w=500&h=278&fit=crop&crop=edges&auto=compress%2Cformat&s=c45335aca948555287bc4229b1632950" class="card-img-top" alt="..." />
+
+                <div>
+                {this.fetchLikes()}
+                </div>
+                <hr />
+                <div>
+                    <div id="like-button" style={{display:'inline'}}>
+                    <button style={{backgroundColor:this.state.like?'blue':'#fff', width:'33.3%'}} onClick={this.toggleLike} type="button" className="btn btn-light">Like</button>
+
+                        </div>
+                        <div id="comment-button" style={{display:'inline'}}>
+                        <button style={{backgroundColor:'#fff', width:'33.3%'}} type="button" onClick={()=>{this.setState({commentToggle:true})}}  className="btn btn-light">Comment</button>
+
+                        </div>
+                        <div id="share-button" style={{display:'inline'}}>
+                        <button type="button" style={{backgroundColor:'#fff', width:'33.3%'}} onClick={this.postShare} className="btn btn-light">Share</button>
+
+                        </div>
+                </div>
+                <div id="comment" style={{display:this.state.commentToggle?'block':'none'}}>
+                <form onSubmit={this.postComment}>
+                <div className="input-group mb-3" >
+             
+                <input style={{ width:'100%'}}  type="comment" onChange={this.OnCommentChange} name="comment" value={this.state.comment} className="form-control" placeholder="Write comment" aria-label="comment" aria-describedby="basic-addon1" />
+                </div>
                 </form>
-            </div>
-            <div>
+
+                <div>
                 {this.fetchComments()}
-            </div>
-            </div>                
+                </div>
+
+                </div>
+                </div>
+
+   
+            {/* <div>
+                {this.fetchShare()}
+            </div> */}
+         
+          
             </div>
         )
     }
