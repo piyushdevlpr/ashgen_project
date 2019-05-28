@@ -16,7 +16,9 @@ class People extends Component {
     sendnoti=(key)=>{
         //event.preventDefault();
         console.log(key) ;
+        
         fetch("http://localhost:2000/notification/"+key, {
+            // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/notification/"+key, {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
@@ -42,7 +44,9 @@ class People extends Component {
                 people:''
             });
         }
-        fetch("http://localhost:2000/people/"+this.state.people)    
+        
+        fetch("http://localhost:2000/people/"+this.state.people)
+        // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/people/"+this.state.people)    
         .then(response => response.json())
         .then(datas =>{
           this.setState({
@@ -91,6 +95,7 @@ class People extends Component {
     }
     getfriends=()=>{
         fetch("http://localhost:2000/get-friends", {
+        // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/get-friends", {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
@@ -104,7 +109,9 @@ class People extends Component {
             )
     }
     getpeoplewithnotis=()=>{
+      
         fetch("http://localhost:2000/get-notis", {
+        // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/get-notis", {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'

@@ -41,6 +41,7 @@ click=(event)=>{
 
   //https://ojus-server-132kgu2rdjqbfc.herokuapp.com
   fetch("http://localhost:2000/register",{
+    // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/register",{
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state),
@@ -60,6 +61,7 @@ click2=(event)=>{
   if(this._ismounted === true){
   // console.log(this.state) ;
   fetch("http://localhost:2000/login", {
+  // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/login", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state),

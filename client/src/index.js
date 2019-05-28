@@ -11,6 +11,7 @@ import Shownotifications from './shownotifications';
 import Showfriends from './showfriends';
 import Dashboard from './Dashboard';
 import Group from './Group';
+import Profile from './Profile';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render((
@@ -24,6 +25,7 @@ ReactDOM.render((
        <Route path = "/notifications/" component = {Shownotifications} />
        <Route path = "/friends/" component = {Showfriends} />
        <Route path = "/groups/" component = {Group} />
+       <Route path = "/profile/" component = {Profile} />
        </Switch>
  </Router>
 ), document.getElementById('root'));

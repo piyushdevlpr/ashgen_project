@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import ChatText from './ChatText';
 import ChatPhoto from './ChatPhoto';
 import ChatVideo from './ChatVideo';
+import ScrollToBottom from 'react-scroll-to-bottom';
+import './Chat.css'
 import socketIOClient from "socket.io-client";
-const socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
+// https://ojus-server-132kgu2rdjqbfc.herokuapp.com
+const socket = socketIOClient('http://127.0.0.1:2000',{transports: ['websocket']});
 
 
 class People extends Component {
@@ -26,6 +29,7 @@ class People extends Component {
     updatecount=()=>{
         var data = {friend : this.state.tochatwith , number: this.state.friendsnewmessage[this.state.tochatwith]} ;
         fetch("http://localhost:2000/update-new-message-number", {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/update-new-message-number", {
             signal:this.abortController.signal,
             method: "POST",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -50,6 +54,7 @@ class People extends Component {
     }
     getfriends=()=>{
         fetch("http://localhost:2000/get-friends", {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/get-friends", {
             signal:this.abortController.signal,
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -60,9 +65,6 @@ class People extends Component {
             for(var i = 0 ; i < this.state.friends.length ; i++){
                 map[this.state.friends[i].name] = this.state.friends[i].newmess ;
               }
-            //   var x = []
-            //   x = this.state.friends ;
-            //   x.sort(function(m1,m2){return m2.lastUpdatedAt - m1.lastupdatedAt});
               this.setState({friendsnewmessage : map },function(){
                 console.log(this.state) ;
               })
@@ -74,6 +76,7 @@ class People extends Component {
     getsockethere=()=>{
 
         if(this.state.previousmess.length === 0){
+            
             socket.emit("showmessages",{username:this.props.location.state.username, friendname:this.state.tochatwith}) ;
         }
         socket.on("getmessages",data=>{ this.setState({previousmess:data.messages})})
@@ -84,11 +87,24 @@ class People extends Component {
         this.setState({tochatwith : friend_name , previousmess:[],friendsnewmessage:list},function(){
             this.getsockethere() ;
             this.updatecount() ;
+            // if(this.state.tochatwith){ 
+            //     this.scrollToBottom() ;
+            //     }
         }) ;
     }
     showfriends=()=>{
         const list = this.state.friends.map((data,index)=>
-            <li><span>{data.name}</span><button onClick={()=>this.getmetochat(data.name)}>message</button><span>{this.state.friendsnewmessage[data.name] ? (<span> {this.state.friendsnewmessage[data.name]}  message received </span>): null}</span></li>
+            <div class="chat_list">
+              <div class="chat_people">
+                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
+                </div>
+                <div class="chat_ib">
+                  <h5>{data.name}</h5>
+                  <button onClick={()=>this.getmetochat(data.name)}>message</button>
+                  <span>{this.state.friendsnewmessage[data.name] ? (<span> {this.state.friendsnewmessage[data.name]}  message received </span>): null}</span>
+                </div>
+              </div>
+            </div>
         );
         return list ;
     }
@@ -106,21 +122,23 @@ class People extends Component {
         if(this.state.file==null)
         {
             var msg = this.state.message ;
+            if(msg){
             var file= this.state.file;     // only for checking at server if this is null
             this.setState({message : ""},function(){
                 socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:file}) ;
             })
         }
+        }
         else{
             var msg = this.state.message ;
+            // if(msg){
             var file= this.state.file;
             var fileName= file.name;
             var fileType = file.type.split('/')[0];
-            //var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
             this.setState({message : ""},function(){
                 socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:this.state.file,fileName,fileType}) ;
             }); 
-        
+            // }
         }
         
         this.mainInput.value = "";
@@ -130,34 +148,40 @@ class People extends Component {
         {
             if(data.data.format=="text") 
             {   
-               return( <ChatText data={data} />)
+               return( <ChatText data={data} user={this.props.location.state.username}/>)
 
             }
             else if(data.data.format=="image")
             {
-                return (<ChatPhoto data={data} />)
+                return (<ChatPhoto data={data} user={this.props.location.state.username}/>)
             }
             else if(data.data.format=="video")
             {
-                return(<ChatVideo data={data} />)
+                return(<ChatVideo data={data} user={this.props.location.state.username}/>)
             }
-           
             // <li>{data.from} : {data.data.message}</li>
         }
-            ); 
+            );
+            
             return list ;
     }   
+    componentDidUpdate() {
+        if(this.state.tochatwith){
+        this.scrollToBottom();
+        }
+      }
     componentWillMount(){ 
         // this._ismounted = true ;     
         this.getfriends() ;
         this.showfriends() ;
+        
         socket.emit('join',{username:this.props.location.state.username}) ;
         socket.on("newmessagereceived",data=>{
             this.setState(state => {
                 // if(data.message.from !== this.state.tochatwith && data.message.from === this.props.location.state.username){
                 //     return ;
                 // }
-
+                
                 if(data.messages.from !== this.state.tochatwith && data.messages.from !== this.props.location.state.username){ //if currentuser is not the one who has sent msg and the person with whom the user is chatting has not sent the message
                     var list2 = this.state.friendsnewmessage ;
                     list2[data.messages.from]++ ;
@@ -201,43 +225,62 @@ class People extends Component {
             }
             );
     }
+    handleClick = (e) => {
+        this.inputElement.click();
+    }
+    scrollToBottom = () => {
+        const scrollHeight = this.messageList.scrollHeight;
+        const height = this.messageList.clientHeight;
+        const maxScrollTop = scrollHeight - height;
+        this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+      }
     render(){
         if(this.props.location.state === undefined){
             this.props.history.push("/") ;
             return null ;
         }else{
             return(
-                <div>
-                    <div>
-                        YOUR FRIENDS :
-                    </div>          
-                    <ul className = "list-group mb-1">  {this.showfriends()}</ul>      
-                    <div>
-                    { this.state.tochatwith ? 
-                    (   
-                        <div>
-                        <h1>Send message to {this.state.tochatwith}</h1>
-                        <div>
-                        <div style={styles}>
-                            {this.showpreviousmessages()}
-                            {/* {this.state.previousmess} */}
+        <div class="container1">
+            <div class="messaging">
+                <div class="inbox_people">
+                    <div class="headind_srch">
+                            <div class="recent_heading">
+                                <h4>Recent</h4>
+                            </div>
+                        <div class="srch_bar">
+                            <div class="stylish-input-group">
+                                <input type="text" class="search-bar"  placeholder="Search" />
+                                <span class="input-group-addon">
+                                <button type="button"></button>
+                                </span>
+                            </div>
                         </div>
-                        <form onSubmit={this.sendmsg}>
-                            <input ref={(ref) => this.mainInput= ref} required={true} placeholder='enter text' type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}></input>
-                            <button >Send</button>
-                            <div className="form-group">
-                        <label for="exampleFormControlFile1">Choose File</label>
-                        <input type="file" name="file" onChange={this.filehandleChange} className="form-control-file" id="exampleFormControlFile1" />
-                         </div>
-                        </form>
-                     
-                        </div>
-                    </div>    
-                    )
-                    : null }
                     </div>
-                    {console.log(this.state)}
-                </div>           
+                <div class="inbox_chat">
+                        <div>{this.showfriends()}</div>                     
+                </div>
+            </div>
+                    { this.state.tochatwith ?
+                        (
+                            <div class="mesgs">
+                               <div className="tochatwith">{this.state.tochatwith}</div>
+                            <div className="msg_history" ref={div => this.messageList = div}>
+                            {this.showpreviousmessages()}
+                            </div>
+                        <div class="type_msg">
+                            <div className="input_msg_write row ">
+                                
+                                <input className="write_msg col-md-10-75" placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
+                                <button className=" attach btn btn-default col-md-0-75 " onClick={this.handleClick}>b</button>
+                                <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
+                                <button onClick={this.sendmsg} className="msg_send_btn btn btn-default col-md-1-25" type="button"><i className="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        </div>
+                        ):null
+                    }
+                </div>
+            </div>
             );
         }        
     }
@@ -245,9 +288,17 @@ class People extends Component {
 var styles = {
 	backgroundColor:'#D3D3D3',
     overflow:'scroll',
-    height:'350px',
-    width:'300px'
+    width:'100%',
+    // height : '510px',
+    'overflow-y':'auto'
 };
- 
-
+var styles2 = {
+    //  height:'100%',
+     padding : '0px',
+     margin : '0px'
+};
+var styles3 = {
+    overflow : 'hidden'
+    // backgroundSize : 'cover'
+ };
 export default People ;

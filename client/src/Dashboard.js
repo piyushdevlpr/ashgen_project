@@ -26,6 +26,7 @@ class Dashboard extends Component {
         this.gotonoti = this.gotonoti.bind(this);
         this.gotogroups = this.gotogroups.bind(this);
         this.gotofriends = this.gotofriends.bind(this);
+        this.gotoprofile = this.gotoprofile.bind(this);
         this.filehandleChange = this.filehandleChange.bind(this);
         this.renderPosts   = this.renderPosts.bind(this);
     }
@@ -74,6 +75,7 @@ class Dashboard extends Component {
     
             };
             axios.post("http://localhost:2000/photo_upload",formData,config)
+            // axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/photo_upload",formData,config)
                 .then((response) => {
                     alert("The Photo is successfully uploaded");
                     var data = this.state.data;
@@ -100,6 +102,7 @@ class Dashboard extends Component {
             
                     };
                     axios.post("http://localhost:2000/video_upload",formData,config)
+                    // axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/video_upload",formData,config)
                         .then((response) => {
                             alert("The Video is successfully uploaded");
                             var data = this.state.data;
@@ -121,7 +124,9 @@ class Dashboard extends Component {
                             withCredentials: true, // default
                 
                         };
+                        
                         axios.post("http://localhost:2000/text_upload",data,config)
+                        // axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/text_upload",data,config)
                         .then((response) => {
                             alert("The Post is successfully uploaded");
                             var data = this.state.data;
@@ -175,11 +180,21 @@ class Dashboard extends Component {
           }
         }) ;
     }
+    gotoprofile=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/profile/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
 
     fetchPosts()
     {
         axios.get('http://localhost:2000/dashboard_posts').then((response)=>{
-            // console.log(response);
+        // axios.get('https://ojus-server-132kgu2rdjqbfc.herokuapp.com/dashboard_posts').then((response)=>{
+        // console.log(response);
             this.setState({data:response.data},()=>{
 
                 this.setState({loading:false})
@@ -241,6 +256,7 @@ class Dashboard extends Component {
                         <button onClick={this.gotonoti}>NOTIFICATIONS</button>
                         <button onClick={this.gotofriends}>FRIENDS</button>
                         <button onClick={this.gotogroups}>Groups</button>
+                        <button onClick={this.gotoprofile}>PROFILE</button>
                     </div>
                     <div>
                     <form onSubmit={this.uploadPost} encType="multipart/form-data">

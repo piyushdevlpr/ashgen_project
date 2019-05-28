@@ -7,7 +7,7 @@ var NotificationSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,    
     auto: true,
   },                   
-    handlename: {type:String,index:true,auto:false},                     // name of team and user who will receive the notification
+    handlename: {type:String,auto:false},                     // name of team and user who will receive the notification
     team: Boolean,
     messages :[{
         from : {type:String}                // user name who has sent the msg
@@ -30,5 +30,6 @@ var NotificationSchema = new mongoose.Schema({
     }]
 });
 
+NotificationSchema.index({handlename:1}) ;
 module.exports = mongoose.model("Notification", NotificationSchema);
 

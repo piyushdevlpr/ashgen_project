@@ -15,6 +15,7 @@ class People extends Component {
     }
     getnoti=()=>{
         fetch("http://localhost:2000/get-notifications", {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/get-notifications", {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
@@ -31,6 +32,7 @@ class People extends Component {
     }
     groupaccepted=(key)=>{
         fetch("http://localhost:2000/verdict-groupaccepted", {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/verdict-groupaccepted", {
             method: "POST",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include',
@@ -42,6 +44,7 @@ class People extends Component {
     }
     groupdeclined=(key)=>{
         fetch("http://localhost:2000/verdict-groupdeclined", {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/verdict-groupdeclined", {
             method: "POST",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include',
@@ -53,6 +56,7 @@ class People extends Component {
        }
     accepted=(key)=>{
         fetch("http://localhost:2000/verdict-accepted/"+key, {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/verdict-accepted/"+key, {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
@@ -63,6 +67,7 @@ class People extends Component {
     }
     declined=(key)=>{
         fetch("http://localhost:2000/verdict-declined/"+key, {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/verdict-declined/"+key, {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
@@ -72,7 +77,8 @@ class People extends Component {
             this.setState({responded : list})}})
     }
     teamaccepted=(key)=>{
-        fetch("http://localhost:2000/verdict-team-accepted/"+key.team, {
+        // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/verdict-team-accepted/"+key.team, {
+            fetch("http://localhost:2000/verdict-team-accepted/"+key.team, {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
@@ -83,6 +89,7 @@ class People extends Component {
     }
     teamdeclined=(key)=>{
         fetch("http://localhost:2000/verdict-team-declined/"+key.team, {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/verdict-team-declined/"+key.team, {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
