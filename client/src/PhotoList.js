@@ -55,6 +55,7 @@ _isMounted = true;
         };
         var data ={};
         data.post_id = this.props.item._id;
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/check_like',data,config)
         axios.post('http://localhost:2000/check_like',data,config)
         .then((response)=>{
 
@@ -90,6 +91,7 @@ _isMounted = true;
         data.comment = this.state.comment; // comment
 
         axios.post('http://localhost:2000/post_comment',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/post_comment',data,config)
         .then((response)=>{
         //    console.log(response.data);
             var comments  =this.state.comments;
@@ -135,6 +137,7 @@ _isMounted = true;
             var list;
 
             axios.post('http://localhost:2000/fetch_comments',data,config)
+            // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_comments',data,config)
             .then((response)=>{
                 // console.log(response.data);
                 this.setState({comments:response.data},()=>{this.setState({commentLoad:true})})
@@ -178,6 +181,7 @@ _isMounted = true;
         var list;
 
         axios.post('http://localhost:2000/fetch_likes',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_likes',data,config)
         .then((response)=>{
             // console.log(response.data);
             this.setState({likes:response.data},()=>{this.setState({likeLoad:true})})
@@ -216,6 +220,7 @@ _isMounted = true;
             var  data = {};
             data.id = this.state.item._id;
             axios.post('http://localhost:2000/post_like',data,config)
+            // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/post_like',data,config)
             .then((response)=>{
 
                 var likes  =this.state.likes;
@@ -236,6 +241,7 @@ _isMounted = true;
         var  data = {};
         data.likeInfo = this.state.likeInfo;
         axios.post('http://localhost:2000/un_like',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/un_like',data,config)
         .then((response)=>{
             
                 this.setState({like:false});
@@ -266,6 +272,7 @@ _isMounted = true;
         var data = {};
         data.post_id = post_id;
         axios.post('http://localhost:2000/post_share',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/post_share',data,config)
         .then((response)=>{
             console.log(response.data);
 

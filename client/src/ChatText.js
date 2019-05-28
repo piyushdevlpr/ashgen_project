@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import socketIOClient from "socket.io-client";
+import './Chat.css'
 
 
 
@@ -9,9 +9,24 @@ export default class ChatText extends Component{
     {
         return(
             <div>
-                <li>{this.props.data.from} : {this.props.data.data.message}</li>
-            </div>
-
+                {this.props.data.from === this.props.user ?
+                    (<div class="outgoing_msg">
+                        <div class="sent_msg">
+                            <p>{this.props.data.data.message}</p>
+                        </div>
+                    </div>
+                    )
+                    :
+                    (<div class="incoming_msg">
+                        <div class="received_msg">
+                            <div class="received_withd_msg">
+                                <p>{this.props.data.data.message}</p>   
+                            </div>
+                        </div>
+                    </div>    
+                    )
+                }
+                </div>
         )
     }
 }

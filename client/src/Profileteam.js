@@ -72,6 +72,7 @@ class Profileteam extends Component {
             });
         }
         fetch("http://localhost:2000/people/"+this.state.membername)    
+        // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/people/"+this.state.membername)    
         .then(response => response.json())
         .then(datas =>{
           this.setState({
@@ -88,6 +89,7 @@ class Profileteam extends Component {
     gotohome(){
         //  event.preventDefault() ;
         fetch("http://localhost:2000/team-profile", {
+            // fetch(" https://ojus-server-132kgu2rdjqbfc.herokuapp.com/team-profile", {
             method: "POST",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify(this.state),

@@ -21,7 +21,8 @@ var UserSchema = new mongoose.Schema({
         groupid : String,
         groupname:String,
         newmess: {type:Number,default:0},
-        lastUpdatedAt : {type:Number , default:Date.now()}
+        lastUpdatedAt : {type:Number , default:Date.now()},
+        // exists : {type:Boolean , default:true}
       }
     ],
     teams : [

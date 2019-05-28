@@ -11,7 +11,8 @@ class App extends Component {
     }
 }
 componentDidMount(){
-    var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
+    // var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
+    var socket = socketIOClient(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/', {transports: ['websocket']});
     socket.emit("showmessages",{username:this.props.username, friendname:this.state.tochatwith}) ;
     socket.on("getmessages",data=>{this.setState({previousmess:[]}); this.setState({previousmess:data.messages})})
 }

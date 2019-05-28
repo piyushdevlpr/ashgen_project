@@ -57,6 +57,7 @@ const axios = require("axios");
         var data ={};
         data.post_id = this.props.item._id;
         axios.post('http://localhost:2000/check_like',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/check_like',data,config)
         .then((response)=>{
 
             if(response.data.check==true)
@@ -91,6 +92,7 @@ const axios = require("axios");
         data.comment = this.state.comment; // comment
 
         axios.post('http://localhost:2000/post_comment',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/post_comment',data,config)
         .then((response)=>{
         //    console.log(response.data);
             var comments  =this.state.comments;
@@ -136,6 +138,7 @@ const axios = require("axios");
             var list;
 
             axios.post('http://localhost:2000/fetch_comments',data,config)
+            // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_comments',data,config)
             .then((response)=>{
                 // console.log(response.data);
                 this.setState({comments:response.data},()=>{this.setState({commentLoad:true})})
@@ -179,6 +182,7 @@ const axios = require("axios");
         var list;
 
         axios.post('http://localhost:2000/fetch_likes',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_likes',data,config)
         .then((response)=>{
             // console.log(response.data);
             this.setState({likes:response.data},()=>{this.setState({likeLoad:true})})
@@ -217,6 +221,7 @@ const axios = require("axios");
             var  data = {};
             data.id = this.state.item._id;
             axios.post('http://localhost:2000/post_like',data,config)
+            // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/post_like',data,config)
             .then((response)=>{
 
                 var likes  =this.state.likes;
@@ -237,6 +242,7 @@ const axios = require("axios");
         var  data = {};
         data.likeInfo = this.state.likeInfo;
         axios.post('http://localhost:2000/un_like',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/un_like',data,config)
         .then((response)=>{
             
                 this.setState({like:false});

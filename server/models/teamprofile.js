@@ -5,7 +5,7 @@ var TeamProfileSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-  username: String,
+  username: {type:String,index:true,auto:false},
   Specialisation:String,
   Departments : [{
     department : String,

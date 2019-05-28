@@ -24,6 +24,7 @@ class Dashboard extends Component {
         this.gotonoti = this.gotonoti.bind(this);
         this.gotogroups = this.gotogroups.bind(this);
         this.gotofriends = this.gotofriends.bind(this);
+        this.gotoprofile = this.gotoprofile.bind(this);
         this.filehandleChange = this.filehandleChange.bind(this);
         this.renderPosts   = this.renderPosts.bind(this);
     }
@@ -178,11 +179,21 @@ class Dashboard extends Component {
           }
         }) ;
     }
+    gotoprofile=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/profile/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
 
     fetchPosts()
     {
         axios.get('http://localhost:2000/dashboard_posts').then((response)=>{
-            // console.log(response);
+        // axios.get('https://ojus-server-132kgu2rdjqbfc.herokuapp.com/dashboard_posts').then((response)=>{
+        // console.log(response);
             this.setState({data:response.data},()=>{
 
                 this.setState({loading:false})
@@ -244,6 +255,7 @@ class Dashboard extends Component {
                         <button onClick={this.gotonoti}>NOTIFICATIONS</button>
                         <button onClick={this.gotofriends}>FRIENDS</button>
                         <button onClick={this.gotogroups}>Groups</button>
+                        <button onClick={this.gotoprofile}>PROFILE</button>
                     </div>
                     <div className="col">
       

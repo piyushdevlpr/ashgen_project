@@ -1,38 +1,35 @@
-var express     = require("express"),
-    app         = express(),
-    cors        = require("cors"),
-    bodyParser  = require("body-parser"),
-    mongoose    = require("mongoose"),
-    passport    = require("passport"),
-    LocalStrategy = require("passport-local"),
-    User        = require("./models/user"),
-    Team        = require("./models/team"),
+var express            = require("express"),
+    app                = express(),
+    cors               = require("cors"),
+    bodyParser         = require("body-parser"),
+    mongoose           = require("mongoose"),
+    passport           = require("passport"),
+    LocalStrategy      = require("passport-local"),
+    User               = require("./models/user"),
+    Team               = require("./models/team"),
     Yourprofile        = require("./models/yourprofile"),
     Teamprofile        = require("./models/teamprofile"),
-    Message        = require("./models/message"),
+    Message            = require("./models/message"),
     PublicGroup        = require("./models/publicgroup"),
-    GroupMessage        = require("./models/groupmessage"),
-    Notification = require("./models/notifications")
-    multer = require("multer"),
-    path = require("path"),
-    server= require("http").createServer(app),
-    io = require("socket.io").listen(server),
-    getUserRoute = require('./routes/getUser'),
-    postRoute    = require('./routes/post');
-    var siofu = require("socketio-file-upload");
-    const fs = require('fs');
-
-
-
-
+    GroupMessage       = require("./models/groupmessage"),
+    Notification       = require("./models/notifications")
+    multer             = require("multer"),
+    path               = require("path"),
+    server             = require("http").createServer(app),
+    io                 = require("socket.io").listen(server),
+    getUserRoute       = require('./routes/getUser'),
+    postRoute          = require('./routes/post');
+    var siofu          = require("socketio-file-upload");
+    const fs           = require('fs');
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
 var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
-  mongoose.connect("mongodb://localhost/login-ashgen",{useNewUrlParser: true})
+  mongoose.connect('mongodb://localhost/login-ashgen',{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
   var whitelist = [];
   whitelist = ['http://localhost:3000', 'http://localhost:3000/your-profile/','http://localhost:3000/team-profile/','http://localhost:3000/people/']
+  // whitelist = ['https://ojus-client-12341fclksjvgjb.herokuapp.com','https://ojus-client-12341fclksjvgjb.herokuapp.com/','https://ojus-client-12341fclksjvgjb.herokuapp.com/your-profile/','https://ojus-client-12341fclksjvgjb.herokuapp.com/team-profile/','https://ojus-client-12341fclksjvgjb.herokuapp.com/people/','https://ojus-client-12341fclksjvgjb.herokuapp.com/groups/','https://ojus-client-12341fclksjvgjb.herokuapp.com/friends/']
   var corsOptions = {
     credentials:true,                           //using credentials from frontend aftr authentication
     origin: function (origin, callback) {
@@ -71,8 +68,9 @@ passport.deserializeUser(User.deserializeUser());
 //   res.locals.success     = req.flash("success");
 //   next();
 // });
+//
 app.use(siofu.router)
-var port = process.env.PORT || 2000;
+var port = process.env.PORT || 2000 ;
 app.use(getUserRoute);
 app.use(postRoute);
 
@@ -112,14 +110,7 @@ app.post("/register",function(req, res,next){
     console.log("hello") ;
     console.log(req.body) ;
     var tof = req.body.team ;
-    //var usern = req.body.usernmae ;
     var newUser = new User({username: req.body.username,email:req.body.emailid, team:tof});
-    
-    // Team.find({username : usern},function(err,cuser){
-    //   if(err){
-    //     console.log(err) ;
-    //   }else{
-    //     if(cuser.length === 0){
           User.register(newUser, req.body.password, function(err, user){
             if(err){
                 console.log(err);
@@ -165,7 +156,6 @@ app.post("/register",function(req, res,next){
               }
               console.log("true");  
               res.json("true") ;
-              //   res.redirect("/signedin"); 
             });
         });
 });
@@ -326,6 +316,46 @@ app.post("/update-group-removemember/:groupid",function(req,res){
       }
   })
 })
+app.get("/delete-group/:id",function(req,res){
+    var groupid = req.params.id ;
+    PublicGroup.findOne({_id:groupid},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }else{
+        for(var i = 0 ; i < cuser.users.length ; i++){
+          User.findOneAndUpdate({username : cuser.users[i].username},{$pull : {groups:{'groupid':groupid}}},function(err,c){
+            if(err){
+              console.log(err) ;
+            }
+          })
+         }
+         for(var i = 0 ; i < cuser.requestedusers.length ; i++){
+          Notification.findOneAndUpdate({username : cuser.requestedusers[i].username},{$pull : {groups:{'groupid':groupid}}},function(err,c){
+            if(err){
+              console.log(err) ;
+            }
+          })
+         }
+      User.findOneAndUpdate({username : cuser.admin},{$pull : {groups:{'groupid':groupid}}},function(err,c){
+        if(err){
+          console.log(err) ;
+        }
+      })
+      PublicGroup.findOneAndRemove({_id:groupid},function(err,cuser){
+        if(err){
+          console.log(err) ;
+        }else{
+          res.json({verd:"success"}) ;
+        }
+      })
+    }
+    })
+    GroupMessage.findOneAndRemove({groupid:groupid},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }
+    })
+});
 app.get('/people/:name',function(req,res){
   var name = '' ;
   name = req.params.name ;
@@ -400,6 +430,21 @@ app.get("/get-notifications",function(req,res){
       console.log(cuser);
     }
   })
+});
+app.get("/getprofile",function(req,res){
+  var username = req.user.username ;
+  User.findOne({username : username},function(err,cuser){
+    if(cuser.team){
+      Teamprofile.findOne({username : username},function(err,kuser){
+          res.json({user:kuser,team:true}) ;
+      })
+    }else{
+      user = {id:cuser._id , username : username} ;
+      Yourprofile.findOne({user : user},function(err,kuser){
+          res.json({user:kuser,team:false}) ;
+      })
+    }
+  });
 });
 app.get("/verdict-accepted/:frname",function(req,res){
   var usernam = req.user.username ;
@@ -860,6 +905,6 @@ socket.on("newmessage",function(data){
 
 //------------------------------------listen to local port -----------------------------------------------------------------------------
 server.listen(port,function(){
-  console.log("server running!!!!");
+  console.log("server running!!!!" + process.env.PORT);
 });
 
