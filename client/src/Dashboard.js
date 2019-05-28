@@ -14,9 +14,7 @@ class Dashboard extends Component {
             username : '' ,
             userId : null,
             desc: '',
-            photo: null,
-            video: null,
-            isphoto : false,          //this parameter used for either photo or video upload
+            post : null,
             data : {},
             loading: true
         }
@@ -41,7 +39,6 @@ class Dashboard extends Component {
     }
     filehandleChange(event)     // file handler
     {
-        event.target.name==='photo'?this.setState({isphoto:true}):this.setState({isphoto:false});
         this.setState({
             [event.target.name]: event.target.files[0],
         })
@@ -61,12 +58,12 @@ class Dashboard extends Component {
     uploadPost(event)
     {
         event.preventDefault() ;
-        if(this.state.isphoto)   // if photo uplod
+       
+
+        if(this.state.post!=null) // etiher photo or video
         {
-            const formData = new FormData();    
-      
-            formData.append('photo',this.state.photo);
-            formData.append('desc', this.state.desc);
+            var postType = this.state.post.type.split('/')[0];  //getting file type for posting to server
+
             const config = {
                 headers: {
                     'content-type': 'multipart/form-data'
@@ -74,75 +71,77 @@ class Dashboard extends Component {
                 withCredentials: true, // default
     
             };
-            axios.post("http://localhost:2000/photo_upload",formData,config)
-            // axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/photo_upload",formData,config)
-                .then((response) => {
-                    alert("The Photo is successfully uploaded");
-                    var data = this.state.data;
-                    data.List.unshift(response.data);
-                    this.setState({data:data})
-                }).catch((error) => {
-            });
-            
-            
-        }
-        else{        //if video or text upload
-                 if(this.state.video!=null)  //video upload
-                 {
-                    const formData = new FormData();    
+            if(postType=="image")   
+            {
+                const formData = new FormData();    
       
-                    formData.append('video',this.state.video);
-                    formData.append('desc', this.state.desc);
-
-                    const config = {
-                        headers: {
-                            'content-type': 'multipart/form-data'
-                        },
-                        withCredentials: true, // default
-            
-                    };
-                    axios.post("http://localhost:2000/video_upload",formData,config)
-                    // axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/video_upload",formData,config)
-                        .then((response) => {
-                            alert("The Video is successfully uploaded");
-                            var data = this.state.data;
-                            data.List.unshift(response.data);
-                            this.setState({data:data})
-                        }).catch((error) => {
-                    });                   
-
-
-                 }        
-                 else{    
-                         //text post
-                         var data = {};
-                         data.desc = this.state.desc;
-                         const config = {
-                            headers: {
-                                'content-type': 'application/json'
-                            },
-                            withCredentials: true, // default
+                formData.append('photo',this.state.post);
+                formData.append('desc', this.state.desc);
                 
-                        };
-                        
-                        axios.post("http://localhost:2000/text_upload",data,config)
-                        // axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/text_upload",data,config)
-                        .then((response) => {
-                            alert("The Post is successfully uploaded");
-                            var data = this.state.data;
-                            data.List.unshift(response.data);
-                            this.setState({data:data});
-                        }).catch((error) => {
-                    });  
+                axios.post("http://localhost:2000/photo_upload",formData,config)
+                    .then((response) => {
+                        alert("The Post is successfully uploaded");
+                        var data = this.state.data;
+                        data.List.unshift(response.data);
+                        this.setState({data:data});
+                        this.setState({desc:""})
+
+                    }).catch((error) => {
+                });
+
+            }
+            else if(postType=="video")
+            {
+                const formData = new FormData();    
+      
+                formData.append('video',this.state.post);
+                formData.append('desc', this.state.desc);
+
+                const config = {
+                    headers: {
+                        'content-type': 'multipart/form-data'
+                    },
+                    withCredentials: true, // default
+        
+                };
+                axios.post("http://localhost:2000/video_upload",formData,config)
+                    .then((response) => {
+                        alert("The Video is successfully uploaded");
+                        var data = this.state.data;
+                        data.List.unshift(response.data);
+                        this.setState({data:data});
+                        this.setState({desc:""})
+
+                    }).catch((error) => {
+                });  
+            }
+         
+
+        }
+        else{
+            //text post
+            var data = {};
+            data.desc = this.state.desc;
+            const config = {
+               headers: {
+                   'content-type': 'application/json'
+               },
+               withCredentials: true, // default
+   
+           };
+           axios.post("http://localhost:2000/text_upload",data,config)
+           .then((response) => {
+               alert("The Post is successfully uploaded");
+               var data = this.state.data;
+               data.List.unshift(response.data);
+               this.setState({data:data});
+               this.setState({desc:""})
+           }).catch((error) => {
+
+       });
 
 
-                      }
-             }
-
-       
-       
- 
-
+        }
     }
     gotopeople=(event)=>{
         event.preventDefault() ;
@@ -266,13 +265,10 @@ class Dashboard extends Component {
                  </div>
                  <div className="row">
                  <div className="form-group">
-                <label htmlFor="exampleFormControlFile1">Photo Upload</label>
-                <input type="file" name="photo" onChange={this.filehandleChange} className="form-control-file" id="photo-upload" />
+                <label htmlFor="exampleFormControlFile1">Post Upload</label>
+                <input type="file" name="post" onChange={this.filehandleChange} className="form-control-file" id="post-upload" />
                 </div>
-                <div className="form-group">
-                <label htmlFor="exampleFormControlFile1">Video Upload</label>
-                <input type="file" name="video"  onChange={this.filehandleChange} className="form-control-file" id="video-upload" />
-                </div>
+              
                 <button type="submit" className="btn btn-primary">Post</button>
 
                 </div>

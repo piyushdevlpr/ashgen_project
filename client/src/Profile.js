@@ -13,7 +13,7 @@ export default class Profile extends Component{
     }
     getProfile=()=>{
         fetch("http://localhost:2000/getprofile",{
-        // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/newgroup",{
+        // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/getprofile",{
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
