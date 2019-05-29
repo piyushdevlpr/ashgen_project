@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Comment from './Comment';
 const axios = require("axios");
 
 
@@ -150,12 +151,7 @@ const axios = require("axios");
         list = this.state.comments.map(function(item)
         {
             return(
-                <div key={item._id}>
-                <div >
-                <p style={{display:'inline'}}>{item.author.username}</p>
-                <p style={{display:'inline', marginLeft:'20px'}}>{item.comment}</p>
-                </div>
-            </div>
+              <Comment key={item._id} item={item} />
             )
         })
 

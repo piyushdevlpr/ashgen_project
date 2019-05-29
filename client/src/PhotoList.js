@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Comment from './Comment';
+
 const axios = require("axios");
 
  class PhotoList extends Component{
@@ -13,8 +15,8 @@ _isMounted = true;
            item : this.props.item,
            comments: [],          //posts comments
            likes: [],           //list of post likes
-           commentLoad : false,
-           likeLoad    : false,
+           commentLoad : false, // if false --> comment not loaded
+           likeLoad    : false,  // if false-->likes not loaded
            likeInfo : {}, // if user liked the post then LikeSchema will be stored here
            commentToggle: false,   //show comment box on comment button click
 
@@ -149,12 +151,8 @@ _isMounted = true;
         list = this.state.comments.map(function(item)
         {
             return(
-                <div key={item._id}>
-                    <div >
-                    <p style={{display:'inline'}}>{item.author.username}</p>
-                    <p style={{display:'inline', marginLeft:'20px'}}>{item.comment}</p>
-                    </div>
-                </div>
+                <Comment  key={item._id} item={item} />
+                
             )
         })
 
