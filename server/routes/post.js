@@ -4,6 +4,8 @@ let postModel = require('../models/posts/posts')
 let commentModel = require('../models/posts/comment');
 let likeModel       = require('../models/posts/like');
 let shareModel      = require('../models/posts/share');
+var replyModel      = require('../models/posts/reply');
+var likeCommentModel = require('../models/posts/like_comment');
 var mongoose   = require('mongoose');
 //uploading photo
 const storagePhoto = multer.diskStorage({
@@ -282,7 +284,7 @@ router.post('/post_like',function(req,res)
 
 //delete likes
 
-router.post('/un_like',function(req,res)
+router.post('/post_unlike',function(req,res)
 {
     var likeId = mongoose.Types.ObjectId(req.body.likeInfo._id);
     likeModel.findByIdAndRemove(likeId,function(err,model)
@@ -337,6 +339,177 @@ router.post('/check_like',function(req,res)
         }
     })
 })
+
+//reply post route
+//post comment
+router.post('/post_reply',function(req,res)
+{
+    var comment_id = req.body._id;
+    replies ={
+
+    }
+    author = {
+
+    }
+
+    comment= {
+
+    };
+    comment.id = comment_id;
+
+    author.id = req.user._id;
+    author.username = req.user.username;
+    replies.reply = req.body.reply;
+    replies.author = author;
+    replies.comment = comment;
+
+    replyModel.create(replies,function(err,model)
+    {
+        if(err)
+            throw err;
+        else{
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+        }
+    })
+
+    
+    
+})
+
+router.post('/fetch_replies',function(req,res)
+{
+    
+    
+    var comment_id = req.body.comment_id;   
+    comment_id= mongoose.Types.ObjectId(comment_id);
+    var comment = {};
+    comment.id = comment_id;
+    replyModel.find({comment:comment},function(err,model)
+    {
+        if(err)
+            throw err;
+        else{
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+        }
+    })
+});
+
+router.post('/comment_check_like',function(req,res)
+{
+    var user_id = req.user._id;
+    var comment_id  = mongoose.Types.ObjectId(req.body.comment_id);
+    
+    author ={};
+    author.id = user_id;
+    author.username = req.user.username;
+    comment = {};
+    comment.id = comment_id;
+   
+
+    likeCommentModel.find({comment:comment, author:author},function(err,model)
+    {
+        if(err)
+            throw err;
+        else{
+           if(model.length>=1)
+           {
+               var data = {};
+               data.likeInfo = model[0];
+               data.check = true;
+                 res.setHeader('Content-Type', 'application/json');
+                res.send(data);
+              
+           }
+           else{
+               data ={};
+                data.check = false;
+                res.setHeader('Content-Type', 'application/json');
+                res.send(data);           
+            }
+        }
+    })
+})
+
+//fetch routes for likes
+router.post('/comment_fetch_likes',function(req,res)
+{
+    var comment_id = req.body.comemnt_id;   
+    comment_id= mongoose.Types.ObjectId(comment_id)
+    var comment = {};
+    comment.id = comment_id;
+    // console.log(post);
+    likeCommentModel.find({post:post},function(err,model)
+    {
+        if(err)
+            throw err;
+        else{
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+        }
+    })
+})
+
+//post likes
+router.post('/comment_like',function(req,res)
+{
+    var comment_id = req.body.id;
+    
+    likes ={
+
+    }
+    author = {
+
+    }
+
+    comment= {
+
+    };
+    comment.id = comment_id;
+
+    author.id = req.user._id;
+    author.username = req.user.username;
+    likes.author = author;
+    likes.comment = comment;
+    // console.log(likes);
+    likeCommentModel.create(likes,function(err,model)
+    {
+        if(err)
+            throw err;
+        else{
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+        }
+    })
+    
+});
+
+
+//delete likes
+
+router.post('/comment_unlike',function(req,res)
+{
+    var likeId = mongoose.Types.ObjectId(req.body.likeInfo._id);
+    likeCommentModel.findByIdAndRemove(likeId,function(err,model)
+    {
+        if(err)
+        {
+            throw err;
+        }
+        else{
+            console.log(model);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+        }
+    })
+
+   
+});
+
+
+
+//********************* */
 
 
 router.post('/post_share',function(req,res)

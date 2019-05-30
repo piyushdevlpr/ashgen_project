@@ -237,7 +237,7 @@ const axios = require("axios");
     else{
         var  data = {};
         data.likeInfo = this.state.likeInfo;
-        axios.post('http://localhost:2000/un_like',data,config)
+        axios.post('http://localhost:2000/post_unlike',data,config)
         // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/un_like',data,config)
         .then((response)=>{
             
