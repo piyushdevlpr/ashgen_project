@@ -266,7 +266,7 @@ export default class Comment extends Component{
 
                 </div>
                 <div style={{float:'right', marginRight:50}}>
-                    <a onClick={this.toggleLike} style={{Color:this.state.like?'blue':'#000', marginRight:10}}>Like {this.state.likes.length}</a>
+                    <a onClick={this.toggleLike} style={{color:this.state.like?'blue':'#000', marginRight:10}}>Like {this.state.likes.length}</a>
                     <a >Reply</a>
                     <div id="reply">
                 <form onSubmit={this.postReply}>
