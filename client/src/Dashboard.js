@@ -262,26 +262,43 @@ class Dashboard extends Component {
                         <button onClick={this.gotogroups}>Groups</button>
                         {/* <button onClick={this.gotoprofile}>PROFILE</button> */}
                     </div>
+                    <div className="col">
+      
+                    </div>
+                    <div className="col-6 container">
+                        <div className="card" style={{marginBottom:"25px"}}>
+                        <div className="card-body">
+                        <h5 className="card-title">Create Post</h5>
+
                     <div>
                     <form onSubmit={this.uploadPost} encType="multipart/form-data">
                     <div className="form-group">
-                    <label htmlFor="exampleFormControlTextarea1">Upload post</label>
                     <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" name="desc" value={this.state.desc} onChange={this.handleChange} placeholder="write your post"></textarea>
                  </div>
-                 <div className="row">
-                 <div className="form-group">
-                <label htmlFor="exampleFormControlFile1">Post Upload</label>
-                <input type="file" name="post" onChange={this.filehandleChange} className="form-control-file" id="post-upload" />
+                 <div >
+                 <div style={{display:'inline'}}  className="form-group">
+                {/* <label htmlFor="exampleFormControlFile1">Post Upload</label> */}
+                <input style={{display:'inline', width:'50%'}}    type="file" name="post"  onChange={this.filehandleChange} className="form-control-file" id="post-upload" />
                 </div>
-              
+                <div style={{display:'inline', float:'right'}}>
                 <button type="submit" className="btn btn-primary">Post</button>
-
                 </div>
+                </div>
+
              </form>
              </div>
+             </div>
+             </div>
+          
                 <div className="posts"> 
                 {this.renderPosts()}
                 
+                </div>
+                </div>
+                
+
+                <div className="col">
+
                 </div>
 
 
