@@ -127,7 +127,8 @@ img{ max-width:100%;}
   color: #4c4c4c;
   font-size: 15px;
   min-height: 48px;
-  width: 88%;
+  width: 84%;
+  display:inline-block ;
 }
 .file_sel {
   display: none;
@@ -140,9 +141,10 @@ img{ max-width:100%;}
   color: #fff;
   cursor: pointer;
   font-size: 17px;
-  height: 33px;
+  height: 3%;
   margin-top: 11px;
-  width: 33px;
+  display:inline-block ;
+  width: 4%;
 }
 .msg_send_btn {
   background: #05728f none repeat scroll 0 0;
@@ -151,11 +153,11 @@ img{ max-width:100%;}
   color: #fff;
   cursor: pointer;
   font-size: 17px;
-  height: 33px;
-  position: absolute;
-  right: 0;
-  top: 11px;
-  width: 33px;
+  height: 3%;
+  margin-left:2%;
+  margin-top: 11px;
+  display:inline-block ;
+  width: 4%;
 }
 .messaging { padding: 0 0 50px 0;}
 .msg_history {
@@ -172,7 +174,7 @@ img{ max-width:100%;}
 .get_to_right_2 {
   float:right; 
 }
-@media screen and (max-width:1100px){
+@media screen and (max-width:900px){
   .col-md-0-75{
     display : none ;
   }

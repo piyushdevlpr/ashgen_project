@@ -42,9 +42,12 @@ class People extends Component {
           })
     }
     componentWillUnmount(){
-        // this._ismounted = false ;
         this.abortController.abort() ;
-        // socket.leave()
+        // window.removeEventListener('beforeunload',this.doSomethingBeforeUnload());
+        // window.removeEventListener("beforeunload", (ev) => {
+        //     ev.preventDefault();
+        //     return this.doSomethingBeforeUnload();
+        // });
     }
     handlechange=(event)=>{
         event.preventDefault();
@@ -59,8 +62,8 @@ class People extends Component {
             method: "GET",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
-          }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({friends:data.sort(function(m1,m2){return m2.lastUpdatedAt - m1.lastUpdatedAt})},function(){
-            
+          }).then(res => res.json()).then(data => {
+              this.setState({friends:data.sort(function(m1,m2){return m2.lastUpdatedAt - m1.lastUpdatedAt})},function(){
             var map = this.state.friendsnewmessage;  
             for(var i = 0 ; i < this.state.friends.length ; i++){
                 map[this.state.friends[i].name] = this.state.friends[i].newmess ;
@@ -68,7 +71,7 @@ class People extends Component {
               this.setState({friendsnewmessage : map },function(){
                 console.log(this.state) ;
               })
-          })}}).catch(err=> {
+          })}).catch(err=> {
             if(err.name === 'AbortError') return
             throw err
         })
@@ -170,11 +173,27 @@ class People extends Component {
         this.scrollToBottom();
         }
       }
+      doSomethingBeforeUnload = () => {
+         var arr = [] ; 
+         for(var i = 0 ; i < this.state.friends.length ; i++){
+            var obj = {} ;
+            obj.friendname = this.state.friends[i].name ; 
+            obj.newmessage = this.state.friendsnewmessage[obj.friendname] ;
+            arr.push(obj) ;
+        }
+        socket.emit("afterunmount",{data:arr,currentuser:this.props.location.state.username});
+      }
+      setupBeforeUnloadListener = () => {
+        window.addEventListener("beforeunload", (ev) => {
+            ev.preventDefault();
+            return this.doSomethingBeforeUnload();
+        });
+        // window.addEventListener("beforeunload",this.doSomethingBeforeUnload()) ;
+      };
     componentWillMount(){ 
-        // this._ismounted = true ;     
         this.getfriends() ;
         this.showfriends() ;
-        
+        // this.setupBeforeUnloadListener();
         socket.emit('join',{username:this.props.location.state.username}) ;
         socket.on("newmessagereceived",data=>{
             this.setState(state => {
@@ -270,10 +289,10 @@ class People extends Component {
                         <div class="type_msg">
                             <div className="input_msg_write row ">
                                 
-                                <input className="write_msg col-md-10-75" placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
-                                <button className=" attach btn btn-default col-md-0-75 " onClick={this.handleClick}>b</button>
+                                <input className="write_msg" placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
+                                <button className=" attach btn btn-default  " onClick={this.handleClick}>b</button>
                                 <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
-                                <button onClick={this.sendmsg} className="msg_send_btn btn btn-default col-md-1-25" type="button"><i className="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                <button onClick={this.sendmsg} className="msg_send_btn btn btn-default " type="button">s</button>
                             </div>
                         </div>
                         </div>

@@ -77,7 +77,8 @@ class Dashboard extends Component {
       
                 formData.append('photo',this.state.post);
                 formData.append('desc', this.state.desc);
-                
+                // axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/photo_upload",formData,config)
+        
                 axios.post("http://localhost:2000/photo_upload",formData,config)
                     .then((response) => {
                         alert("The Post is successfully uploaded");
@@ -104,7 +105,9 @@ class Dashboard extends Component {
                     withCredentials: true, // default
         
                 };
-                axios.post("http://localhost:2000/video_upload",formData,config)
+                
+                // axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/video_upload",formData,config)
+        axios.post("http://localhost:2000/video_upload",formData,config)
                     .then((response) => {
                         alert("The Video is successfully uploaded");
                         var data = this.state.data;
@@ -129,6 +132,8 @@ class Dashboard extends Component {
                withCredentials: true, // default
    
            };
+        //    axios.post("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/text_upload",data,config)
+        
            axios.post("http://localhost:2000/text_upload",data,config)
            .then((response) => {
                alert("The Post is successfully uploaded");
@@ -255,7 +260,7 @@ class Dashboard extends Component {
                         <button onClick={this.gotonoti}>NOTIFICATIONS</button>
                         <button onClick={this.gotofriends}>FRIENDS</button>
                         <button onClick={this.gotogroups}>Groups</button>
-                        <button onClick={this.gotoprofile}>PROFILE</button>
+                        {/* <button onClick={this.gotoprofile}>PROFILE</button> */}
                     </div>
                     <div>
                     <form onSubmit={this.uploadPost} encType="multipart/form-data">

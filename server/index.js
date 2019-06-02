@@ -6,7 +6,7 @@ var express            = require("express"),
     passport           = require("passport"),
     LocalStrategy      = require("passport-local"),
     User               = require("./models/user"),
-    Team               = require("./models/team"),
+    // Team               = require("./models/team"),
     Yourprofile        = require("./models/yourprofile"),
     Teamprofile        = require("./models/teamprofile"),
     Message            = require("./models/message"),
@@ -24,7 +24,7 @@ var express            = require("express"),
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
 var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
-  mongoose.connect('mongodb://localhost/login-ashgen',{useNewUrlParser: true})
+  mongoose.connect("mongodb://localhost/login-ashgen",{useNewUrlParser: true})
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
   var whitelist = [];
@@ -128,10 +128,8 @@ app.post("/register",function(req, res,next){
                 }
               })
               if(tof === false){
-                var user = {'id':req.user._id , 'username' : req.user.username, 'team':req.body.team}
-              
                 var newUser = new Yourprofile({
-              user: user 
+              username: req.user.username 
                 });
               newUser.save(function(err,cuser){
               if(err){
@@ -162,8 +160,8 @@ app.post("/register",function(req, res,next){
 app.post("/your-profile",function(req, res){
     console.log("hello") ;
   console.log(req.user) ;
-  var user = {'username' : req.user.username}
-  Yourprofile.findOneAndUpdate({user:user},{$push: {  first_name: req.body.first_name,
+  var user = req.user.username ;
+  Yourprofile.findOneAndUpdate({username:user},{$set: {  first_name: req.body.first_name,
     Last_Name:req.body.Last_Name,
     Specialisation:req.body.Specialisation,
     College:req.body.College,
@@ -220,6 +218,69 @@ app.post("/team-profile",function(req, res){
       }
   });
 });
+
+app.post("/your-profile-update",function(req, res){
+  console.log("hello") ;
+console.log(req.user) ;
+var user = req.user.username ;
+Yourprofile.findOneAndUpdate({username:user},{$set: {  first_name: req.body.first_name,
+  Last_Name:req.body.Last_Name,
+  Specialisation:req.body.Specialisation,
+  College:req.body.College,
+  Teams:req.body.Teams,
+  Short_Bio:req.body.Short_Bio,
+  Message_Request_Option:req.body.Message_Request_Option,
+  Projects_and_competitions:req.body.Projects_and_competitions,
+  Achievements_in_competitions:req.body.Achievements_in_competitions,
+  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
+  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs}},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }
+});
+});
+
+app.post("/team-profile-update",function(req, res){
+console.log("hello") ;
+console.log(req.user) ;
+var user = req.body.username ;
+mem = []
+for(var i = 0 ; i < req.body.members.length ; i++){
+  ob = {};
+  ob.name = req.body.members[i];
+  ob.status = false;
+  mem.push(ob);
+}
+Teamprofile.findOneAndUpdate({username:user},{$set: {  
+  Specialisation:req.body.Specialisation,
+  College:req.body.College,
+  Short_Bio:req.body.Short_Bio,
+  Message_Request_Option:req.body.Message_Request_Option,
+  Projects_and_competitions:req.body.Projects_and_competitions,
+  Achievements_in_competitions:req.body.Achievements_in_competitions,
+  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
+  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs},$push:{
+    Departments :{$each : req.body.dep} ,
+    members : {$each : mem}
+    }},{new:true},function(err,cuser){
+    if(err){
+      console.log(err) ;
+    }else{
+      for(var i = 0 ; i < req.body.members.length ; i++){
+        ob2 = {} ;
+        ob2.team = req.body.username ;       
+        // ob2.head = ;
+      Notification.findOneAndUpdate({handlename : req.body.members[i]},{$push:{teamrequests : ob2}},function(err,fuser){
+          if(err){
+            console.log(err) ;
+          }
+        });
+      }
+      res.json({data:"send"}) ;
+    }
+});
+});
+
 app.post('/newgroup',function(req,res){
   var groupname = req.body.newgroupname ;
   var members = req.body.members ;
@@ -431,16 +492,16 @@ app.get("/get-notifications",function(req,res){
     }
   })
 });
-app.get("/getprofile",function(req,res){
-  var username = req.user.username ;
+app.get("/getprofile/:username",function(req,res){
+  var username = req.params.username ;
+  console.log("getprofile"+username) ;
   User.findOne({username : username},function(err,cuser){
     if(cuser.team){
       Teamprofile.findOne({username : username},function(err,kuser){
           res.json({user:kuser,team:true}) ;
       })
     }else{
-      user = {id:cuser._id , username : username} ;
-      Yourprofile.findOne({user : user},function(err,kuser){
+      Yourprofile.findOne({username : username},function(err,kuser){
           res.json({user:kuser,team:false}) ;
       })
     }
@@ -657,8 +718,7 @@ app.post("/update-new-message-number",function(req,res){
 app.post("/update-new-message-number-group",function(req,res){
   var currentuser = req.user.username ;
   console.log(req.body) ;
-    // for(var i = 0 ; i < req.body.length ; i++){
-      User.findOneAndUpdate({username : currentuser, 'groups.groupid' : req.body.groupid},{$set:{'groups.$.newmess' : req.body.number}},function(err,cuser){
+    User.findOneAndUpdate({username : currentuser, 'groups.groupid' : req.body.groupid},{$set:{'groups.$.newmess' : req.body.number}},function(err,cuser){
         if(err){
           console.log(err) ;
         }else{
@@ -738,7 +798,7 @@ socket.on("newmessage",function(data){
           }else{
             console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
             // User.findOneAndUpdate({username : friendname},{$pullAll:{friends}}) ;
-            User.findOneAndUpdate({username : currentuser, 'friends.name' : friendname},{$set:{'friends.$.lastUpdatedAt':Date.now()}},{$sort:{'friends.lastUpdatedAt' : -1}},function(err,cuser2){
+            User.findOneAndUpdate({username : currentuser, 'friends.name' : friendname},{$set:{'friends.$.lastUpdatedAt':Date.now()}},function(err,cuser2){
               if(err){
                 console.log(err) ;
               }else{
@@ -782,7 +842,7 @@ socket.on("newmessage",function(data){
           }else{
             console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
             // User.findOneAndUpdate({username : friendname},{$pullAll:{friends}}) ;
-            User.findOneAndUpdate({username : currentuser, 'friends.name' : friendname},{$set:{'friends.$.lastUpdatedAt':Date.now()}},{$sort:{'friends.lastUpdatedAt' : -1}},function(err,cuser2){
+            User.findOneAndUpdate({username : currentuser, 'friends.name' : friendname},{$set:{'friends.$.lastUpdatedAt':Date.now()}},function(err,cuser2){
               if(err){
                 console.log(err) ;
               }else{
@@ -794,6 +854,30 @@ socket.on("newmessage",function(data){
       })
       }        
       });
+  socket.on("afterunmount",function(data){
+    console.log(data) ;
+    for(var i = 0 ; i < data.data.length ; i++){
+      User.findOneAndUpdate({username : data.currentuser, 'friends.name' : data.data[i].friendname},{$set:{'friends.$.newmess' : data.data[i].newmessage}},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }else{
+        //  console.log("hellllllllo") ;
+      }
+    })
+  }
+  });
+  socket.on("afterunmountgroup",function(data){
+    console.log(data) ;
+    for(var i = 0 ; i < data.data.length ; i++){
+      User.findOneAndUpdate({username : data.currentuser, 'groups.groupid' : data.data[i].groupid},{$set:{'friends.$.newmess' : data.data[i].newmessage}},function(err,cuser){
+      if(err){
+        console.log(err) ;
+      }else{
+        //  console.log("hellllllllo") ;
+      }
+    })
+  }
+  });
   socket.on("newgroupmessage",function(data){
         var currentuser = data.username ;
         var groupid = data.groupid ;

@@ -204,9 +204,29 @@ class People extends Component {
         );
         return list ;
     }
+    doSomethingBeforeUnload = () => {
+        var arr = [] ; 
+        for(var i = 0 ; i < this.state.friends.length ; i++){
+           var obj = {} ;
+           obj.groupid = this.state.groups[i].groupid ; 
+           obj.newmessage = this.state.friendsnewmessage[obj.groupid] ;
+           arr.push(obj) ;
+       }
+       socket.emit("afterunmountgroup",{data:arr,currentuser:this.props.location.state.username});
+     }
+     setupBeforeUnloadListener = () => {
+       window.addEventListener("beforeunload", (ev) => {
+           ev.preventDefault();
+           return this.doSomethingBeforeUnload();
+       });
+    }
+    componentWillUnmount(){
+        // window.removeEventListener('beforeunload',this.doSomethingBeforeUnload());
+    }
     componentDidMount(){
         this.getgroups() ;
         this.getfriends() ;
+        // this.setupBeforeUnloadListener();
         socket.emit("join",{username : this.props.location.state.username}) ;
         socket.on("newgroupmessagereceived",data=>{
             this.setState(state => {
@@ -449,7 +469,6 @@ class People extends Component {
         const height = this.messageList.clientHeight;
         const maxScrollTop = scrollHeight - height;
         this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-    // this.messageList.scrollIntoView({ behavior: "smooth" });
 }
     render(){
         if(this.props.location.state === undefined){
@@ -506,10 +525,10 @@ class People extends Component {
                                               </div>
                                                       <div class="type_msg">
                                                       <div className="input_msg_write row ">           
-                                                      <input className="write_msg col-md-10-75" placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
-                                                      <button className=" attach btn btn-default col-md-0-75 " onClick={this.handleClick}>b</button>
+                                                      <input className="write_msg " placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
+                                                      <button className=" attach btn btn-default " onClick={this.handleClick}>b</button>
                                                       <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
-                                                      <button onClick={this.sendmsg} className="msg_send_btn btn btn-default col-md-1-25" type="button"><i className="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                                                      <button onClick={this.sendmsg} className="msg_send_btn btn btn-default" type="button">s</button>
                                                       </div>
                                                       </div>
                                                       </div>

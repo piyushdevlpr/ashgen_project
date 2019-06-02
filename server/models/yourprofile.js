@@ -5,13 +5,8 @@ var YourProfileSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-  user: {                                     //user who has posted
-    id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    },
-    username: String
-},
+
+  username: String,
   first_name: {type : String, default:''},
   Last_Name:{type : String, default:''},
   Specialisation:{type : String, default:''},
