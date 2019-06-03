@@ -23,7 +23,7 @@ export default class TeamProfile extends Component{
               <div className="container">
                 <div className="header-data">
                   <div className="logo">
-                    <a href="index.html" title><img src="images/logo.png" alt /></a>
+                    <a href="index.html" title><img src="../assets/images/logo.png" alt /></a>
                   </div>{/*logo end*/}
                   <div className="search-bar">
                     <form>
@@ -35,25 +35,25 @@ export default class TeamProfile extends Component{
                     <ul>
                       <li>
                         <a href="index.html" title>
-                          <span><img src="images/icon1.png" alt /></span>
+                          <span><img src="../assets/images/icon1.png" alt /></span>
                           Home
                         </a>
                       </li>
                       <li>
                         <a href="companies.html" title>
-                          <span><img src="images/icon2.png" alt /></span>
+                          <span><img src="../assets/images/icon2.png" alt /></span>
                           Companies
                         </a>
                       </li>
                       <li>
                         <a href="projects.html" title>
-                          <span><img src="images/icon3.png" alt /></span>
+                          <span><img src="../assets/images/icon3.png" alt /></span>
                           Projects
                         </a>
                       </li>
                       <li>
                         <a href="profiles.html" title>
-                          <span><img src="images/icon4.png" alt /></span>
+                          <span><img src="../assets/images/icon4.png" alt /></span>
                           Profiles
                         </a>
                         <ul>
@@ -63,13 +63,13 @@ export default class TeamProfile extends Component{
                       </li>
                       <li>
                         <a href="jobs.html" title>
-                          <span><img src="images/icon5.png" alt /></span>
+                          <span><img src="../assets/images/icon5.png" alt /></span>
                           Jobs
                         </a>
                       </li>
                       <li>
                         <a href="#" title className="not-box-open">
-                          <span><img src="images/icon6.png" alt /></span>
+                          <span><img src="../assets/images/icon6.png" alt /></span>
                           Messages
                         </a>
                         <div className="notification-box msg">
@@ -80,7 +80,7 @@ export default class TeamProfile extends Component{
                           <div className="nott-list">
                             <div className="notfication-details">
                               <div className="noty-user-img">
-                                <img src="images/resources/ny-img1.png" alt />
+                                <img src="../assets/images/resources/ny-img1.png" alt />
                               </div>
                               <div className="notification-info">
                                 <h3><a href="messages.html" title>Jassica William</a> </h3>
@@ -90,7 +90,7 @@ export default class TeamProfile extends Component{
                             </div>
                             <div className="notfication-details">
                               <div className="noty-user-img">
-                                <img src="images/resources/ny-img2.png" alt />
+                                <img src="../assets/images/resources/ny-img2.png" alt />
                               </div>
                               <div className="notification-info">
                                 <h3><a href="messages.html" title>Jassica William</a></h3>
@@ -100,7 +100,7 @@ export default class TeamProfile extends Component{
                             </div>
                             <div className="notfication-details">
                               <div className="noty-user-img">
-                                <img src="images/resources/ny-img3.png" alt />
+                                <img src="../assets/images/resources/ny-img3.png" alt />
                               </div>
                               <div className="notification-info">
                                 <h3><a href="messages.html" title>Jassica William</a></h3>
@@ -116,7 +116,7 @@ export default class TeamProfile extends Component{
                       </li>
                       <li>
                         <a href="#" title className="not-box-open">
-                          <span><img src="images/icon7.png" alt /></span>
+                          <span><img src="../assets/images/icon7.png" alt /></span>
                           Notification
                         </a>
                         <div className="notification-box">
@@ -127,7 +127,7 @@ export default class TeamProfile extends Component{
                           <div className="nott-list">
                             <div className="notfication-details">
                               <div className="noty-user-img">
-                                <img src="images/resources/ny-img1.png" alt />
+                                <img src="../assets/images/resources/ny-img1.png" alt />
                               </div>
                               <div className="notification-info">
                                 <h3><a href="#" title>Jassica William</a> Comment on your project.</h3>
@@ -136,7 +136,7 @@ export default class TeamProfile extends Component{
                             </div>
                             <div className="notfication-details">
                               <div className="noty-user-img">
-                                <img src="images/resources/ny-img2.png" alt />
+                                <img src="../assets/images/resources/ny-img2.png" alt />
                               </div>
                               <div className="notification-info">
                                 <h3><a href="#" title>Jassica William</a> Comment on your project.</h3>
@@ -145,7 +145,7 @@ export default class TeamProfile extends Component{
                             </div>
                             <div className="notfication-details">
                               <div className="noty-user-img">
-                                <img src="images/resources/ny-img3.png" alt />
+                                <img src="../assets/images/resources/ny-img3.png" alt />
                               </div>
                               <div className="notification-info">
                                 <h3><a href="#" title>Jassica William</a> Comment on your project.</h3>
@@ -154,7 +154,7 @@ export default class TeamProfile extends Component{
                             </div>
                             <div className="notfication-details">
                               <div className="noty-user-img">
-                                <img src="images/resources/ny-img2.png" alt />
+                                <img src="../assets/images/resources/ny-img2.png" alt />
                               </div>
                               <div className="notification-info">
                                 <h3><a href="#" title>Jassica William</a> Comment on your project.</h3>
@@ -174,7 +174,7 @@ export default class TeamProfile extends Component{
                   </div>{/*menu-btn end*/}
                   <div className="user-account">
                     <div className="user-info">
-                      <img src="images/resources/user.png" alt />
+                      <img src="../assets/images/resources/user.png" alt />
                       <a href="#" title>John</a>
                       <i className="la la-sort-down" />
                     </div>
@@ -221,7 +221,7 @@ export default class TeamProfile extends Component{
               </div>
             </header>{/*header end*/}	
             <section className="cover-sec">
-              <img src="images/resources/cover-img.jpg" alt />
+              <img src="../assets/images/resources/cover-img.jpg" alt />
             </section>
             <main>
               <div className="main-section">
@@ -232,7 +232,7 @@ export default class TeamProfile extends Component{
                         <div className="main-left-sidebar">
                           <div className="user_profile">
                             <div className="user-pro-img">
-                              <img src="images/resources/user-pro-img.png" alt />
+                              <img src="../assets/images/resources/user-pro-img.png" alt />
                             </div>{/*user-pro-img end*/}
                             <div className="user_pro_status">
                               <ul className="flw-hr">
@@ -268,7 +268,7 @@ export default class TeamProfile extends Component{
                             </div>{/*sd-title end*/}
                             <div className="suggestions-list">
                               <div className="suggestion-usd">
-                                <img src="images/resources/s1.png" alt />
+                                <img src="../assets/images/resources/s1.png" alt />
                                 <div className="sgt-text">
                                   <h4>Jessica William</h4>
                                   <span>Graphic Designer</span>
@@ -276,7 +276,7 @@ export default class TeamProfile extends Component{
                                 <span><i className="la la-plus" /></span>
                               </div>
                               <div className="suggestion-usd">
-                                <img src="images/resources/s2.png" alt />
+                                <img src="../assets/images/resources/s2.png" alt />
                                 <div className="sgt-text">
                                   <h4>John Doe</h4>
                                   <span>PHP Developer</span>
@@ -284,7 +284,7 @@ export default class TeamProfile extends Component{
                                 <span><i className="la la-plus" /></span>
                               </div>
                               <div className="suggestion-usd">
-                                <img src="images/resources/s3.png" alt />
+                                <img src="../assets/images/resources/s3.png" alt />
                                 <div className="sgt-text">
                                   <h4>Poonam</h4>
                                   <span>Wordpress Developer</span>
@@ -292,7 +292,7 @@ export default class TeamProfile extends Component{
                                 <span><i className="la la-plus" /></span>
                               </div>
                               <div className="suggestion-usd">
-                                <img src="images/resources/s4.png" alt />
+                                <img src="../assets/images/resources/s4.png" alt />
                                 <div className="sgt-text">
                                   <h4>Bill Gates</h4>
                                   <span>C &amp; C++ Developer</span>
@@ -300,7 +300,7 @@ export default class TeamProfile extends Component{
                                 <span><i className="la la-plus" /></span>
                               </div>
                               <div className="suggestion-usd">
-                                <img src="images/resources/s5.png" alt />
+                                <img src="../assets/images/resources/s5.png" alt />
                                 <div className="sgt-text">
                                   <h4>Jessica William</h4>
                                   <span>Graphic Designer</span>
@@ -308,7 +308,7 @@ export default class TeamProfile extends Component{
                                 <span><i className="la la-plus" /></span>
                               </div>
                               <div className="suggestion-usd">
-                                <img src="images/resources/s6.png" alt />
+                                <img src="../assets/images/resources/s6.png" alt />
                                 <div className="sgt-text">
                                   <h4>John Doe</h4>
                                   <span>PHP Developer</span>
@@ -340,19 +340,19 @@ export default class TeamProfile extends Component{
                               <ul>
                                 <li data-tab="feed-dd" className="active">
                                   <a href="#" title>
-                                    <img src="images/ic1.png" alt />
+                                    <img src="../assets/images/ic1.png" alt />
                                     <span>Feed</span>
                                   </a>
                                 </li>
                                 <li data-tab="info-dd">
                                   <a href="#" title>
-                                    <img src="images/ic2.png" alt />
+                                    <img src="../assets/images/ic2.png" alt />
                                     <span>Info</span>
                                   </a>
                                 </li>
                                 <li data-tab="portfolio-dd">
                                   <a href="#" title>
-                                    <img src="images/ic3.png" alt />
+                                    <img src="../assets/images/ic3.png" alt />
                                     <span>Portfolio</span>
                                   </a>
                                 </li>
@@ -364,10 +364,10 @@ export default class TeamProfile extends Component{
                               <div className="post-bar">
                                 <div className="post_topbar">
                                   <div className="usy-dt">
-                                    <img src="images/resources/us-pic.png" alt />
+                                    <img src="../assets/images/resources/us-pic.png" alt />
                                     <div className="usy-name">
                                       <h3>John Doe</h3>
-                                      <span><img src="images/clock.png" alt />3 min ago</span>
+                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
                                     </div>
                                   </div>
                                   <div className="ed-opts">
@@ -383,8 +383,8 @@ export default class TeamProfile extends Component{
                                 </div>
                                 <div className="epi-sec">
                                   <ul className="descp">
-                                    <li><img src="images/icon8.png" alt /><span>Epic Coder</span></li>
-                                    <li><img src="images/icon9.png" alt /><span>India</span></li>
+                                    <li><img src="../assets/images/icon8.png" alt /><span>Epic Coder</span></li>
+                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
                                   </ul>
                                   <ul className="bk-links">
                                     <li><a href="#" title><i className="la la-bookmark" /></a></li>
@@ -410,10 +410,10 @@ export default class TeamProfile extends Component{
                                   <ul className="like-com">
                                     <li>
                                       <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="images/liked-img.png" alt />
+                                      <img src="../assets/images/liked-img.png" alt />
                                       <span>25</span>
                                     </li> 
-                                    <li><a href="#" title className="com"><img src="images/com.png" alt /> Comment 15</a></li>
+                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
                                   </ul>
                                   <a><i className="la la-eye" />Views 50</a>
                                 </div>
@@ -421,10 +421,10 @@ export default class TeamProfile extends Component{
                               <div className="post-bar">
                                 <div className="post_topbar">
                                   <div className="usy-dt">
-                                    <img src="images/resources/us-pic.png" alt />
+                                    <img src="../assets/images/resources/us-pic.png" alt />
                                     <div className="usy-name">
                                       <h3>John Doe</h3>
-                                      <span><img src="images/clock.png" alt />3 min ago</span>
+                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
                                     </div>
                                   </div>
                                   <div className="ed-opts">
@@ -440,8 +440,8 @@ export default class TeamProfile extends Component{
                                 </div>
                                 <div className="epi-sec">
                                   <ul className="descp">
-                                    <li><img src="images/icon8.png" alt /><span>Front End Developer</span></li>
-                                    <li><img src="images/icon9.png" alt /><span>India</span></li>
+                                    <li><img src="../assets/images/icon8.png" alt /><span>Front End Developer</span></li>
+                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
                                   </ul>
                                   <ul className="bk-links">
                                     <li><a href="#" title><i className="la la-bookmark" /></a></li>
@@ -467,10 +467,10 @@ export default class TeamProfile extends Component{
                                   <ul className="like-com">
                                     <li>
                                       <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="images/liked-img.png" alt />
+                                      <img src="../assets/images/liked-img.png" alt />
                                       <span>25</span>
                                     </li> 
-                                    <li><a href="#" title className="com"><img src="images/com.png" alt /> Comment 15</a></li>
+                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
                                   </ul>
                                   <a><i className="la la-eye" />Views 50</a>
                                 </div>
@@ -478,10 +478,10 @@ export default class TeamProfile extends Component{
                               <div className="post-bar">
                                 <div className="post_topbar">
                                   <div className="usy-dt">
-                                    <img src="images/resources/us-pc2.png" alt />
+                                    <img src="../assets/images/resources/us-pc2.png" alt />
                                     <div className="usy-name">
                                       <h3>John Doe</h3>
-                                      <span><img src="images/clock.png" alt />3 min ago</span>
+                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
                                     </div>
                                   </div>
                                   <div className="ed-opts">
@@ -497,8 +497,8 @@ export default class TeamProfile extends Component{
                                 </div>
                                 <div className="epi-sec">
                                   <ul className="descp">
-                                    <li><img src="images/icon8.png" alt /><span>Epic Coder</span></li>
-                                    <li><img src="images/icon9.png" alt /><span>India</span></li>
+                                    <li><img src="../assets/images/icon8.png" alt /><span>Epic Coder</span></li>
+                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
                                   </ul>
                                   <ul className="bk-links">
                                     <li><a href="#" title><i className="la la-bookmark" /></a></li>
@@ -524,10 +524,10 @@ export default class TeamProfile extends Component{
                                   <ul className="like-com">
                                     <li>
                                       <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="images/liked-img.png" alt />
+                                      <img src="../assets/images/liked-img.png" alt />
                                       <span>25</span>
                                     </li> 
-                                    <li><a href="#" title className="com"><img src="images/com.png" alt /> Comment 15</a></li>
+                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
                                   </ul>
                                   <a><i className="la la-eye" />Views 50</a>
                                 </div>
@@ -535,10 +535,10 @@ export default class TeamProfile extends Component{
                               <div className="post-bar">
                                 <div className="post_topbar">
                                   <div className="usy-dt">
-                                    <img src="images/resources/us-pic.png" alt />
+                                    <img src="../assets/images/resources/us-pic.png" alt />
                                     <div className="usy-name">
                                       <h3>John Doe</h3>
-                                      <span><img src="images/clock.png" alt />3 min ago</span>
+                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
                                     </div>
                                   </div>
                                   <div className="ed-opts">
@@ -554,8 +554,8 @@ export default class TeamProfile extends Component{
                                 </div>
                                 <div className="epi-sec">
                                   <ul className="descp">
-                                    <li><img src="images/icon8.png" alt /><span>Epic Coder</span></li>
-                                    <li><img src="images/icon9.png" alt /><span>India</span></li>
+                                    <li><img src="../assets/images/icon8.png" alt /><span>Epic Coder</span></li>
+                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
                                   </ul>
                                   <ul className="bk-links">
                                     <li><a href="#" title><i className="la la-bookmark" /></a></li>
@@ -581,16 +581,16 @@ export default class TeamProfile extends Component{
                                   <ul className="like-com">
                                     <li>
                                       <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="images/liked-img.png" alt />
+                                      <img src="../assets/images/liked-img.png" alt />
                                       <span>25</span>
                                     </li> 
-                                    <li><a href="#" title className="com"><img src="images/com.png" alt /> Comment 15</a></li>
+                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
                                   </ul>
                                   <a><i className="la la-eye" />Views 50</a>
                                 </div>
                               </div>{/*post-bar end*/}
                               <div className="process-comm">
-                                <a href="#" title><img src="images/process-icon.png" alt /></a>
+                                <a href="#" title><img src="../assets/images/process-icon.png" alt /></a>
                               </div>{/*process-comm end*/}
                             </div>{/*posts-section end*/}
                           </div>{/*product-feed-tab end*/}
@@ -640,62 +640,62 @@ export default class TeamProfile extends Component{
                                 <div className="row">
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img1.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img1.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img2.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img2.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img3.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img3.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img4.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img4.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img5.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img5.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img6.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img6.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img7.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img7.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img8.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img8.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img9.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img9.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                   <div className="col-lg-4 col-md-4 col-sm-6 col-6">
                                     <div className="gallery_pt">
-                                      <img src="images/resources/pf-img10.jpg" alt />
-                                      <a href="#" title><img src="images/all-out.png" alt /></a>
+                                      <img src="../assets/images/resources/pf-img10.jpg" alt />
+                                      <a href="#" title><img src="../assets/images/all-out.png" alt /></a>
                                     </div>{/*gallery_pt end*/}
                                   </div>
                                 </div>
@@ -712,22 +712,22 @@ export default class TeamProfile extends Component{
                           <div className="widget widget-portfolio">
                             <div className="wd-heady">
                               <h3>Portfolio</h3>
-                              <img src="images/photo-icon.png" alt />
+                              <img src="../assets/images/photo-icon.png" alt />
                             </div>
                             <div className="pf-gallery">
                               <ul>
-                                <li><a href="#" title><img src="images/resources/pf-gallery1.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery2.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery3.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery4.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery5.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery6.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery7.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery8.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery9.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery10.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery11.png" alt /></a></li>
-                                <li><a href="#" title><img src="images/resources/pf-gallery12.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery1.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery2.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery3.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery4.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery5.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery6.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery7.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery8.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery9.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery10.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery11.png" alt /></a></li>
+                                <li><a href="#" title><img src="../assets/images/resources/pf-gallery12.png" alt /></a></li>
                               </ul>
                             </div>{/*pf-gallery end*/}
                           </div>{/*widget-portfolio end*/}
@@ -751,8 +751,8 @@ export default class TeamProfile extends Component{
                     <li><a href="#" title>Language</a></li>
                     <li><a href="#" title>Copyright Policy</a></li>
                   </ul>
-                  <p><img src="images/copy-icon2.png" alt />Copyright 2017</p>
-                  <img className="fl-rgt" src="images/logo2.png" alt />
+                  <p><img src="../assets/images/copy-icon2.png" alt />Copyright 2017</p>
+                  <img className="fl-rgt" src="../assets/images/logo2.png" alt />
                 </div>
               </div>
             </footer>{/*footer end*/}
@@ -765,7 +765,7 @@ export default class TeamProfile extends Component{
                     <input type="file" name="file" />
                   </div>
                   <div className="pf-img">
-                    <img src="images/resources/np.png" alt />
+                    <img src="../assets/images/resources/np.png" alt />
                   </div>
                   <input type="text" name="website-url" placeholder="htp://www.example.com" />
                   <button type="submit" className="save">Save</button>
