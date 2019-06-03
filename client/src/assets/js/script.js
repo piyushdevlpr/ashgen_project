@@ -1,8 +1,7 @@
 $(window).on("load", function() {
     "use strict";
-
     
-
+    
     //  ============= POST PROJECT POPUP FUNCTION =========
 
     $(".post_project").on("click", function(){

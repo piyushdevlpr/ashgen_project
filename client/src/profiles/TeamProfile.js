@@ -15,9 +15,32 @@ import '../assets/css/style.css'
 
 
 export default class TeamProfile extends Component{
+
+    componentDidMount()
+    {
+        // var loadScript = function(src) {
+        //     var tag = document.createElement('script');
+        //     tag.async = false;
+        //     tag.src = src;
+        //     document.getElementsByClassName('body-element').appnedChild(tag);
+        //   }
+        //   loadScript('../assets/js/bootstrap.min.js')
+        // //   loadScript('../assets/js/flatpickr.min.js')
+        // //   loadScript('../assets/js/jquery.mCustomScrollbar.js')
+        // //   loadScript('../assets/js/jquery.min.js')
+        // //   loadScript('../assets/js/jquery.range-min.js')
+        // //   loadScript('../assets/js/popper.js')
+        // //   loadScript('../assets/js/script.js')
+        // //   loadScript('../assets/js/scrollbar.js')
+          
+    }
+  
+
+
     render()
     {
         return(
+            <div className="body-element">
             <div className="wrapper">
             <header>
               <div className="container">
@@ -775,6 +798,11 @@ export default class TeamProfile extends Component{
               </div>{/*overview-edit end*/}
             </div>{/*overview-box end*/}
           </div>
+
+    
+
+
+           </div>
            
         )
     }
