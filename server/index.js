@@ -19,7 +19,11 @@ var express            = require("express"),
     io                 = require("socket.io").listen(server),
     getUserRoute       = require('./routes/getUser'),
     postRoute          = require('./routes/post');
+<<<<<<< HEAD
     // var profileRoute   = require('./routes/profile');
+=======
+    var profileRoute   = require('./routes/profile');
+>>>>>>> 421426105e42ca40655fca5247e21b3d03b758c1
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
     mongoose.Promise = global.Promise;
@@ -74,7 +78,11 @@ app.use(siofu.router)
 var port = process.env.PORT || 2000 ;
 app.use(getUserRoute);
 app.use(postRoute);
+<<<<<<< HEAD
 // app.use(profileRoute);
+=======
+app.use(profileRoute);
+>>>>>>> 421426105e42ca40655fca5247e21b3d03b758c1
 
 
 // app.use(function(req, res, next){

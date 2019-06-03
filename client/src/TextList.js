@@ -61,7 +61,7 @@ const axios = require("axios");
         // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/check_like',data,config)
         .then((response)=>{
 
-            if(response.data.check==true)
+            if(response.data.check===true)
             {
                 this.setState({like:true});
                 this.setState({likeInfo:response.data.likeInfo});
