@@ -15,7 +15,6 @@ class Login extends Component {
         signedup : false
     }
     this.handleChange = this.handleChange.bind(this);
-    // this.click = this.click.bind(this);
     this.click2 = this.click2.bind(this);
 }
 componentDidMount(){
@@ -58,7 +57,7 @@ click2=(event)=>{
   event.preventDefault() ;
   if(this._ismounted === true){
   // console.log(this.state) ;
-  fetch("http://localhost:2000/login", {
+  fetch("http://localhost:2000/loginind", {
   // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/login", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -82,31 +81,32 @@ gotohome=()=>{
   });
   }
 }
-gotohomeprofile=()=>{
+gotohome3rdpartyuser=()=>{
   //event.preventDefault();
-  if(this.state.signedup === "true" && this._ismounted === true){
+  if(this.state.loggedin === "true" && this._ismounted === true){
     this.props.history.push({
-      pathname: '/your-profile/',
-      state: {
-        loggedin: false,
-        signedup: "true",
-        username: this.state.username,
-        emailid: this.state.emailid
-      }
-    });
+    pathname: '/home-individual/',
+    state: {
+      loggedin: "true",
+      signedup: false,
+      username: this.state.username,
+      emailid: this.state.emailid
+    }
+  });
   }
 }
+
 getlogin=()=>{
   return(
   <div>
-  <form onSubmit={this.click2} method='POST' action='http://localhost:2000/login'>
+  <form onSubmit={this.click2} method='POST' action='http://localhost:2000/loginind'>
   <div>
       <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
       <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
       <button className='btn btn-default addallborder'>LOGIN</button>
       {/* <span> OR </span> */}
       {/* <button className='btn btn-default addallborder' onClick={()=>this.getsignup()}>SIGN UP</button> */}
-      {this.gotohome()}
+      {this.gotohome3rdpartyuser()}
   </div>
   </form>
   </div>

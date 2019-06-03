@@ -15,6 +15,7 @@ import Dashboard from './Dashboard';
 import Group from './Group';
 import Profile from './Profile';
 import * as serviceWorker from './serviceWorker';
+import DashboardInd from './DashboardInd';
 
 ReactDOM.render((
     <Router>
@@ -25,6 +26,7 @@ ReactDOM.render((
        <Route exact path = "/team-profile/" component = {Profileteam}/>
        <Route exact path = "/your-profile/" component = {Profileind}/>
        <Route path = "/home/" component = {Dashboard} />
+       <Route path = "/home-individual/" component = {DashboardInd} />
        <Route path = "/people/" component = {People} />
        <Route path = "/notifications/" component = {Shownotifications} />
        <Route path = "/friends/" component = {Showfriends} />
