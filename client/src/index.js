@@ -7,6 +7,8 @@ import App from './App';
 import Profileind from './Profileind';
 import Profileteam from './Profileteam';
 import People from './People';
+import Login from './Login';
+import Signup from './Signup';
 import Shownotifications from './shownotifications';
 import Showfriends from './showfriends';
 import Dashboard from './Dashboard';
@@ -18,6 +20,8 @@ ReactDOM.render((
     <Router>
         <Switch>
        <Route exact path = "/" component = {App}/>
+       <Route exact path = "/login/" component = {Login}/>
+       <Route exact path = "/signup/" component = {Signup}/>
        <Route exact path = "/team-profile/" component = {Profileteam}/>
        <Route exact path = "/your-profile/" component = {Profileind}/>
        <Route path = "/home/" component = {Dashboard} />

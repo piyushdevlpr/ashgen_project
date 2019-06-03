@@ -854,29 +854,26 @@ socket.on("newmessage",function(data){
       })
       }        
       });
-  socket.on("afterunmount",function(data){
-    console.log(data) ;
-    for(var i = 0 ; i < data.data.length ; i++){
-      User.findOneAndUpdate({username : data.currentuser, 'friends.name' : data.data[i].friendname},{$set:{'friends.$.newmess' : data.data[i].newmessage}},function(err,cuser){
+  socket.on("newmesstozero",function(data){
+      User.findOneAndUpdate({username : data.currentuser, 'friends.name' : data.friendname},{$set:{'friends.$.newmess' : 0}},function(err,cuser){
       if(err){
         console.log(err) ;
       }else{
         //  console.log("hellllllllo") ;
       }
     })
-  }
   });
-  socket.on("afterunmountgroup",function(data){
+  socket.on("newmesstozerogrp",function(data){
     console.log(data) ;
-    for(var i = 0 ; i < data.data.length ; i++){
-      User.findOneAndUpdate({username : data.currentuser, 'groups.groupid' : data.data[i].groupid},{$set:{'friends.$.newmess' : data.data[i].newmessage}},function(err,cuser){
+    // for(var i = 0 ; i < data.data.length ; i++){
+      User.findOneAndUpdate({username : data.currentuser, 'groups.groupid' : data.groupid},{$set:{'groups.$.newmess' : 0}},function(err,cuser){
       if(err){
         console.log(err) ;
       }else{
         //  console.log("hellllllllo") ;
       }
     })
-  }
+  // }
   });
   socket.on("newgroupmessage",function(data){
         var currentuser = data.username ;

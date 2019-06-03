@@ -204,35 +204,19 @@ class People extends Component {
         );
         return list ;
     }
-    doSomethingBeforeUnload = () => {
-        var arr = [] ; 
-        for(var i = 0 ; i < this.state.friends.length ; i++){
-           var obj = {} ;
-           obj.groupid = this.state.groups[i].groupid ; 
-           obj.newmessage = this.state.friendsnewmessage[obj.groupid] ;
-           arr.push(obj) ;
-       }
-       socket.emit("afterunmountgroup",{data:arr,currentuser:this.props.location.state.username});
-     }
-     setupBeforeUnloadListener = () => {
-       window.addEventListener("beforeunload", (ev) => {
-           ev.preventDefault();
-           return this.doSomethingBeforeUnload();
-       });
-    }
     componentWillUnmount(){
         // window.removeEventListener('beforeunload',this.doSomethingBeforeUnload());
     }
     componentDidMount(){
         this.getgroups() ;
         this.getfriends() ;
-        // this.setupBeforeUnloadListener();
         socket.emit("join",{username : this.props.location.state.username}) ;
         socket.on("newgroupmessagereceived",data=>{
             this.setState(state => {
                 const list = state.previousmess.slice();
                 list.push(data.messages);
                 console.log(data.messages.data) ;
+                socket.emit("newmesstozerogrp",{groupid:this.state.tochatwithid,currentuser:this.props.location.state.username});
                 return {
                   previousmess:list
                 };
