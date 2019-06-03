@@ -11,7 +11,7 @@ import Shownotifications from './shownotifications';
 import Showfriends from './showfriends';
 import Dashboard from './Dashboard';
 import Group from './Group';
-import Profile from './Profile';
+import Profile from './profiles/TeamProfile';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render((
