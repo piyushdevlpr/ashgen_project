@@ -5,6 +5,16 @@ import ChatVideo from './ChatVideo';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import './Chat.css'
 import socketIOClient from "socket.io-client";
+//Css file import
+import './assets/css/animate.css'
+import './assets/css/bootstrap.min.css'
+import './assets/css/flatpickr.min.css'
+import './assets/css/font-awesome.min.css'
+import './assets/css/jquery.range.css'
+import './assets/css/line-awesome.css'
+import './assets/css/line-awesome-font-awesome.min.css'
+import './assets/css/responsive.css'
+import './assets/css/style.css'
 // https://ojus-server-132kgu2rdjqbfc.herokuapp.com
 const socket = socketIOClient('http://127.0.0.1:2000',{transports: ['websocket']});
 
@@ -265,15 +275,28 @@ class People extends Component {
                             <div className="msg_history" ref={div => this.messageList = div}>
                             {this.showpreviousmessages()}
                             </div>
-                        <div class="type_msg">
+                        {/* <div class="type_msg">
                             <div className="input_msg_write row ">
                                 
                                 <input className="write_msg" placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
-                                <button className=" attach btn btn-default  " onClick={this.handleClick}>b</button>
+                                <button className=" attach btn btn-default  " onClick={this.handleClick}><i class="fa fa-paperclip"></i></button>
                                 <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
                                 <button onClick={this.sendmsg} className="msg_send_btn btn btn-default " type="button">s</button>
                             </div>
-                        </div>
+                        </div> */}
+                        <div class="message-send-area">
+									<form>
+										<div class="mf-field">
+											<input type="text" name="message" placeholder="Type a message here"/>
+											<button type="submit">Send</button>
+										</div>
+										<ul>
+											<li><a href="#" title=""><i class="fa fa-smile-o"></i></a></li>
+											<li><a href="#" title=""><i class="fa fa-camera"></i></a></li>
+											<li><a href="#" title=""><i class="fa fa-paperclip"></i></a></li>
+										</ul>
+									</form>
+								</div>
                         </div>
                         ):null
                     }
