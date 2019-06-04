@@ -20,6 +20,10 @@ var express            = require("express"),
     io                 = require("socket.io").listen(server),
     getUserRoute       = require('./routes/getUser'),
     postRoute          = require('./routes/post');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 154b84f638c8f701a2ddb8215b825350df886c91
     var profileRoute   = require('./routes/profile');
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
