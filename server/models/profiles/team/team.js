@@ -13,7 +13,21 @@ var TeamSchema = new mongoose.Schema({
       },
       username: String
   },
+  team_name: {type:String},
+  field: {type:String},
+  establishment:{type:String},
+  institute:{type:String},
+  team_size:{type:Number},
+  cur_work : {type:String},
+  vision: {type:String},
+  funding_status: {type:String},
+  rating:{type:Number},
   
+
+  
+
+
+
 
   
 
