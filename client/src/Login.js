@@ -16,7 +16,8 @@ class Login extends Component {
     }
     this.handleChange = this.handleChange.bind(this);
     this.click2 = this.click2.bind(this);
-}
+    this.click3 = this.click3.bind(this);
+  }
 componentDidMount(){
   this._ismounted = true ;
   this.setState({
@@ -62,7 +63,22 @@ click2=(event)=>{
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state),
-     credentials: 'include'
+    credentials: 'include'
+  }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
+  // console.log(this.state) ;
+  }
+}
+click3=(event)=>{
+  event.preventDefault() ;
+  if(this._ismounted === true){
+  // console.log(this.state) ;
+  // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/login", {
+
+  fetch("http://localhost:2000/login", {
+    method: "POST",
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(this.state),
+    credentials: 'include'
   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
   // console.log(this.state) ;
   }
@@ -95,46 +111,6 @@ gotohome3rdpartyuser=()=>{
   });
   }
 }
-
-getlogin=()=>{
-  return(
-  <div>
-  <form onSubmit={this.click2} method='POST' action='http://localhost:2000/loginind'>
-  <div>
-      <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
-      <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
-      <button className='btn btn-default addallborder'>LOGIN</button>
-      {/* <span> OR </span> */}
-      {/* <button className='btn btn-default addallborder' onClick={()=>this.getsignup()}>SIGN UP</button> */}
-      {this.gotohome3rdpartyuser()}
-  </div>
-  </form>
-  </div>
-  )
-};
-// getsignup=()=>{
-//   return(
-//   <div>
-    
-//     <form onSubmit={this.click} method='POST' >	
-									
-													
-//                   <input id="login-firstname" type="text" className="background form-control" name='username' value={this.state.username} placeholder="USER NAME (MAX. LENGTH 6)" minLength="6" maxLength="6" required={true} onChange={this.handleChange}/><br/>
-                            
-                              
-//                   <input id="login-email" type="email" className="background form-control" name="emailid" value={this.state.emailid} placeholder="EMAIL ID" required={true} onChange={this.handleChange} /><br/> 
-                            
-//                   <input id="Password" type="password" className="background form-control" name='password' value={this.state.password} placeholder="PASSWORD" minLength="6" required={true} onChange={this.handleChange} /><br/>
-                  
-//                   {/* <input id="ConfirmPassword" type="password" class="background form-control" name="confpassword" placeholder="CONFIRM-PASSWORD" minlength="6" required="true" onChange={this.handleChange} /> */}
-                    
-//                   <button className='btn btn-default addallborder'>SIGN UP</button>
-                        
-//               </form>
-//               {this.gotohomeprofile() }
-//   </div>
-//   );
-// }
 teamtrue=()=>{
   if(this._ismounted){
   this.setState({team : true}) ;
@@ -146,17 +122,6 @@ teamfalse=()=>{
   this.setState({team : false});
 }
 }
-// logintrue=()=>{
-//   if(this._ismounted){
-//   this.setState({login : true}) ;
-//   }//event.preventDefault();
-//   //event.target.classList.add('lohgintrue') ;
-// }
-// loginfalse=()=>{
-//   if(this._ismounted){
-//   this.setState({login : false});
-// }
-// }
 teamorind=()=>{
   if(this.state.team === true){
       return this.getteam() ;
@@ -164,51 +129,30 @@ teamorind=()=>{
       return this.getind();
   }
 }
-// loginorsignup=()=>{
-//   if(this.state.login === true){
-//       return this.getlogin() ;
-//   }else{
-//       return this.getsignup();
-//   }
-// }
-// click4=(event)=>{
-//   event.preventDefault() ;
-//   if(this._ismounted === true){
-//   // console.log(this.state) ;
-//   // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/regiter", {
-//   fetch("http://localhost:2000/register", {
-//     method: "POST",
-//     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-//     body: JSON.stringify(this.state)
-//   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({signedup : data})}})
-//   // console.log(this.state) ;
-// }
-// }
-click3=(event)=>{
-  event.preventDefault() ;
-  if(this._ismounted === true){
-  console.log(this.state) ;
-  // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/login", {
 
-  fetch("http://localhost:2000/login", {
-    method: "POST",
-    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-    body: JSON.stringify(this.state)
-  }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
-  // console.log(this.state) ;
-  }
-}
 getloginteam=()=>{
   return(
   <div>
-  <form onSubmit={this.click3} method='POST' action='https://ojus-server-132kgu2rdjqbfc.herokuapp.com/loginteam'>
+  <form onSubmit={this.click3} method='POST' action='http://localhost:2000/login'>
   <div> 
       <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
       <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
       <button className='btn btn-default addallborder'>LOGIN</button>
-      {/* <span> OR </span> */}
-      {/* <button className='btn btn-default addallborder' onClick={()=>this.getsignup()}>SIGN UP</button> */}
       {this.gotohome()}
+  </div>
+  </form>
+  </div>
+  )
+};
+getlogin=()=>{
+  return(
+  <div>
+  <form onSubmit={this.click2} method='POST' action='http://localhost:2000/loginind'>
+  <div>
+      <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
+      <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
+      <button className='btn btn-default addallborder'>LOGIN</button>
+      {this.gotohome3rdpartyuser()}
   </div>
   </form>
   </div>
@@ -227,27 +171,6 @@ gotohometeamprofile=()=>{
     });
   }
 }
-// getsignupteam=()=>{
-//   return(
-//   <div>    
-//     <form onSubmit={this.click4} method='POST' action='https://ojus-server-132kgu2rdjqbfc.herokuapp.com/registerteam'>	
-//                   <input id="login-firstname" type="text" className="background form-control" name='username' value={this.state.username} placeholder="TEAMNAME (MAX. LENGTH 6)" minLength="6" maxLength="6" required={true} onChange={this.handleChange}/><br/>
-//                   <input id="login-email" type="email" className="background form-control" name="emailid" value={this.state.emailid} placeholder="EMAIL ID" required={true} onChange={this.handleChange} /><br/> 
-//                   <input id="Password" type="password" className="background form-control" name='password' value={this.state.password} placeholder="PASSWORD" minLength="6" required={true} onChange={this.handleChange} /><br/>
-//                   {/* <input id="ConfirmPassword" type="password" class="background form-control" name="confpassword" placeholder="CONFIRM-PASSWORD" minlength="6" required="true" onChange={this.handleChange} /> */}
-//                   <button className='btn btn-default addallborder'>SIGN UP</button>                       
-//               </form>
-//               {this.gotohometeamprofile() }
-//   </div>
-//   );
-// }
-// loginorsignupteam=()=>{
-//   if(this.state.login === true){
-//       return this.getloginteam() ;
-//   }else{
-//       return this.getsignupteam();
-//   }
-// }
 getteam=()=>{
   return( 
     <div className ='container mt-3'>

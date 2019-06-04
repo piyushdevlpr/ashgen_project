@@ -7,6 +7,7 @@ var express            = require("express"),
     LocalStrategy      = require("passport-local"),
     User               = require("./models/user"),
     // Team               = require("./models/team"),
+    Individual         = require("./models/individual")
     Yourprofile        = require("./models/yourprofile"),
     Teamprofile        = require("./models/teamprofile"),
     Message            = require("./models/message"),
@@ -19,11 +20,7 @@ var express            = require("express"),
     io                 = require("socket.io").listen(server),
     getUserRoute       = require('./routes/getUser'),
     postRoute          = require('./routes/post');
-<<<<<<< HEAD
-    // var profileRoute   = require('./routes/profile');
-=======
     var profileRoute   = require('./routes/profile');
->>>>>>> 421426105e42ca40655fca5247e21b3d03b758c1
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
     mongoose.Promise = global.Promise;
@@ -61,12 +58,12 @@ app.use(require("express-session")({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use('userlocal',new LocalStrategy(User.authenticate()));
-//passport.use('teamlocal',new LocalStrategy(Team.authenticate()));
+passport.use("userlocal",new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-//passport.serializeUser(Team.serializeUser());
-//passport.deserializeUser(Team.deserializeUser());
+passport.use("indlocal",new LocalStrategy(Individual.authenticate()));
+passport.serializeUser(Individual.serializeUser());
+passport.deserializeUser(Individual.deserializeUser());
 // app.use(function(req,res,next){                            //Populating current users to frontend
 //   res.locals.currentUser = req.user;
 //   res.locals.error       = req.flash("error");
@@ -78,11 +75,7 @@ app.use(siofu.router)
 var port = process.env.PORT || 2000 ;
 app.use(getUserRoute);
 app.use(postRoute);
-<<<<<<< HEAD
-// app.use(profileRoute);
-=======
 app.use(profileRoute);
->>>>>>> 421426105e42ca40655fca5247e21b3d03b758c1
 
 
 // app.use(function(req, res, next){
@@ -100,11 +93,12 @@ app.get("/loggedin",function(req,res,next){
   res.json("true") ;
 });
 app.get("/wrong",function(req,res){
-  console.log(req.body + "false") ;
+  console.log("false") ;
   res.json("false") ;
 });
 app.post("/login", passport.authenticate("userlocal",
-    {   session: true ,
+    {   
+      session: true ,
         // successRedirect: "/loggedin",
         failureRedirect: "/wrong"
         
@@ -112,7 +106,20 @@ app.post("/login", passport.authenticate("userlocal",
      // console.log(req.user) ;
       res.redirect("/loggedin")
     });
-//---------REGISTER ROUTE--------------------------------------------------------------
+app.post("/loginind", passport.authenticate("indlocal",
+  {   
+    session: true ,
+  // {
+    // successRedirect: "/loggedin-ind",
+    failureRedirect: "/wrong"
+    },
+    ),    
+    function(req,res){
+      console.log(req.user + "....true") ;
+      res.json("true") ;    }
+    );
+
+    //---------REGISTER ROUTE--------------------------------------------------------------
 //---------------Authenticating the register credntials -------------------------------
 //app.post("/register",upload.single('profileImage'), function(req, res,next){
 app.post("/register",function(req, res,next){
@@ -166,129 +173,23 @@ app.post("/register",function(req, res,next){
             });
         });
 });
-app.post("/your-profile",function(req, res){
-    console.log("hello") ;
-  console.log(req.user) ;
-  var user = req.user.username ;
-  Yourprofile.findOneAndUpdate({username:user},{$set: {  first_name: req.body.first_name,
-    Last_Name:req.body.Last_Name,
-    Specialisation:req.body.Specialisation,
-    College:req.body.College,
-    Teams:req.body.Teams,
-    Short_Bio:req.body.Short_Bio,
-    Message_Request_Option:req.body.Message_Request_Option,
-    Projects_and_competitions:req.body.Projects_and_competitions,
-    Achievements_in_competitions:req.body.Achievements_in_competitions,
-    open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-    Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs}},function(err,cuser){
-      if(err){
-        console.log(err) ;
-      }
-  });
-});
-
-app.post("/team-profile",function(req, res){
-  console.log("hello") ;
-  console.log(req.user) ;
-  var user = req.body.username ;
-  mem = []
-  for(var i = 0 ; i < req.body.members.length ; i++){
-    ob = {};
-    ob.name = req.body.members[i];
-    ob.status = false;
-    mem.push(ob);
-  }
-  Teamprofile.findOneAndUpdate({username:user},{$set: {  
-    Specialisation:req.body.Specialisation,
-    College:req.body.College,
-    Short_Bio:req.body.Short_Bio,
-    Message_Request_Option:req.body.Message_Request_Option,
-    Projects_and_competitions:req.body.Projects_and_competitions,
-    Achievements_in_competitions:req.body.Achievements_in_competitions,
-    open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-    Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs},$push:{
-      Departments :{$each : req.body.dep} ,
-      members : {$each : mem}
-      }},{new:true},function(err,cuser){
-      if(err){
-        console.log(err) ;
-      }else{
-        for(var i = 0 ; i < req.body.members.length ; i++){
-          ob2 = {} ;
-          ob2.team = req.body.username ;       
-          // ob2.head = ;
-        Notification.findOneAndUpdate({handlename : req.body.members[i]},{$push:{teamrequests : ob2}},function(err,fuser){
-            if(err){
-              console.log(err) ;
-            }
-          });
-        }
-        res.json({data:"send"}) ;
-      }
-  });
-});
-
-app.post("/your-profile-update",function(req, res){
-  console.log("hello") ;
-console.log(req.user) ;
-var user = req.user.username ;
-Yourprofile.findOneAndUpdate({username:user},{$set: {  first_name: req.body.first_name,
-  Last_Name:req.body.Last_Name,
-  Specialisation:req.body.Specialisation,
-  College:req.body.College,
-  Teams:req.body.Teams,
-  Short_Bio:req.body.Short_Bio,
-  Message_Request_Option:req.body.Message_Request_Option,
-  Projects_and_competitions:req.body.Projects_and_competitions,
-  Achievements_in_competitions:req.body.Achievements_in_competitions,
-  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs}},function(err,cuser){
-    if(err){
-      console.log(err) ;
-    }
-});
-});
-
-app.post("/team-profile-update",function(req, res){
-console.log("hello") ;
-console.log(req.user) ;
-var user = req.body.username ;
-mem = []
-for(var i = 0 ; i < req.body.members.length ; i++){
-  ob = {};
-  ob.name = req.body.members[i];
-  ob.status = false;
-  mem.push(ob);
-}
-Teamprofile.findOneAndUpdate({username:user},{$set: {  
-  Specialisation:req.body.Specialisation,
-  College:req.body.College,
-  Short_Bio:req.body.Short_Bio,
-  Message_Request_Option:req.body.Message_Request_Option,
-  Projects_and_competitions:req.body.Projects_and_competitions,
-  Achievements_in_competitions:req.body.Achievements_in_competitions,
-  open_to_which_type_of_company_projects:req.body.open_to_which_type_of_company_projects,
-  Open_to_which_type_of_collabs:req.body.Open_to_which_type_of_collabs},$push:{
-    Departments :{$each : req.body.dep} ,
-    members : {$each : mem}
-    }},{new:true},function(err,cuser){
-    if(err){
-      console.log(err) ;
-    }else{
-      for(var i = 0 ; i < req.body.members.length ; i++){
-        ob2 = {} ;
-        ob2.team = req.body.username ;       
-        // ob2.head = ;
-      Notification.findOneAndUpdate({handlename : req.body.members[i]},{$push:{teamrequests : ob2}},function(err,fuser){
+app.post("/registerind",function(req, res,next){
+  // console.log(req.body) ;
+  var newUser = new Individual({username: req.body.username,email:req.body.emailid});
+        Individual.register(newUser, req.body.password, function(err, user){
           if(err){
-            console.log(err) ;
+              console.log(err);
+              console.log("false");
+              return res.json("false") ;
+              //return res.render("register.ejs");
           }
-        });
-      }
-      res.json({data:"send"}) ;
-    }
+          passport.authenticate("indlocal")(req, res, function(){
+            console.log("true");  
+            res.json("true") ;
+          });
+      });
 });
-});
+
 
 app.post('/newgroup',function(req,res){
   var groupname = req.body.newgroupname ;

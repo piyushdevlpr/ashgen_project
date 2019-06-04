@@ -40,7 +40,7 @@ click=(event)=>{
   // console.log(this.state) ;
 
   //https://ojus-server-132kgu2rdjqbfc.herokuapp.com
-  fetch("http://localhost:2000/register",{
+  fetch("http://localhost:2000/registerind",{
     // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/register",{
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -84,6 +84,21 @@ gotohome=()=>{
   });
   }
 }
+gotohome3rdpartyuser=()=>{
+  //event.preventDefault();
+  if(this.state.signedup === "true" && this._ismounted === true){
+    this.props.history.push({
+    pathname: '/home-individual/',
+    state: {
+      loggedin: "true",
+      signedup: false,
+      username: this.state.username,
+      emailid: this.state.emailid
+    }
+  });
+  }
+}
+
 gotohomeprofile=()=>{
   //event.preventDefault();
   if(this.state.signedup === "true" && this._ismounted === true){
@@ -133,7 +148,7 @@ getsignup=()=>{
                   <button className='btn btn-default addallborder'>SIGN UP</button>
                         
               </form>
-              {this.gotohomeprofile() }
+              {this.gotohome3rdpartyuser() }
   </div>
   );
 }
@@ -174,7 +189,8 @@ click4=(event)=>{
   fetch("http://localhost:2000/register", {
     method: "POST",
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-    body: JSON.stringify(this.state)
+    body: JSON.stringify(this.state),
+    credentials:'include'
   }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({signedup : data})}})
   // console.log(this.state) ;
 }
