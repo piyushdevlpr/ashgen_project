@@ -13,9 +13,10 @@ import Shownotifications from './shownotifications';
 import Showfriends from './showfriends';
 import Dashboard from './Dashboard';
 import Group from './Group';
-import Profile from './profiles/TeamProfile';
 import * as serviceWorker from './serviceWorker';
 import DashboardInd from './DashboardInd';
+import TeamProfile from './profiles/TeamProfile';
+import TeamForm from './profiles/TeamForm';
 
 ReactDOM.render((
     <Router>
@@ -23,15 +24,16 @@ ReactDOM.render((
        <Route exact path = "/" component = {App}/>
        <Route exact path = "/login/" component = {Login}/>
        <Route exact path = "/signup/" component = {Signup}/>
-       <Route exact path = "/team-profile/" component = {Profileteam}/>
-       <Route exact path = "/your-profile/" component = {Profileind}/>
+       {/* <Route exact path = "/your-profile/" component = {Profileind}/> */}
        <Route path = "/home/" component = {Dashboard} />
        <Route path = "/home-individual/" component = {DashboardInd} />
        <Route path = "/people/" component = {People} />
        <Route path = "/notifications/" component = {Shownotifications} />
        <Route path = "/friends/" component = {Showfriends} />
        <Route path = "/groups/" component = {Group} />
-       <Route path = "/profile/" component = {Profile} />
+       <Route path = "/team_profile/" component = {TeamProfile} />
+       <Route path = "/team_form/" component = {TeamForm} />
+
        </Switch>
  </Router>
 ), document.getElementById('root'));
