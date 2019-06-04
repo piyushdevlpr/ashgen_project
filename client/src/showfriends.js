@@ -43,11 +43,6 @@ class People extends Component {
     }
     componentWillUnmount(){
         this.abortController.abort() ;
-        // window.removeEventListener('beforeunload',this.doSomethingBeforeUnload());
-        // window.removeEventListener("beforeunload", (ev) => {
-        //     ev.preventDefault();
-        //     return this.doSomethingBeforeUnload();
-        // });
     }
     handlechange=(event)=>{
         event.preventDefault();
@@ -173,27 +168,9 @@ class People extends Component {
         this.scrollToBottom();
         }
       }
-      doSomethingBeforeUnload = () => {
-         var arr = [] ; 
-         for(var i = 0 ; i < this.state.friends.length ; i++){
-            var obj = {} ;
-            obj.friendname = this.state.friends[i].name ; 
-            obj.newmessage = this.state.friendsnewmessage[obj.friendname] ;
-            arr.push(obj) ;
-        }
-        socket.emit("afterunmount",{data:arr,currentuser:this.props.location.state.username});
-      }
-      setupBeforeUnloadListener = () => {
-        window.addEventListener("beforeunload", (ev) => {
-            ev.preventDefault();
-            return this.doSomethingBeforeUnload();
-        });
-        // window.addEventListener("beforeunload",this.doSomethingBeforeUnload()) ;
-      };
     componentWillMount(){ 
         this.getfriends() ;
         this.showfriends() ;
-        // this.setupBeforeUnloadListener();
         socket.emit('join',{username:this.props.location.state.username}) ;
         socket.on("newmessagereceived",data=>{
             this.setState(state => {
@@ -235,6 +212,8 @@ class People extends Component {
                         }
                     }
                     z.unshift(x) ;
+                }else{
+                    socket.emit("newmesstozero",{friendname:this.state.tochatwith,currentuser:this.props.location.state.username});
                 }
                 return {
                   previousmess:list,

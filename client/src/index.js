@@ -7,20 +7,26 @@ import App from './App';
 import Profileind from './Profileind';
 import Profileteam from './Profileteam';
 import People from './People';
+import Login from './Login';
+import Signup from './Signup';
 import Shownotifications from './shownotifications';
 import Showfriends from './showfriends';
 import Dashboard from './Dashboard';
 import Group from './Group';
 import Profile from './profiles/TeamProfile';
 import * as serviceWorker from './serviceWorker';
+import DashboardInd from './DashboardInd';
 
 ReactDOM.render((
     <Router>
         <Switch>
        <Route exact path = "/" component = {App}/>
+       <Route exact path = "/login/" component = {Login}/>
+       <Route exact path = "/signup/" component = {Signup}/>
        <Route exact path = "/team-profile/" component = {Profileteam}/>
        <Route exact path = "/your-profile/" component = {Profileind}/>
        <Route path = "/home/" component = {Dashboard} />
+       <Route path = "/home-individual/" component = {DashboardInd} />
        <Route path = "/people/" component = {People} />
        <Route path = "/notifications/" component = {Shownotifications} />
        <Route path = "/friends/" component = {Showfriends} />

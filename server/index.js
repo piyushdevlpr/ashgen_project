@@ -19,7 +19,11 @@ var express            = require("express"),
     io                 = require("socket.io").listen(server),
     getUserRoute       = require('./routes/getUser'),
     postRoute          = require('./routes/post');
+<<<<<<< HEAD
+    // var profileRoute   = require('./routes/profile');
+=======
     var profileRoute   = require('./routes/profile');
+>>>>>>> 421426105e42ca40655fca5247e21b3d03b758c1
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
     mongoose.Promise = global.Promise;
@@ -74,7 +78,11 @@ app.use(siofu.router)
 var port = process.env.PORT || 2000 ;
 app.use(getUserRoute);
 app.use(postRoute);
+<<<<<<< HEAD
+// app.use(profileRoute);
+=======
 app.use(profileRoute);
+>>>>>>> 421426105e42ca40655fca5247e21b3d03b758c1
 
 
 // app.use(function(req, res, next){
@@ -855,29 +863,26 @@ socket.on("newmessage",function(data){
       })
       }        
       });
-  socket.on("afterunmount",function(data){
-    console.log(data) ;
-    for(var i = 0 ; i < data.data.length ; i++){
-      User.findOneAndUpdate({username : data.currentuser, 'friends.name' : data.data[i].friendname},{$set:{'friends.$.newmess' : data.data[i].newmessage}},function(err,cuser){
+  socket.on("newmesstozero",function(data){
+      User.findOneAndUpdate({username : data.currentuser, 'friends.name' : data.friendname},{$set:{'friends.$.newmess' : 0}},function(err,cuser){
       if(err){
         console.log(err) ;
       }else{
         //  console.log("hellllllllo") ;
       }
     })
-  }
   });
-  socket.on("afterunmountgroup",function(data){
+  socket.on("newmesstozerogrp",function(data){
     console.log(data) ;
-    for(var i = 0 ; i < data.data.length ; i++){
-      User.findOneAndUpdate({username : data.currentuser, 'groups.groupid' : data.data[i].groupid},{$set:{'friends.$.newmess' : data.data[i].newmessage}},function(err,cuser){
+    // for(var i = 0 ; i < data.data.length ; i++){
+      User.findOneAndUpdate({username : data.currentuser, 'groups.groupid' : data.groupid},{$set:{'groups.$.newmess' : 0}},function(err,cuser){
       if(err){
         console.log(err) ;
       }else{
         //  console.log("hellllllllo") ;
       }
     })
-  }
+  // }
   });
   socket.on("newgroupmessage",function(data){
         var currentuser = data.username ;
