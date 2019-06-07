@@ -22,15 +22,6 @@ var TeamSchema = new mongoose.Schema({
   vision: {type:String},
   funding_status: {type:String},
   rating:{type:Number},
-  
-
-  
-
-
-
-
-  
-
 
   postedAt: {
     type:String,

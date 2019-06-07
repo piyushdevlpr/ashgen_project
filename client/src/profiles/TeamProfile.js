@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import axios from 'axios';
 //Css file import
 import '../assets/css/animate.css'
 import '../assets/css/bootstrap.min.css'
@@ -12,33 +12,163 @@ import '../assets/css/responsive.css'
 import '../assets/css/style.css'
 
 
-
-
 export default class TeamProfile extends Component{
+
+  ismounted = true ;
+    constructor(props){
+        super(props) ;
+        this.state = {
+            teamData:null,
+            loading: true,    //true----> in loading state
+            feed:true,
+            about:false,
+            portfolio:false,
+            members:false,
+            achievements:[],
+            portfolioLoading: true,
+        }
+        this.fetchProfile = this.fetchProfile.bind(this);
+        this.middleContent = this.middleContent.bind(this);
+        this.toggleMiddleContent = this.toggleMiddleContent.bind(this);
+    }
+
+
+
+    async fetchProfile()
+    {
+      await axios.get('http://localhost:2000/fetch_team_profile',{withCredentials: true}).then((response)=>{
+
+      this.setState({teamData:response.data[0]},()=>{
+        this.setState({loading:false});
+      });
+      })
+      .catch((err)=>{throw err})
+
+    }
+
+    middleContent()
+    {
+      if(this.state.feed)
+      {
+        return(
+          <div className="post-bar">
+                                <div className="post_topbar">
+                                  <div className="usy-dt">
+                                    <img src="../assets/images/resources/us-pic.png" alt />
+                                    <div className="usy-name">
+                                      <h3>John Doe</h3>
+                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
+                                    </div>
+                                  </div>
+                                  <div className="ed-opts">
+                                    <a href="#" title className="ed-opts-open"><i className="la la-ellipsis-v" /></a>
+                                    <ul className="ed-options">
+                                      <li><a href="#" title>Edit Post</a></li>
+                                      <li><a href="#" title>Unsaved</a></li>
+                                      <li><a href="#" title>Unbid</a></li>
+                                      <li><a href="#" title>Close</a></li>
+                                      <li><a href="#" title>Hide</a></li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <div className="epi-sec">
+                                  <ul className="descp">
+                                    <li><img src="../assets/images/icon8.png" alt /><span>Front End Developer</span></li>
+                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
+                                  </ul>
+                                  <ul className="bk-links">
+                                    <li><a href="#" title><i className="la la-bookmark" /></a></li>
+                                    <li><a href="#" title><i className="la la-envelope" /></a></li>
+                                    <li><a href="#" title className="bid_now">Bid Now</a></li>
+                                  </ul>
+                                </div>
+                                <div className="job_descp">
+                                  <h3>Simple Classified Site</h3>
+                                  <ul className="job-dt">
+                                    <li><span>$300 - $350</span></li>
+                                  </ul>
+                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit amet... <a href="#" title>view more</a></p>
+                                  <ul className="skill-tags">
+                                    <li><a href="#" title>HTML</a></li>
+                                    <li><a href="#" title>PHP</a></li>
+                                    <li><a href="#" title>CSS</a></li>
+                                    <li><a href="#" title>Javascript</a></li>
+                                    <li><a href="#" title>Wordpress</a></li> 	
+                                  </ul>
+                                </div>
+                                <div className="job-status-bar">
+                                  <ul className="like-com">
+                                    <li>
+                                      <a href="#"><i className="la la-heart" /> Like</a>
+                                      <img src="../assets/images/liked-img.png" alt />
+                                      <span>25</span>
+                                    </li> 
+                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
+                                  </ul>
+                                  <a><i className="la la-eye" />Views 50</a>
+                                </div>
+                              </div>
+        )
+      }
+      else if(this.state.about)
+      {
+        return(
+        <div id="about">
+          <ul class="list-group">
+          <li class="list-group-item">Field: {this.state.teamData.field}</li>
+          <li class="list-group-item">Institude: {this.state.teamData.institute}</li>
+          <li class="list-group-item">Establishment:{this.state.teamData.establishment}</li>
+          
+      </ul>
+
+        </div>
+        )
+      }
+    else if(this.state.portfolio)
+    {
+      
+      
+
+    }
+    else if(this.state.members)
+    {
+      //write add member code
+    }
+
+    }
+
+    fetchPortfolio()
+    {
+      axios.get('http://localhost:2000/fetch_achievement').then((response)=>{
+        this.setState({portfolio:response});
+        this.setState({portfolio:false});
+
+
+      })
+      .catch((err)=>{throw err})
+    }
+
+    toggleMiddleContent(event)   // toggle middle content feed-->about-->portfolio
+    {
+      event.preventDefault();
+      this.setState({feed:false,about:false,portfolio:false, members:false}); // resetting all tabs 
+      this.setState({[event.currentTarget.dataset.tag]:true})
+    
+    }
 
     componentDidMount()
     {
-        // var loadScript = function(src) {
-        //     var tag = document.createElement('script');
-        //     tag.async = false;
-        //     tag.src = src;
-        //     document.getElementsByClassName('body-element').appnedChild(tag);
-        //   }
-        //   loadScript('../assets/js/bootstrap.min.js')
-        // //   loadScript('../assets/js/flatpickr.min.js')
-        // //   loadScript('../assets/js/jquery.mCustomScrollbar.js')
-        // //   loadScript('../assets/js/jquery.min.js')
-        // //   loadScript('../assets/js/jquery.range-min.js')
-        // //   loadScript('../assets/js/popper.js')
-        // //   loadScript('../assets/js/script.js')
-        // //   loadScript('../assets/js/scrollbar.js')
+       this.fetchProfile();
+      
           
     }
-  
 
 
     render()
     {
+      if(this.state.loading)
+        return(<p>loading</p>)
+      else
         return(
             <div className="body-element">
             <div className="wrapper">
@@ -245,6 +375,7 @@ export default class TeamProfile extends Component{
             </header>{/*header end*/}	
             <section className="cover-sec">
               <img src="../assets/images/resources/cover-img.jpg" alt />
+              <a href="#" style={{right:'89.5px', color:'#ff0000'}} ><i className="fa fa-camera"></i> Change Image</a>
             </section>
             <main>
               <div className="main-section">
@@ -256,15 +387,16 @@ export default class TeamProfile extends Component{
                           <div className="user_profile">
                             <div className="user-pro-img">
                               <img src="../assets/images/resources/user-pro-img.png" alt />
+                              <a href="#" title=""><i class="fa fa-camera"></i></a>
                             </div>{/*user-pro-img end*/}
                             <div className="user_pro_status">
-                              <ul className="flw-hr">
+                              {/* <ul className="flw-hr">
+                              <li><a href="#" title className="hre">Connect</a></li>
                                 <li><a href="#" title className="flww"><i className="la la-plus" /> Follow</a></li>
-                                <li><a href="#" title className="hre">Hire</a></li>
-                              </ul>
+                              </ul> */}
                               <ul className="flw-status">
                                 <li>
-                                  <span>Following</span>
+                                  <span>Connections</span>
                                   <b>34</b>
                                 </li>
                                 <li>
@@ -301,7 +433,7 @@ export default class TeamProfile extends Component{
                               <div className="suggestion-usd">
                                 <img src="../assets/images/resources/s2.png" alt />
                                 <div className="sgt-text">
-                                  <h4>John Doe</h4>
+                                  <h4>Hello wolrd</h4>
                                   <span>PHP Developer</span>
                                 </div>
                                 <span><i className="la la-plus" /></span>
@@ -348,9 +480,9 @@ export default class TeamProfile extends Component{
                       <div className="col-lg-6">
                         <div className="main-ws-sec">
                           <div className="user-tab-sec">
-                            <h3>John Doe</h3>
+                            <h3>{this.state.teamData.team_name}</h3>
                             <div className="star-descp">
-                              <span>Graphic Designer at Self Employed</span>
+                              <span>{this.state.teamData.cur_work}</span>
                               <ul>
                                 <li><i className="fa fa-star" /></li>
                                 <li><i className="fa fa-star" /></li>
@@ -361,257 +493,40 @@ export default class TeamProfile extends Component{
                             </div>{/*star-descp end*/}
                             <div className="tab-feed">
                               <ul>
-                                <li data-tab="feed-dd" className="active">
-                                  <a href="#" title>
-                                    <img src="../assets/images/ic1.png" alt />
+                                <li  className={this.state.feed?'active':''}>
+                                  <a data-tag="feed" onClick={this.toggleMiddleContent} href="#" title>
+                                    <img  src="../assets/images/ic1.png" alt />
                                     <span>Feed</span>
                                   </a>
                                 </li>
-                                <li data-tab="info-dd">
-                                  <a href="#" title>
-                                    <img src="../assets/images/ic2.png" alt />
-                                    <span>Info</span>
+                                <li className={this.state.about?'active':''} data-tab="info-dd">
+                                  <a  data-tag="about" onClick={this.toggleMiddleContent} href="#" title>
+                                    <img  src="../assets/images/ic2.png" alt />
+                                    <span>About</span>
                                   </a>
                                 </li>
-                                <li data-tab="portfolio-dd">
-                                  <a href="#" title>
+                                <li  className={this.state.portfolio?'active':''} data-tab="portfolio-dd">
+                                  <a data-tag="portfolio" onClick={this.toggleMiddleContent} href="#" title>
                                     <img src="../assets/images/ic3.png" alt />
                                     <span>Portfolio</span>
                                   </a>
                                 </li>
+                                <li  className={this.state.members?'active':''}  data-tab="portfolio-dd">
+                                  <a data-tag="members" onClick={this.toggleMiddleContent} href="#" title>
+                                    <img src="../assets/images/ic3.png" alt />
+                                    <span>Members</span>
+                                  </a>
+                                </li>
+                                
                               </ul>
                             </div>{/* tab-feed end*/}
                           </div>{/*user-tab-sec end*/}
                           <div className="product-feed-tab current" id="feed-dd">
                             <div className="posts-section">
-                              <div className="post-bar">
-                                <div className="post_topbar">
-                                  <div className="usy-dt">
-                                    <img src="../assets/images/resources/us-pic.png" alt />
-                                    <div className="usy-name">
-                                      <h3>John Doe</h3>
-                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
-                                    </div>
-                                  </div>
-                                  <div className="ed-opts">
-                                    <a href="#" title className="ed-opts-open"><i className="la la-ellipsis-v" /></a>
-                                    <ul className="ed-options">
-                                      <li><a href="#" title>Edit Post</a></li>
-                                      <li><a href="#" title>Unsaved</a></li>
-                                      <li><a href="#" title>Unbid</a></li>
-                                      <li><a href="#" title>Close</a></li>
-                                      <li><a href="#" title>Hide</a></li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                <div className="epi-sec">
-                                  <ul className="descp">
-                                    <li><img src="../assets/images/icon8.png" alt /><span>Epic Coder</span></li>
-                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
-                                  </ul>
-                                  <ul className="bk-links">
-                                    <li><a href="#" title><i className="la la-bookmark" /></a></li>
-                                    <li><a href="#" title><i className="la la-envelope" /></a></li>
-                                  </ul>
-                                </div>
-                                <div className="job_descp">
-                                  <h3>Senior Wordpress Developer</h3>
-                                  <ul className="job-dt">
-                                    <li><a href="#" title>Full Time</a></li>
-                                    <li><span>$30 / hr</span></li>
-                                  </ul>
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit amet... <a href="#" title>view more</a></p>
-                                  <ul className="skill-tags">
-                                    <li><a href="#" title>HTML</a></li>
-                                    <li><a href="#" title>PHP</a></li>
-                                    <li><a href="#" title>CSS</a></li>
-                                    <li><a href="#" title>Javascript</a></li>
-                                    <li><a href="#" title>Wordpress</a></li> 	
-                                  </ul>
-                                </div>
-                                <div className="job-status-bar">
-                                  <ul className="like-com">
-                                    <li>
-                                      <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="../assets/images/liked-img.png" alt />
-                                      <span>25</span>
-                                    </li> 
-                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
-                                  </ul>
-                                  <a><i className="la la-eye" />Views 50</a>
-                                </div>
-                              </div>{/*post-bar end*/}
-                              <div className="post-bar">
-                                <div className="post_topbar">
-                                  <div className="usy-dt">
-                                    <img src="../assets/images/resources/us-pic.png" alt />
-                                    <div className="usy-name">
-                                      <h3>John Doe</h3>
-                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
-                                    </div>
-                                  </div>
-                                  <div className="ed-opts">
-                                    <a href="#" title className="ed-opts-open"><i className="la la-ellipsis-v" /></a>
-                                    <ul className="ed-options">
-                                      <li><a href="#" title>Edit Post</a></li>
-                                      <li><a href="#" title>Unsaved</a></li>
-                                      <li><a href="#" title>Unbid</a></li>
-                                      <li><a href="#" title>Close</a></li>
-                                      <li><a href="#" title>Hide</a></li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                <div className="epi-sec">
-                                  <ul className="descp">
-                                    <li><img src="../assets/images/icon8.png" alt /><span>Front End Developer</span></li>
-                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
-                                  </ul>
-                                  <ul className="bk-links">
-                                    <li><a href="#" title><i className="la la-bookmark" /></a></li>
-                                    <li><a href="#" title><i className="la la-envelope" /></a></li>
-                                    <li><a href="#" title className="bid_now">Bid Now</a></li>
-                                  </ul>
-                                </div>
-                                <div className="job_descp">
-                                  <h3>Simple Classified Site</h3>
-                                  <ul className="job-dt">
-                                    <li><span>$300 - $350</span></li>
-                                  </ul>
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit amet... <a href="#" title>view more</a></p>
-                                  <ul className="skill-tags">
-                                    <li><a href="#" title>HTML</a></li>
-                                    <li><a href="#" title>PHP</a></li>
-                                    <li><a href="#" title>CSS</a></li>
-                                    <li><a href="#" title>Javascript</a></li>
-                                    <li><a href="#" title>Wordpress</a></li> 	
-                                  </ul>
-                                </div>
-                                <div className="job-status-bar">
-                                  <ul className="like-com">
-                                    <li>
-                                      <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="../assets/images/liked-img.png" alt />
-                                      <span>25</span>
-                                    </li> 
-                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
-                                  </ul>
-                                  <a><i className="la la-eye" />Views 50</a>
-                                </div>
-                              </div>{/*post-bar end*/}
-                              <div className="post-bar">
-                                <div className="post_topbar">
-                                  <div className="usy-dt">
-                                    <img src="../assets/images/resources/us-pc2.png" alt />
-                                    <div className="usy-name">
-                                      <h3>John Doe</h3>
-                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
-                                    </div>
-                                  </div>
-                                  <div className="ed-opts">
-                                    <a href="#" title className="ed-opts-open"><i className="la la-ellipsis-v" /></a>
-                                    <ul className="ed-options">
-                                      <li><a href="#" title>Edit Post</a></li>
-                                      <li><a href="#" title>Unsaved</a></li>
-                                      <li><a href="#" title>Unbid</a></li>
-                                      <li><a href="#" title>Close</a></li>
-                                      <li><a href="#" title>Hide</a></li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                <div className="epi-sec">
-                                  <ul className="descp">
-                                    <li><img src="../assets/images/icon8.png" alt /><span>Epic Coder</span></li>
-                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
-                                  </ul>
-                                  <ul className="bk-links">
-                                    <li><a href="#" title><i className="la la-bookmark" /></a></li>
-                                    <li><a href="#" title><i className="la la-envelope" /></a></li>
-                                  </ul>
-                                </div>
-                                <div className="job_descp">
-                                  <h3>Senior UI / UX designer</h3>
-                                  <ul className="job-dt">
-                                    <li><a href="#" title>Par Time</a></li>
-                                    <li><span>$10 / hr</span></li>
-                                  </ul>
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit amet... <a href="#" title>view more</a></p>
-                                  <ul className="skill-tags">
-                                    <li><a href="#" title>HTML</a></li>
-                                    <li><a href="#" title>PHP</a></li>
-                                    <li><a href="#" title>CSS</a></li>
-                                    <li><a href="#" title>Javascript</a></li>
-                                    <li><a href="#" title>Wordpress</a></li> 	
-                                  </ul>
-                                </div>
-                                <div className="job-status-bar">
-                                  <ul className="like-com">
-                                    <li>
-                                      <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="../assets/images/liked-img.png" alt />
-                                      <span>25</span>
-                                    </li> 
-                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
-                                  </ul>
-                                  <a><i className="la la-eye" />Views 50</a>
-                                </div>
-                              </div>{/*post-bar end*/}
-                              <div className="post-bar">
-                                <div className="post_topbar">
-                                  <div className="usy-dt">
-                                    <img src="../assets/images/resources/us-pic.png" alt />
-                                    <div className="usy-name">
-                                      <h3>John Doe</h3>
-                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
-                                    </div>
-                                  </div>
-                                  <div className="ed-opts">
-                                    <a href="#" title className="ed-opts-open"><i className="la la-ellipsis-v" /></a>
-                                    <ul className="ed-options">
-                                      <li><a href="#" title>Edit Post</a></li>
-                                      <li><a href="#" title>Unsaved</a></li>
-                                      <li><a href="#" title>Unbid</a></li>
-                                      <li><a href="#" title>Close</a></li>
-                                      <li><a href="#" title>Hide</a></li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                <div className="epi-sec">
-                                  <ul className="descp">
-                                    <li><img src="../assets/images/icon8.png" alt /><span>Epic Coder</span></li>
-                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
-                                  </ul>
-                                  <ul className="bk-links">
-                                    <li><a href="#" title><i className="la la-bookmark" /></a></li>
-                                    <li><a href="#" title><i className="la la-envelope" /></a></li>
-                                    <li><a href="#" title className="bid_now">Bid Now</a></li>
-                                  </ul>
-                                </div>
-                                <div className="job_descp">
-                                  <h3>Ios Shopping mobile app</h3>
-                                  <ul className="job-dt">
-                                    <li><span>$300 - $350</span></li>
-                                  </ul>
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit amet... <a href="#" title>view more</a></p>
-                                  <ul className="skill-tags">
-                                    <li><a href="#" title>HTML</a></li>
-                                    <li><a href="#" title>PHP</a></li>
-                                    <li><a href="#" title>CSS</a></li>
-                                    <li><a href="#" title>Javascript</a></li>
-                                    <li><a href="#" title>Wordpress</a></li> 	
-                                  </ul>
-                                </div>
-                                <div className="job-status-bar">
-                                  <ul className="like-com">
-                                    <li>
-                                      <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="../assets/images/liked-img.png" alt />
-                                      <span>25</span>
-                                    </li> 
-                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
-                                  </ul>
-                                  <a><i className="la la-eye" />Views 50</a>
-                                </div>
-                              </div>{/*post-bar end*/}
+                              
+                              {this.middleContent()}
+                              
+                              
                               <div className="process-comm">
                                 <a href="#" title><img src="../assets/images/process-icon.png" alt /></a>
                               </div>{/*process-comm end*/}

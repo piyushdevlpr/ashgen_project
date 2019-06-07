@@ -184,14 +184,15 @@ class Dashboard extends Component {
           }
         }) ;
     }
-    gotoprofile=(event)=>{
+    async gotoprofile(event){
         event.preventDefault() ;
-        this.props.history.push({
-          pathname:'/profile/',
+         this.props.history.push({
+          pathname:'/team_profile/',
           state :{
               username : this.props.location.state.username 
           }
         }) ;
+       
     }
 
     fetchPosts()
@@ -260,6 +261,8 @@ class Dashboard extends Component {
                         <button onClick={this.gotonoti}>NOTIFICATIONS</button>
                         <button onClick={this.gotofriends}>FRIENDS</button>
                         <button onClick={this.gotogroups}>Groups</button>
+                        <button onClick={this.gotoprofile}>Profile</button>
+
                         {/* <button onClick={this.gotoprofile}>PROFILE</button> */}
                     </div>
                     <div className="col">

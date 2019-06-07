@@ -11,6 +11,7 @@ export default class TeamForm extends Component{
             establishment:'',
             institute:'',
             team_size:'',
+            cur_work:''
 
         }
         this.OnInputChange = this.OnInputChange.bind(this);
@@ -36,6 +37,7 @@ export default class TeamForm extends Component{
             "establishment":this.state.establishment,
             "institute":this.state.institute,
             "team_size":this.state.team_size,
+            "cur_work":this.state.cur_work
 
         }
         const config = {
@@ -83,6 +85,10 @@ export default class TeamForm extends Component{
             <div className="form-group">
                 <label for="exampleFormControlInput1">Institute</label>
                 <input type="text" className="form-control" onChange={this.OnInputChange} value={this.state.institute} name="institute" id="exampleFormControlInput1" placeholder="Enter Institute" />
+            </div>
+            <div className="form-group">
+                <label for="exampleFormControlInput1">Currently working</label>
+                <input type="text" className="form-control" onChange={this.OnInputChange} value={this.state.cur_work} name="cur_work" id="exampleFormControlInput1" placeholder="Currently working" />
             </div>
             <div className="form-group">
                 <label for="exampleFormControlInput1">Team Size</label>
