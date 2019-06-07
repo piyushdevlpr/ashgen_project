@@ -4213,6 +4213,8 @@ a:hover {
 	border-bottom: 1px solid #e5e5e5;
 	border-right: 1px solid #e5e5e5;
 }
+
+
 .acc-leftbar .nav-tabs > a {
 	float: left;
 	width: 100%;
@@ -4586,8 +4588,10 @@ a:hover {
 /* ============== messages-page ============== */
 
 .messages-page {
-	padding: 50px 0 75px 0;
+	/* height : 95vh ; */
+	padding: 0px 0 0px 0;
 }
+
 .messages-sec {
 	float: left;
 	width: 100%;
@@ -4603,6 +4607,7 @@ a:hover {
 .msg-title {
 	float: left;
 	width: 100%;
+	border-bottom: 1px solid #eeeeee;
 	padding: 36px 20px;
 }
 .msg-title > h3 {
@@ -4630,7 +4635,30 @@ a:hover {
 .messages-list {
 	float: left;
 	width: 100%;
+	height :515px;
+	overflow-y: scroll;
 }
+
+.messages-list2{
+	float: left;
+	width: 100%;
+	height :515px;
+	overflow-y: scroll;
+	margin-top:10%;
+}
+
+.messages-list2 ul {
+	float: left;
+	width: 100%;
+}
+.messages-list2 ul li {
+	float: left;
+	width: 100%;
+	padding: 20px;
+	border-bottom: 1px solid #eeeeee;
+	/* cursor: pointer; */
+}
+
 .messages-list ul {
 	float: left;
 	width: 100%;
@@ -4640,7 +4668,7 @@ a:hover {
 	width: 100%;
 	padding: 20px;
 	border-bottom: 1px solid #eeeeee;
-	cursor: pointer;
+	/* cursor: pointer; */
 }
 .messages-list ul li.active {
 	background-color: #efefef;
@@ -4740,7 +4768,7 @@ a:hover {
 	float: left;
 	width: 100%;
 	background-color: rgba(255,255,255,0.95);
-	padding: 20px;
+	padding: 15px;
 	border-bottom: 1px solid #eaeaea;
 	position: absolute;
 	top: 0;
@@ -4755,7 +4783,7 @@ a:hover {
 	float: right;
 	color: #b2b2b2;
 	font-size: 20px;
-	padding-top: 15px;
+	padding-top: 0px;
 }
 .main-message-box {
 	float: left;
@@ -4782,19 +4810,19 @@ a:hover {
 	width: auto;
 	padding-left: 85px;
 }
-.main-message-box.ta-right {
+.ta-right {
 	float: right;
 }
-.main-message-box.ta-right .messg-usr-img {
+.ta-right .messg-usr-img {
 	left: auto;
 	right: 20px;
 	bottom: 25px;
 }
-.main-message-box.ta-right .message-dt {
+.ta-right .message-dt {
 	padding-left: 0;
 	padding-right: 85px;
 }
-.main-message-box.ta-right .message-dt > span {
+.ta-right .message-dt > span {
 	float: right;
 	width: auto;
 }
@@ -4809,6 +4837,15 @@ a:hover {
 }
 .img-bx {
 	background-color: #efefef;
+	width:60% ;
+	height:20%;
+	padding: 20px;
+}
+.img-bx-sent {
+	background-color: #fff;
+	float : right;
+	width:60% ;
+	height:20%;
 	padding: 20px;
 }
 .message-inner-dt > img {
@@ -4826,7 +4863,7 @@ a:hover {
 .message-inner-dt > p {
 	float: right;
 	width: 60%;
-	background-color: #e44d3a;
+	background-color: #ff9933;
 	font-size: 14px;
 	line-height: 22px;
 	padding: 10px 35px 10px 35px;
@@ -4836,8 +4873,8 @@ a:hover {
 	-ms-border-radius: 15px;
 	-o-border-radius: 15px;
 	border-radius: 15px;
-}
-.message-dt.st3 .message-inner-dt > p {
+} 
+ .message-dt.st3 .message-inner-dt > p {
 	background-color: #efefef;
 	color: #686868;
 	width: auto;
@@ -4852,11 +4889,13 @@ a:hover {
 }
 .main-message-box.st3 .messg-usr-img {
 	bottom: 13px;
-}
+} 
 .messages-line {
 	float: left;
+	margin-top: 10%;
 	width: 100%;
-	height: 604px;
+	overflow-y : scroll ;
+	height: 490px;
 }
 
 /* ============== message-send-area ============ */
@@ -4865,10 +4904,12 @@ a:hover {
 	float: left;
 	width: 100%;
 	background-color: #f3f5f7;
-	padding: 25px 20px 15px 20px;
+	/* padding: 25px 20px 15px 20px; */
+	padding : 0 0 0 0 ;
 	border: 1px solid #eeeeee;
 }
 .message-send-area form {
+	/* display: inline-block; */
 	float: left;
 	width: 100%;
 }
@@ -4878,7 +4919,7 @@ a:hover {
 }
 .mf-field input {
 	float: left;
-	width: 80%;
+	width: 70%;
 	background-color: #fff;
 	color: #b2b2b2;
 	font-size: 16px;
@@ -4886,10 +4927,10 @@ a:hover {
 	border: 1px solid #e6e6e6;
 	height: 45px;
 }
-.mf-field button {
+.but {
 	float: left;
-	width: 17%;
-	background-color: #e44d3a;
+	width: 14%;
+	background-color: #ff8800;
 	height: 45px;
 	text-align: center;
 	color: #fff;
@@ -4898,18 +4939,30 @@ a:hover {
 	margin-left: 15px;
 	cursor: pointer;
 }
-.message-send-area form > ul {
+.but1 {
 	float: left;
-	width: 100%;
-	margin-top: 15px;
+	width: 5%;
+	height: 45px;
+	margin-left: 10px;
+	font-size : 20px ;
+	border: 0;
+	cursor: pointer;
+	background-color:white;
+}
+.message-send-area form > ul {
+	
+	/* margin-top: 15px; */
 }
 .message-send-area form > ul li {
 	display: inline-block;
-	margin-right: 20px;
+	float: left;
+	
+	/* margin-right: 20px; */
 }
 .message-send-area form > ul li a {
+	/* float: left; */
 	color: #b2b2b2;
-	font-size: 18px;
+	font-size: 25px;
 }
 
 

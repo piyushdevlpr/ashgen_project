@@ -102,17 +102,33 @@ class People extends Component {
     }
     showfriends=()=>{
         const list = this.state.friends.map((data,index)=>
-            <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
-                </div>
-                <div class="chat_ib">
-                  <h5>{data.name}</h5>
-                  <button onClick={()=>this.getmetochat(data.name)}>message</button>
-                  <span>{this.state.friendsnewmessage[data.name] ? (<span> {this.state.friendsnewmessage[data.name]}  message received </span>): null}</span>
-                </div>
-              </div>
-            </div>
+        <li >
+			<div class="usr-msg-details">
+				<div class="usr-ms-img">
+					<img src="images/resources/m-img1.png" alt=""/>
+						{/* <span class="msg-status"></span> */}
+				</div>
+				<div class="usr-mg-info">
+				    <h3>{data.name}</h3>
+				</div>
+                <button onClick={()=>this.getmetochat(data.name)}>message</button>
+                {/* <!--usr-mg-info end--> */}
+				{/* <span class="posted_time">1:55 PM</span> */}
+				<span>{this.state.friendsnewmessage[data.name] ? (<span class="msg-notifc"> {this.state.friendsnewmessage[data.name]}</span>): null}</span>
+			</div>
+                                            {/* <!--usr-msg-details end--> */}
+		</li>
+            // <div class="chat_list">
+            //   <div class="chat_people">
+            //     <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
+            //     </div>
+            //     <div class="chat_ib">
+            //       <h5>{data.name}</h5>
+            //       <button onClick={()=>this.getmetochat(data.name)}>message</button>
+            //       <span>{this.state.friendsnewmessage[data.name] ? (<span> {this.state.friendsnewmessage[data.name]}  message received </span>): null}</span>
+            //     </div>
+            //   </div>
+            // </div>
         );
         return list ;
     }
@@ -167,6 +183,7 @@ class People extends Component {
             {
                 return(<ChatVideo data={data} user={this.props.location.state.username}/>)
             }
+
             // <li>{data.from} : {data.data.message}</li>
         }
             );
@@ -234,6 +251,7 @@ class People extends Component {
             );
     }
     handleClick = (e) => {
+        e.preventDefault();
         this.inputElement.click();
     }
     scrollToBottom = () => {
@@ -248,61 +266,83 @@ class People extends Component {
             return null ;
         }else{
             return(
-        <div class="container1">
-            <div class="messaging">
-                <div class="inbox_people">
-                    <div class="headind_srch">
-                            <div class="recent_heading">
-                                <h4>Recent</h4>
-                            </div>
-                        <div class="srch_bar">
-                            <div class="stylish-input-group">
-                                <input type="text" class="search-bar"  placeholder="Search" />
-                                <span class="input-group-addon">
-                                <button type="button"></button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                <div class="inbox_chat">
-                        <div>{this.showfriends()}</div>                     
-                </div>
-            </div>
-                    { this.state.tochatwith ?
-                        (
-                            <div class="mesgs">
-                               <div className="tochatwith">{this.state.tochatwith}</div>
-                            <div className="msg_history" ref={div => this.messageList = div}>
-                            {this.showpreviousmessages()}
-                            </div>
-                        {/* <div class="type_msg">
-                            <div className="input_msg_write row ">
-                                
-                                <input className="write_msg" placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
-                                <button className=" attach btn btn-default  " onClick={this.handleClick}><i class="fa fa-paperclip"></i></button>
-                                <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
-                                <button onClick={this.sendmsg} className="msg_send_btn btn btn-default " type="button">s</button>
-                            </div>
-                        </div> */}
-                        <div class="message-send-area">
+        // <div class="container1">
+            <div>
+                            {console.log(this.state)}
+            <section class="messages-page">
+			<div class="container">
+				<div class="messages-sec">
+					<div class="row">
+						<div class="col-lg-4 col-md-12 no-pdd">
+							<div class="msgs-list">
+								<div class="msg-title">
+									<h3>Messages</h3>
+									<ul>
+										<li><a href="#" title=""><i class="fa fa-cog"></i></a></li>
+										<li><a href="#" title=""><i class="fa fa-ellipsis-v"></i></a></li>
+									</ul>
+								</div>
+                                {/* <!--msg-title end--> */}
+								<div class="messages-list">
+									<ul>
+                                    {this.showfriends()}
+									</ul>
+								</div>
+                                {/* <!--messages-list end--> */}
+							</div>
+                            {/* <!--msgs-list end--> */}
+						</div>
+						<div class="col-lg-8 col-md-12 pd-right-none pd-left-none">
+							<div class="main-conversation-box">
+								<div class="message-bar-head">
+									<div class="usr-msg-details">
+										<div class="usr-ms-img">
+											<img src="images/resources/m-img1.png" alt=""/>
+										</div>
+										<div class="usr-mg-info">
+											<h3>{this.state.tochatwith}</h3>
+										</div>
+                                        {/* <!--usr-mg-info end--> */}
+									</div>
+									<a href="#" title=""><i class="fa fa-ellipsis-v"></i></a>
+								</div>
+                                {/* <!--message-bar-head end--> */}
+            { this.state.tochatwith ?
+			(              
+                 <span>
+								<div className="messages-line" ref={div => this.messageList = div}>
+                                    {this.showpreviousmessages()}
+								</div>
+								
+                                <div class="message-send-area">
 									<form>
 										<div class="mf-field">
-											<input type="text" name="message" placeholder="Type a message here"/>
-											<button type="submit">Send</button>
+											<input type="text" placeholder="Type a message here" ref={(ref) => this.mainInput= ref} required={true} name='message' onChange={this.handlechange} value={this.state.currentmsg} />
+                                            <button className="but1"><i class="fa fa-smile-o"></i></button>
+											<button onClick={this.handleClick} className="but1"><i class="fa fa-paperclip"></i></button>
+                                            <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
+                                            <button onClick={this.sendmsg} className="but" type="submit">Send</button>
 										</div>
-										<ul>
-											<li><a href="#" title=""><i class="fa fa-smile-o"></i></a></li>
-											<li><a href="#" title=""><i class="fa fa-camera"></i></a></li>
-											<li><a href="#" title=""><i class="fa fa-paperclip"></i></a></li>
-										</ul>
 									</form>
 								</div>
-                        </div>
-                        ):null
-                    }
-                </div>
-            </div>
+                 </span>
+                ):
+                null
+                }
+                                {/* /* <!--message-send-area end--> */ }
+							</div>
+                            {/* <!--main-conversation-box end--> */}
+						</div>
+					</div>
+				</div>
+                {/* <!--messages-sec end--> */}
+			</div>
+		</section>
+        {/* <!--messages-page end--> */}
+                
+        </div>
             );
+
         }        
     }
 }

@@ -6,7 +6,8 @@ var express            = require("express"),
     passport           = require("passport"),
     LocalStrategy      = require("passport-local"),
     User               = require("./models/user"),
-    // Team               = require("./models/team"),
+    nodemailer         = require("nodemailer"),
+    Teamsignup         = require("./models/teamsignup"),
     Individual         = require("./models/individual")
     Yourprofile        = require("./models/yourprofile"),
     Teamprofile        = require("./models/teamprofile"),
@@ -20,10 +21,6 @@ var express            = require("express"),
     io                 = require("socket.io").listen(server),
     getUserRoute       = require('./routes/getUser'),
     postRoute          = require('./routes/post');
-<<<<<<< HEAD
-=======
-
->>>>>>> 154b84f638c8f701a2ddb8215b825350df886c91
     var profileRoute   = require('./routes/profile');
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
@@ -171,6 +168,14 @@ app.post("/register",function(req, res,next){
                     console.log(cuser) ;
                   }
                   });
+                  var newteamsignup = new Teamsignup({teamname : user}) ;
+                  newteamsignup.save(function(err,teamuser){
+                    if(!err){
+                      console.log(teamuser)
+                    }else{
+                      console.log(err) ;
+                    }
+                  })
               }
               console.log("true");  
               res.json("true") ;
@@ -640,6 +645,55 @@ app.post("/update-new-message-number-group",function(req,res){
         }
       })
 })
+
+app.post("/send-email",function(req,res){
+  console.log("nodemailer here:") ;
+  var requested = {} ;
+  requested.email = req.body.email ;
+  Teamsignup.findOneAndUpdate({teamname:req.user.username},{$push:{requested:requested}},{new:true},function(err,cuser){
+    var link = "http://localhost:3000/sign-up-team-member/"+cuser._id+"-"+cuser.requested[cuser.requested.length - 1]._id ;
+    var transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'ojas.sign.up@gmail.com',
+        pass: 'password@ojas'
+      }
+    });
+    let mailOptions = {
+      from: '"Ojas" <ojas.sign.up@gmail.com>', // sender address
+      to: req.body.email, // list of receivers
+      subject:"Signup request",
+      text:"You have received a sign up request from "+req.user.username+". Kindly click on following link to go to signup page for the team : "+link+".", // plain text body
+      // html: '<b>NodeJS Email Tutorial</b>' // html body
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message %s sent: %s', info.messageId, info.response);
+            // res.render('index');
+      });
+  })
+});
+app.post("/get-info-requestedmember",function(req,res){
+    var teamid = req.body.teamid ;
+    var personid = req.body.personid ;
+    Teamsignup.findOne({_id:teamid},function(err,team){
+      if(err){
+        res.json({val:false}) ;
+      }else{
+        for(var i = 0 ; i < team.requested.length ; i++){
+          if(team.requested[i]._id === personid){
+            res.json({emailid : team.requested[i].email , val : true});
+          }else if(i === team.requested.length - 1){
+            res.json({val:false});
+          }
+        }
+      }
+    })
+});
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------

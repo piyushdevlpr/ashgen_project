@@ -16,6 +16,7 @@ import Group from './Group';
 import Profile from './profiles/TeamProfile';
 import * as serviceWorker from './serviceWorker';
 import DashboardInd from './DashboardInd';
+import Signupteammember from './Signupteammember';
 
 ReactDOM.render((
     <Router>
@@ -32,6 +33,7 @@ ReactDOM.render((
        <Route path = "/friends/" component = {Showfriends} />
        <Route path = "/groups/" component = {Group} />
        <Route path = "/profile/" component = {Profile} />
+       <Route path = "/sign-up-team-member/:combinedid" component = {Signupteammember} />
        </Switch>
  </Router>
 ), document.getElementById('root'));

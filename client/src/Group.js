@@ -171,36 +171,68 @@ class People extends Component {
     }
     showgroups=()=>{
         const list = this.state.groups.map((data,index)=>
-        <div class="chat_list">
-        <div class="chat_people">
-          <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
-          </div>
-          <div class="chat_ib">
-          <h5 onClick={()=>this.getGroupInfo(data)}>{data.groupname}</h5>
-          <button onClick={()=>this.getmetochat(data)}>message</button>
-          <span>{this.state.friendsnewmessage[data.groupid] ? (<span> {this.state.friendsnewmessage[data.groupid]}  message received </span>): null}</span> 
-          </div>         
+        <li >
+        <div class="usr-msg-details">
+            <div class="usr-ms-img">
+                <img src="images/resources/m-img1.png" alt=""/>
+                    {/* <span class="msg-status"></span> */}
+            </div>
+            <div class="usr-mg-info">
+                <h3 onClick={()=>this.getGroupInfo(data)}>{data.groupname}</h3>
+            </div>
+            <button onClick={()=>this.getmetochat(data)}>message</button>
+            {/* <!--usr-mg-info end--> */}
+            {/* <span class="posted_time">1:55 PM</span> */}
+            <span>{this.state.friendsnewmessage[data.groupid] ? (<span class="msg-notifc"> {this.state.friendsnewmessage[data.groupid]}</span>): null}</span>
         </div>
-      </div>
+                                        {/* <!--usr-msg-details end--> */}
+    </li>
+        //     <div class="chat_list">
+    //     <div class="chat_people">
+    //       <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
+    //       </div>
+    //       <div class="chat_ib">
+    //       <h5 onClick={()=>this.getGroupInfo(data)}>{data.groupname}</h5>
+    //       <button onClick={()=>this.getmetochat(data)}>message</button>
+    //       <span>{this.state.friendsnewmessage[data.groupid] ? (<span> {this.state.friendsnewmessage[data.groupid]}  message received </span>): null}</span> 
+    //       </div>         
+    //     </div>
+    //   </div>
         );
         return list ;
     }
     showfriends=()=>{
         var c = 0
         const list = this.state.friends.map((data,index)=>
-        <div class="chat_list">
-        <div class="chat_people">
-          <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
-          </div>
-          <div class="chat_ib">
-          <h5>{data.name}</h5>
+        <li >
+        <div class="usr-msg-details">
+            <div class="usr-ms-img">
+                <img src="images/resources/m-img1.png" alt=""/>
+                    {/* <span class="msg-status"></span> */}
+            </div>
+            <div class="usr-mg-info">
+                <h3>{data.name}</h3>
                 <input type="checkbox" id={"demo" + c} />
-                <label htmlFor={"demo" + c} onClick={()=>this.addasmember(data.name)}> 
+                <label htmlFor={"demo" + c++} onClick={()=>this.addasmember(data.name)}> 
                          add
                 </label>
             </div>
-        </div>
-      </div>
+        </div>                                {/* <!--usr-msg-details end--> */}
+        </li>
+        
+    //     <div class="chat_list">
+    //     <div class="chat_people">
+    //       <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
+    //       </div>
+    //       <div class="chat_ib">
+    //       <h5>{data.name}</h5>
+    //             <input type="checkbox" id={"demo" + c} />
+    //             <label htmlFor={"demo" + c++} onClick={()=>this.addasmember(data.name)}> 
+    //                      add
+    //             </label>
+    //         </div>
+    //     </div>
+    //   </div>
         );
         return list ;
     }
@@ -363,42 +395,51 @@ class People extends Component {
     showmembers=()=>{
         if(this.state.groupinfo !== {}){
         const list = this.state.groupusers.map((data,index)=>
-        // <div>
-        //                 {(data.username === this.props.location.state.username && this.state.admin === this.props.location.state.username) 
-        //                 ?
-        //                 (<li className="list-group-item list-group-item-warning">you - admin</li>
-        //                 ):((data.username === this.props.location.state.username && this.state.admin !== this.props.location.state.username) 
-        //                 ? <li className="list-group-item list-group-item-warning">you</li>
-        //                 :((data.username !== this.props.location.state.username && this.state.admin === this.props.location.state.username) 
-        //                 ? <li className="list-group-item list-group-item-warning">{data.username} <button onClick={()=>this.removeMemberToUpdateGroup(data)}>Remove</button></li>
-        //                 :((data.username !== this.props.location.state.username && this.state.admin !== this.props.location.state.username) 
-        //                 ? ((data.username === this.state.admin)? <li>{data.username} - admin</li>:<li className="list-group-item list-group-item-warning">{data.username}</li>)
-               
-        //                 : null
-        //                 )))
-        //                 }
-        //     </div>
-        <div class="chat_list">
-        <div class="chat_people">
-          <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
-          </div>
-          <div class="chat_ib">
-          {(data.username === this.props.location.state.username && this.state.admin === this.props.location.state.username) 
+        <li className="add-bottom-border">
+        <div class="usr-msg-details">
+            <div class="usr-ms-img">
+                <img src="images/resources/m-img1.png" alt=""/>
+            </div>
+            <div class="usr-mg-info">
+            {(data.username === this.props.location.state.username && this.state.admin === this.props.location.state.username) 
             ?
-            (<div className="list-group-item list-group-item-warning">you - admin</div>
+            (<h3>you - admin</h3>
             ):((data.username === this.props.location.state.username && this.state.admin !== this.props.location.state.username) 
-            ? <div className="list-group-item list-group-item-warning">you</div>
+            ? <h3>you</h3>
             :((data.username !== this.props.location.state.username && this.state.admin === this.props.location.state.username) 
-            ? <div className="list-group-item list-group-item-warning">{data.username} <button onClick={()=>this.removeMemberToUpdateGroup(data)}>Remove</button></div>
+            ? <h3>{data.username} <button onClick={()=>this.removeMemberToUpdateGroup(data)}>Remove</button></h3>
             :((data.username !== this.props.location.state.username && this.state.admin !== this.props.location.state.username) 
-            ? ((data.username === this.state.admin)? <div>{data.username} - admin</div>:<div className="list-group-item list-group-item-warning">{data.username}</div>)
+            ? ((data.username === this.state.admin)? <h3>{data.username} - admin</h3>:<h3>{data.username}</h3>)
    
             : null
             )))
             }
+            </div>
         </div>
-        </div>
-      </div>
+        </li>
+
+
+    //     <div class="chat_list">
+    //     <div class="chat_people">
+    //       <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
+    //       </div>
+    //       <div class="chat_ib">
+    //       {(data.username === this.props.location.state.username && this.state.admin === this.props.location.state.username) 
+    //         ?
+    //         (<div className="list-group-item list-group-item-warning">you - admin</div>
+    //         ):((data.username === this.props.location.state.username && this.state.admin !== this.props.location.state.username) 
+    //         ? <div className="list-group-item list-group-item-warning">you</div>
+    //         :((data.username !== this.props.location.state.username && this.state.admin === this.props.location.state.username) 
+    //         ? <div className="list-group-item list-group-item-warning">{data.username} <button onClick={()=>this.removeMemberToUpdateGroup(data)}>Remove</button></div>
+    //         :((data.username !== this.props.location.state.username && this.state.admin !== this.props.location.state.username) 
+    //         ? ((data.username === this.state.admin)? <div>{data.username} - admin</div>:<div className="list-group-item list-group-item-warning">{data.username}</div>)
+   
+    //         : null
+    //         )))
+    //         }
+    //     </div>
+    //     </div>
+    //   </div>
               );
         return list ; 
         }
@@ -415,16 +456,33 @@ class People extends Component {
                 //   <h5>{data.name}</h5>
                 //   <button onClick={()=>this.addMemberToUpdateGroup(data)}>add</button>
                 // </li>
-                <div class="chat_list">
-                <div class="chat_people">
-                  <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
-                  </div>
-                  <div class="chat_ib">
-                    <h5>{data.name}</h5>
-                    <button onClick={()=>this.addMemberToUpdateGroup(data)}>add</button>
-                    </div>
-                </div>
-              </div>
+                <li className="add-bottom-border">
+			<div class="usr-msg-details">
+				<div class="usr-ms-img">
+					<img src="images/resources/m-img1.png" alt=""/>
+						{/* <span class="msg-status"></span> */}
+				</div>
+				<div class="usr-mg-info">
+				    <h3>{data.name}</h3>
+				</div>
+                <button onClick={()=>this.addMemberToUpdateGroup(data)}>add</button>
+                {/* <!--usr-mg-info end--> */}
+				{/* <span class="posted_time">1:55 PM</span> */}
+			</div>
+                                            {/* <!--usr-msg-details end--> */}
+		</li>
+
+                
+            //     <div class="chat_list">
+            //     <div class="chat_people">
+            //       <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"/> 
+            //       </div>
+            //       <div class="chat_ib">
+            //         <h5>{data.name}</h5>
+            //         <button onClick={()=>this.addMemberToUpdateGroup(data)}>add</button>
+            //         </div>
+            //     </div>
+            //   </div>
             );
             }
         }
@@ -460,100 +518,191 @@ class People extends Component {
             return null ;
         }else{
             return(
-            <div class="container1">
-                <div class="messaging">
-                    <div class="inbox_people">
-                        <div class="headind_srch">
-                                <div class="recent_heading">
-                                <button onClick={this.getCreating}>create</button>
-                                </div>
-                            <div class="srch_bar">
-                                <div class="stylish-input-group">
-                                    <input type="text" class="search-bar"  placeholder="Search" />
-                                    <span class="input-group-addon">
-                                    <button type="button"></button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                <div>
+                {console.log(this.state)}
+<section class="messages-page">
+<div class="container">
+    <div class="messages-sec">
+        <div class="row">
+            <div class="col-lg-4 col-md-12 no-pdd">
+                <div class="msgs-list">
+                    <div class="msg-title">
+                    <button onClick={this.getCreating}>create</button>
+                        <ul>
+                            <li><a href="#" title=""><i class="fa fa-cog"></i></a></li>
+                            <li><a href="#" title=""><i class="fa fa-ellipsis-v"></i></a></li>
+                        </ul>
+                    </div>
+                    {/* <!--msg-title end--> */}
                     {this.state.creating ? 
                     (
-                        <div >
+                        <span>
+                            <div className="messages-list">
                             <form>
                             {this.state.showDone ? <button onClick={this.creategroup}>Done</button> : null }
-                                Name of group : <input required={true} value={this.state.newgroupchange} onChange={this.handlechange} name = "newgroupname" />
+                                GroupName : <input required={true} value={this.state.newgroupchange} onChange={this.handlechange} name = "newgroupname" />
                             </form>
-                                <div class="inbox_chat">
-                                    <div>
+                            </div>
+                                <div class="messages-list">
+                                    <ul>
                                         {this.showfriends()}
-                                    </div>
+                                    </ul>
                                 </div>
-                        </div>
+                        </span>
                     )    
                     :
-                    (
-                        <div class="inbox_chat">
-                            <div>{this.showgroups()}</div>                     
-                        </div>
-                    )
-                    }    
-                    
-                </div>
-                    {this.state.tochatwith
-                        ?                <div class="mesgs">
-                            <div className="tochatwith">
-                            {this.state.tochatwith}
-                            </div>
-                                                  <div className="msg_history" ref={div => this.messageList = div}>
-                                                  {this.showpreviousmessages()}
-                                              </div>
-                                                      <div class="type_msg">
-                                                      <div className="input_msg_write row ">           
-                                                      <input className="write_msg " placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
-                                                      <button className=" attach btn btn-default " onClick={this.handleClick}>b</button>
-                                                      <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
-                                                      <button onClick={this.sendmsg} className="msg_send_btn btn btn-default" type="button">s</button>
-                                                      </div>
-                                                      </div>
-                                                      </div>
-                        :
-                        (
-                            this.state.toshowgroupid ? 
-                                (
-                                        // <h3 className="get_to_right">{this.state.toshowgroupname} - Information</h3><button className="get_to_right_2" onClick={()=>this.delete_group()}>delete</button>
-                                        <div class="inbox_chat">
-                                            {/* <div> */}
-                                            {this.showmembers()}
-                                            {this.showfriendstoaddingroup()}
-                                            {/* </div> */}
-                                            </div>          
-                                )
-                                :
-                                null
-                        )
+                    <div class="messages-list">
+                        <ul>
+                        {this.showgroups()}
+                        </ul>
+                    </div>
                     }
-                            {/* <div class="msg_history" ref={div => this.messageList = div}>
-                                {this.showpreviousmessages()}
-                            </div> */}
-                            {/* {this.state.tochatwith 
-                                ?
-                                (                               <div class="msg_history" ref={div => this.messageList = div}>
-                                {this.showpreviousmessages()}
-                            </div>
-                                    <div class="type_msg">
-                                    <div className="input_msg_write row ">           
-                                    <input className="write_msg col-md-10-75" placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
-                                    <button className=" attach btn btn-default col-md-0-75 " onClick={this.handleClick}>b</button>
-                                    <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
-                                    <button onClick={this.sendmsg} className="msg_send_btn btn btn-default col-md-1-25" type="button"><i className="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-                                    </div>
-                                    </div>
-                                )  
-                                : 
-                                null
-                                }  */}
-                        </div>
+                    {/* <!--messages-list end--> */}
                 </div>
+                {/* <!--msgs-list end--> */}
+            </div>
+            <div class="col-lg-8 col-md-12 pd-right-none pd-left-none">
+                <div class="main-conversation-box">
+                    <div class="message-bar-head">
+                        <div class="usr-msg-details">
+                            <div class="usr-ms-img">
+                                <img src="images/resources/m-img1.png" alt=""/>
+                            </div>
+                            <div class="usr-mg-info">
+                                <h3>{this.state.tochatwith}</h3>
+                            </div>
+                            {/* <!--usr-mg-info end--> */}
+                        </div>
+                        <a href="#" title=""><i class="fa fa-ellipsis-v"></i></a>
+                    </div>
+                    {/* <!--message-bar-head end--> */}
+{ this.state.tochatwith ?
+(              
+     <span>
+                    <div className="messages-line" ref={div => this.messageList = div}>
+                        {this.showpreviousmessages()}
+                    </div>
+                    
+                    <div class="message-send-area">
+                        <form>
+                            <div class="mf-field">
+                                <input type="text" placeholder="Type a message here" ref={(ref) => this.mainInput= ref} required={true} name='message' onChange={this.handlechange} value={this.state.currentmsg} />
+                                <button className="but1"><i class="fa fa-smile-o"></i></button>
+                                <button onClick={this.handleClick} className="but1"><i class="fa fa-paperclip"></i></button>
+                                <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
+                                <button onClick={this.sendmsg} className="but" type="submit">Send</button>
+                            </div>
+                        </form>
+                    </div>
+     </span>
+    ):
+    (
+        this.state.toshowgroupid ? 
+            (
+                    // <h3 className="get_to_right">{this.state.toshowgroupname} - Information</h3><button className="get_to_right_2" onClick={()=>this.delete_group()}>delete</button>
+                    <div class="messages-list2">
+                        {/* <div> */}
+                        <ul>
+                        {this.showmembers()}
+                        {this.showfriendstoaddingroup()}
+                        {/* </div> */}
+                        </ul>
+                        </div>          
+            )
+            :
+            null
+    )
+    }
+                    {/* /* <!--message-send-area end--> */ }
+                </div>
+                {/* <!--main-conversation-box end--> */}
+            </div>
+        </div>
+    </div>
+    {/* <!--messages-sec end--> */}
+</div>
+</section>
+{/* <!--messages-page end--> */}
+    
+</div>
+                
+
+
+            
+            // <div class="container1">
+            //     <div class="messaging">
+            //         <div class="inbox_people">
+            //             <div class="headind_srch">
+            //                     <div class="recent_heading">
+            //                     <button onClick={this.getCreating}>create</button>
+            //                     </div>
+            //                 <div class="srch_bar">
+            //                     <div class="stylish-input-group">
+            //                         <input type="text" class="search-bar"  placeholder="Search" />
+            //                         <span class="input-group-addon">
+            //                         <button type="button"></button>
+            //                         </span>
+            //                     </div>
+            //                 </div>
+            //             </div>
+                    // {this.state.creating ? 
+                    // (
+                    //     <div >
+                    //         <form>
+                    //         {this.state.showDone ? <button onClick={this.creategroup}>Done</button> : null }
+                    //             Name of group : <input required={true} value={this.state.newgroupchange} onChange={this.handlechange} name = "newgroupname" />
+                    //         </form>
+                    //             <div class="inbox_chat">
+                    //                 <div>
+                    //                     {this.showfriends()}
+                    //                 </div>
+                    //             </div>
+                    //     </div>
+                    // )    
+                    // :
+            //         (
+            //             <div class="inbox_chat">
+            //                 <div>{this.showgroups()}</div>                     
+            //             </div>
+            //         )
+            //         }    
+                    
+            //     </div>
+            //         {this.state.tochatwith
+            //             ?                <div class="mesgs">
+            //                 <div className="tochatwith">
+            //                 {this.state.tochatwith}
+            //                 </div>
+            //                                       <div className="msg_history" ref={div => this.messageList = div}>
+            //                                       {this.showpreviousmessages()}
+            //                                   </div>
+            //                                           <div class="type_msg">
+            //                                           <div className="input_msg_write row ">           
+            //                                           <input className="write_msg " placeholder="Type a message" ref={(ref) => this.mainInput= ref} required={true} type='text' name='message' onChange={this.handlechange} value={this.state.currentmsg}/>
+            //                                           <button className=" attach btn btn-default " onClick={this.handleClick}>b</button>
+            //                                           <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
+            //                                           <button onClick={this.sendmsg} className="msg_send_btn btn btn-default" type="button">s</button>
+            //                                           </div>
+            //                                           </div>
+            //                                           </div>
+            //             :
+                        // (
+                        //     this.state.toshowgroupid ? 
+                        //         (
+                        //                 // <h3 className="get_to_right">{this.state.toshowgroupname} - Information</h3><button className="get_to_right_2" onClick={()=>this.delete_group()}>delete</button>
+                        //                 <div class="inbox_chat">
+                        //                     {/* <div> */}
+                        //                     {this.showmembers()}
+                        //                     {this.showfriendstoaddingroup()}
+                        //                     {/* </div> */}
+                        //                     </div>          
+                        //         )
+                        //         :
+                        //         null
+                        // )
+            //         }
+            //             </div>
+            //     </div>
             // </div>    
             );
         }        
