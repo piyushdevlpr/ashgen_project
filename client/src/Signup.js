@@ -228,7 +228,7 @@ click4=(event)=>{
 gotohometeamprofile=()=>{
   if(this.state.signedup === "true" && this._ismounted === true){
     this.props.history.push({
-      pathname: '/team-profile/',
+      pathname: '/team_form/',
       state: {
         loggedin: false,
         signedup: "true",

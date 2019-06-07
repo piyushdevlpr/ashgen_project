@@ -64,6 +64,7 @@ export default class Comment extends Component{
                 this.setState({likes:response.data},()=>{this.setState({likeLoad:true})})
             
             })
+            
         }
         //    else{
 

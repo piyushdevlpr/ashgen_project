@@ -21,7 +21,7 @@ var express            = require("express"),
     io                 = require("socket.io").listen(server),
     getUserRoute       = require('./routes/getUser'),
     postRoute          = require('./routes/post');
-    var profileRoute   = require('./routes/profile');
+    var profileRoute   = require('./routes/profiles/profile');
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
     mongoose.Promise = global.Promise;
@@ -31,7 +31,7 @@ var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
   var whitelist = [];
-  whitelist = ['http://localhost:3000', 'http://localhost:3000/your-profile/','http://localhost:3000/team-profile/','http://localhost:3000/people/']
+  whitelist = ['http://localhost:3000', 'http://localhost:3000/team_profile/','http://localhost:3000/people/']
   // whitelist = ['https://ojus-client-12341fclksjvgjb.herokuapp.com','https://ojus-client-12341fclksjvgjb.herokuapp.com/','https://ojus-client-12341fclksjvgjb.herokuapp.com/your-profile/','https://ojus-client-12341fclksjvgjb.herokuapp.com/team-profile/','https://ojus-client-12341fclksjvgjb.herokuapp.com/people/','https://ojus-client-12341fclksjvgjb.herokuapp.com/groups/','https://ojus-client-12341fclksjvgjb.herokuapp.com/friends/']
   var corsOptions = {
     credentials:true,                           //using credentials from frontend aftr authentication
