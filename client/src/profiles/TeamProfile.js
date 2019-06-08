@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 //Css file import
+import MemberForm from './MemberForm';
 import '../assets/css/animate.css'
 import '../assets/css/bootstrap.min.css'
 import '../assets/css/flatpickr.min.css'
@@ -133,6 +134,7 @@ export default class TeamProfile extends Component{
     else if(this.state.members)
     {
       //write add member code
+      return <MemberForm />
     }
 
     }

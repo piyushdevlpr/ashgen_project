@@ -15,12 +15,10 @@ import Dashboard from './Dashboard';
 import Group from './Group';
 import * as serviceWorker from './serviceWorker';
 import DashboardInd from './DashboardInd';
-<<<<<<< HEAD
+
 import Signupteammember from './Signupteammember';
-=======
 import TeamProfile from './profiles/TeamProfile';
 import TeamForm from './profiles/TeamForm';
->>>>>>> 994894b196419e91fc6ab982c0b8ac6a50e97772
 
 ReactDOM.render((
     <Router>
@@ -35,14 +33,10 @@ ReactDOM.render((
        <Route path = "/notifications/" component = {Shownotifications} />
        <Route path = "/friends/" component = {Showfriends} />
        <Route path = "/groups/" component = {Group} />
-<<<<<<< HEAD
-       <Route path = "/profile/" component = {Profile} />
+       {/* <Route path = "/profile/" component = {Profile} /> */}
        <Route path = "/sign-up-team-member/:combinedid" component = {Signupteammember} />
-=======
        <Route path = "/team_profile/" component = {TeamProfile} />
        <Route path = "/team_form/" component = {TeamForm} />
-
->>>>>>> 994894b196419e91fc6ab982c0b8ac6a50e97772
        </Switch>
  </Router>
 ), document.getElementById('root'));

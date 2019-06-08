@@ -649,7 +649,8 @@ app.post("/update-new-message-number-group",function(req,res){
 app.post("/send-email",function(req,res){
   console.log("nodemailer here:") ;
   var requested = {} ;
-  requested.email = req.body.email ;
+  console.log(req.body) ;
+  requested.email = req.body.emailid ;
   Teamsignup.findOneAndUpdate({teamname:req.user.username},{$push:{requested:requested}},{new:true},function(err,cuser){
     var link = "http://localhost:3000/sign-up-team-member/"+cuser._id+"-"+cuser.requested[cuser.requested.length - 1]._id ;
     var transporter = nodemailer.createTransport({
@@ -663,7 +664,7 @@ app.post("/send-email",function(req,res){
     });
     let mailOptions = {
       from: '"Ojas" <ojas.sign.up@gmail.com>', // sender address
-      to: req.body.email, // list of receivers
+      to: req.body.emailid, // list of receivers
       subject:"Signup request",
       text:"You have received a sign up request from "+req.user.username+". Kindly click on following link to go to signup page for the team : "+link+".", // plain text body
       // html: '<b>NodeJS Email Tutorial</b>' // html body
@@ -680,14 +681,21 @@ app.post("/send-email",function(req,res){
 app.post("/get-info-requestedmember",function(req,res){
     var teamid = req.body.teamid ;
     var personid = req.body.personid ;
-    Teamsignup.findOne({_id:teamid},function(err,team){
+    console.log(req.body) ;
+    Teamsignup.findById(teamid,function(err,team){
       if(err){
+        console.log("here0") ;
         res.json({val:false}) ;
       }else{
         for(var i = 0 ; i < team.requested.length ; i++){
-          if(team.requested[i]._id === personid){
+          console.log("length : "+team.requested.length)
+          console.log("teamid : "+team.requested[i]._id)
+          console.log("personid : "+personid)
+          if(team.requested[i]._id == personid){
+           console.log("here1") ;
             res.json({emailid : team.requested[i].email , val : true});
           }else if(i === team.requested.length - 1){
+            console.log("here2") ;
             res.json({val:false});
           }
         }

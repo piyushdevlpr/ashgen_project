@@ -27,6 +27,7 @@ getids=()=>{
     this.setState({personid:personid,teamid:teamid},function(){
         if(this.state.teamid && this.state.personid){
             this.setState({valid:true},function(){
+                    this.getinformation() ;
                 console.log(this.state) ;
             })
           }else{
@@ -52,16 +53,13 @@ getinformation=()=>{
 }
 componentWillMount(){
    this.getids() ;
-   if(this.state.valid === true){
-        this.getinformation() ;
-   }
 }
 render() {
     return (
         this.state.valid === "not-set" 
         ?
             <div>Loading ....</div>
-        :
+        :   
             this.state.valid && this.state.val
             ?
             <div className="App container mt-3">
