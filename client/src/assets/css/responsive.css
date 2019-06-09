@@ -94,6 +94,7 @@
 	.overview-box {width: 100%;}
 	.close-box {top: -23px;right: 2px;}
 	.forum-links ul li {margin-right: 20px;}
+	.placeemoji {margin-bottom : 20px}
 	.forum-links ul li a {font-size: 13px;}
 	.forum-links-btn {display: block;}
 	.forum-links {position: fixed;top: 0;left: 0;width: 240px;background-color: #e44d3a;height: 100%;padding: 0 20px;opacity: 0;visibility: hidden;}
@@ -123,6 +124,7 @@
 	.comment_box input {width: 100%;margin-bottom: 10px;}
 	.comment_box form button {float: none;}
 	.post-comment {text-align: center;}
+	.placeemoji {margin-bottom : 60px}
 	.comment_box form button {padding: 0 15px;}
 	.job-details {width: 80%;}
 	.cover-sec {height: 200px;}
@@ -181,5 +183,6 @@
 	.message-inner-dt > p {padding: 10px;}
 	.request-info {width: 100%;padding: 0;margin: 15px 0;}
 	.accept-feat {width: 100%;}
+	.placeemoji {margin-bottom : 70px}
 	.requests-list {padding-bottom: 50px;}
 }

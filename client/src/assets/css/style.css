@@ -4939,6 +4939,10 @@ a:hover {
 	margin-left: 15px;
 	cursor: pointer;
 }
+.placeemoji {
+	position : absolute ;
+	bottom:48px;
+}
 .but1 {
 	float: left;
 	width: 5%;

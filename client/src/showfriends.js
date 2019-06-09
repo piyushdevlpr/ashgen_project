@@ -3,6 +3,8 @@ import ChatText from './ChatText';
 import ChatPhoto from './ChatPhoto';
 import ChatVideo from './ChatVideo';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
 import './Chat.css'
 import socketIOClient from "socket.io-client";
 //Css file import
@@ -29,11 +31,14 @@ class People extends Component {
             friends : [],
             tochatwith : '',
             message : '',
+            emoji : false ,
             previousmess : [{from:'',data:''}],
             file: null
         }
         this.handlechange=this.handlechange.bind(this);
         this.sendmsg=this.sendmsg.bind(this);
+        this.getEmojiSelector = this.getEmojiSelector.bind(this) ;
+        this.addEmoji = this.addEmoji.bind(this) ;
         this.filehandleChange = this.filehandleChange.bind(this);  //function for file in chat
     }
     updatecount=()=>{
@@ -183,13 +188,41 @@ class People extends Component {
             {
                 return(<ChatVideo data={data} user={this.props.location.state.username}/>)
             }
-
-            // <li>{data.from} : {data.data.message}</li>
         }
             );
             
             return list ;
+    }
+    getEmojiSelector=(e)=>{
+        e.preventDefault();
+        this.setState({emoji : !this.state.emoji}) ;
     }   
+    emojihere=()=>{
+        if(this.state.emoji === true){
+           return <span className="placeemoji"><Picker onSelect={this.addEmoji} /></span>
+        }
+    }
+    addEmoji = (e) => {
+        //console.log(e.unified)
+        if (e.unified.length <= 5){
+          let emojiPic = String.fromCodePoint(`0x${e.unified}`)
+          console.log(emojiPic) ;
+          this.setState({
+            message: this.state.message + emojiPic
+          })
+        }else {
+          let sym = e.unified.split('-')
+          let codesArray = []
+          sym.forEach(el => codesArray.push('0x' + el))
+          //console.log(codesArray.length)
+          //console.log(codesArray)  // ["0x1f3f3", "0xfe0f"]
+          let emojiPic = String.fromCodePoint(...codesArray)
+          console.log(emojiPic) ;
+          this.setState({
+            message: this.state.message + emojiPic
+          })
+        }
+      }
     componentDidUpdate() {
         if(this.state.tochatwith){
         this.scrollToBottom();
@@ -311,15 +344,20 @@ class People extends Component {
 			(              
                  <span>
 								<div className="messages-line" ref={div => this.messageList = div}>
-                                    {this.showpreviousmessages()}
-								</div>
-								
+                                    <span>
+                                        {this.showpreviousmessages()}
+                                    </span>
+                                    
+                                </div>
                                 <div class="message-send-area">
 									<form>
 										<div class="mf-field">
-											<input type="text" placeholder="Type a message here" ref={(ref) => this.mainInput= ref} required={true} name='message' onChange={this.handlechange} value={this.state.currentmsg} />
-                                            <button className="but1"><i class="fa fa-smile-o"></i></button>
-											<button onClick={this.handleClick} className="but1"><i class="fa fa-paperclip"></i></button>
+                                            <span>
+                                                {this.emojihere()}
+                                            </span>
+                                            <button className="but1" onClick={this.getEmojiSelector}><i class="fa fa-smile-o"> </i></button>
+                                            <input type="text" placeholder="Type a message here" ref={(ref) => this.mainInput= ref} required={true} name='message' onChange={this.handlechange} value={this.state.message} />                       
+                                            <button onClick={this.handleClick} className="but1"><i class="fa fa-paperclip"></i></button>
                                             <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
                                             <button onClick={this.sendmsg} className="but" type="submit">Send</button>
 										</div>

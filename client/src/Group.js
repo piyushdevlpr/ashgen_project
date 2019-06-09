@@ -3,6 +3,8 @@ import './App.css';
 import ChatText from './ChatText';
 import ChatPhoto from './ChatPhoto';
 import ChatVideo from './ChatVideo';
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
 import socketIOClient from "socket.io-client";
 const socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
         
@@ -392,6 +394,36 @@ class People extends Component {
         this.scrollToBottom();
         }
       }
+      getEmojiSelector=(e)=>{
+        e.preventDefault();
+        this.setState({emoji : !this.state.emoji}) ;
+    }   
+    emojihere=()=>{
+        if(this.state.emoji === true){
+           return <span className="placeemoji"><Picker onSelect={this.addEmoji} /></span>
+        }
+    }
+    addEmoji = (e) => {
+        //console.log(e.unified)
+        if (e.unified.length <= 5){
+          let emojiPic = String.fromCodePoint(`0x${e.unified}`)
+          console.log(emojiPic) ;
+          this.setState({
+            message: this.state.message + emojiPic
+          })
+        }else {
+          let sym = e.unified.split('-')
+          let codesArray = []
+          sym.forEach(el => codesArray.push('0x' + el))
+          //console.log(codesArray.length)
+          //console.log(codesArray)  // ["0x1f3f3", "0xfe0f"]
+          let emojiPic = String.fromCodePoint(...codesArray)
+          console.log(emojiPic) ;
+          this.setState({
+            message: this.state.message + emojiPic
+          })
+        }
+      }
     showmembers=()=>{
         if(this.state.groupinfo !== {}){
         const list = this.state.groupusers.map((data,index)=>
@@ -586,8 +618,11 @@ class People extends Component {
                     <div class="message-send-area">
                         <form>
                             <div class="mf-field">
+                                <span>
+                                    {this.emojihere()}
+                                </span>
+                                <button className="but1" onClick={this.getEmojiSelector}><i class="fa fa-smile-o"> </i></button>                                                                   
                                 <input type="text" placeholder="Type a message here" ref={(ref) => this.mainInput= ref} required={true} name='message' onChange={this.handlechange} value={this.state.currentmsg} />
-                                <button className="but1"><i class="fa fa-smile-o"></i></button>
                                 <button onClick={this.handleClick} className="but1"><i class="fa fa-paperclip"></i></button>
                                 <input ref={input => this.inputElement = input} className=' file_sel' type="file" name="file" onChange={this.filehandleChange}  id="exampleFormControlFile1" />
                                 <button onClick={this.sendmsg} className="but" type="submit">Send</button>
