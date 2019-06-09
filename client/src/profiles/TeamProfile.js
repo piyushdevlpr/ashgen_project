@@ -11,6 +11,7 @@ import '../assets/css/line-awesome.css'
 import '../assets/css/line-awesome-font-awesome.min.css'
 import '../assets/css/responsive.css'
 import '../assets/css/style.css'
+import {Modal,Form,Button,Col,Row} from 'react-bootstrap'
 
 
 export default class TeamProfile extends Component{
@@ -27,16 +28,42 @@ export default class TeamProfile extends Component{
             members:false,
             achievements:[],
             portfolioLoading: true,
+            showAchievement: false,
+            showProject: false,
+            achievementTitle:'',
+            achievementURL:'',
+            achievementYear:'',
+            achievementLoading:true,
+            projectTitle:'',
+            projectURL:'',
+            projectYear:'',
+            achievements:null,
+            projects:null,
+            projectLoading: true
+            
         }
         this.fetchProfile = this.fetchProfile.bind(this);
         this.middleContent = this.middleContent.bind(this);
         this.toggleMiddleContent = this.toggleMiddleContent.bind(this);
+        this.handleShowAchievement = this.handleShowAchievement.bind(this);
+      this.handleCloseAchievement = this.handleCloseAchievement.bind(this);
+      this.addAchievement   = this.addAchievement.bind(this);
+      this.OnInputChangeAchievement = this.OnInputChangeAchievement.bind(this);
+      this.fetchAchievements = this.fetchAchievements.bind(this);
+      this.handleShowProject = this.handleShowProject.bind(this);
+      this.handleCloseProject = this.handleCloseProject.bind(this);
+      this.addProject  = this.addProject.bind(this);
+      this.OnInputChangeProject = this.OnInputChangeProject.bind(this);
+      this.fetchProjects = this.fetchProjects.bind(this);
+
     }
 
 
 
     async fetchProfile()
     {
+      
+
       await axios.get('http://localhost:2000/fetch_team_profile',{withCredentials: true}).then((response)=>{
 
       this.setState({teamData:response.data[0]},()=>{
@@ -45,6 +72,166 @@ export default class TeamProfile extends Component{
       })
       .catch((err)=>{throw err})
 
+    }
+    handleCloseProject() {
+      this.setState({ showProject: false });
+    }
+  
+    handleShowProject() {
+      this.setState({ showProject: true });
+    }
+
+    handleCloseAchievement() {
+      this.setState({ showAchievement: false });
+    }
+  
+    handleShowAchievement() {
+      this.setState({ showAchievement: true });
+    }
+    OnInputChangeProject(event)
+    {
+        event.preventDefault();
+        // console.log(this.state.event.target.name)
+        this.setState({
+            [event.target.name]: event.target.value,
+          })
+
+          
+    }
+
+    OnInputChangeAchievement(event)
+    {
+        event.preventDefault();
+        // console.log(this.state.event.target.name)
+        this.setState({
+            [event.target.name]: event.target.value,
+          })
+
+          
+    }
+    addProject(e)
+    {
+      e.preventDefault();
+      const config = {
+        headers: {
+            'content-type': 'application/json'
+        },
+        withCredentials: true, // default
+
+    };
+    var data = {
+      "title":this.state.projectTitle,
+      "url":this.state.projectURL,
+      "year":this.state.projectYear,
+    }
+    axios.post('http://localhost:2000/team_project',data,config)
+    .then((response)=>{
+      this.setState({projectLoading:true});
+      this.handleCloseProject();
+     
+    })
+    .catch((err)=>{throw err})
+
+
+    }
+
+    addAchievement(e)
+    {
+      e.preventDefault();
+      const config = {
+        headers: {
+            'content-type': 'application/json'
+        },
+        withCredentials: true, // default
+
+    };
+    var data = {
+      "title":this.state.achievementTitle,
+      "url":this.state.achievementURL,
+      "year":this.state.achievementYear,
+    }
+    axios.post('http://localhost:2000/team_achievement',data,config)
+    .then((response)=>{
+      this.setState({achievementLoading:true});
+      this.handleCloseAchievement();
+     
+    })
+    .catch((err)=>{throw err})
+
+
+    }
+
+    fetchProjects()
+    {
+      
+      if(this.state.projectLoading)
+      {
+        axios.get('http://localhost:2000/team_project',{withCredentials: true})
+        .then((response)=>{this.setState({projects:response.data})
+      
+          this.setState({projectLoading:false});
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.projects.map(function(item){
+
+          return(
+            <div id="projects">
+          <ul class="list-group">
+          <li class="list-group-item">Title: {item.title}</li>
+          <li class="list-group-item">URL: {item.url}</li>
+          <li class="list-group-item">Year:{item.year}</li>
+          
+      </ul>
+
+        </div>
+          )
+
+        })
+
+        return list;
+
+      }
+
+    
+    }
+    fetchAchievements()
+    {
+      
+      if(this.state.achievementLoading)
+      {
+        axios.get('http://localhost:2000/team_achievement',{withCredentials: true})
+        .then((response)=>{this.setState({achievements:response.data})
+      
+          this.setState({achievementLoading:false});
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.achievements.map(function(item){
+
+          return(
+            <div id="achievements">
+          <ul class="list-group">
+          <li class="list-group-item">Title: {item.title}</li>
+          <li class="list-group-item">URL: {item.url}</li>
+          <li class="list-group-item">Year:{item.year}</li>
+          
+      </ul>
+
+        </div>
+          )
+
+        })
+
+        return list;
+
+      }
+
+    
     }
 
     middleContent()
@@ -130,33 +317,108 @@ export default class TeamProfile extends Component{
       return(
         <div id="portfolio" className="container">
           <div>
-      <button type="button"  data-toggle="modal" data-target="#achievementModal" className="btn btn-danger">Add Achievement</button>
+      <button type="button" onClick={this.handleShowAchievement} className="btn btn-danger">Add Achievement</button>
       </div>
+      <div>
+        {this.fetchAchievements()}
+        </div>
       <div style={{marginTop:20}}>
-        <button type="button" className="btn btn-danger">Add Project</button>
+        <button type="button" onClick={this.handleShowProject} className="btn btn-danger">Add Project</button>
         </div>
-        <div id="Achievement">
-              <div class="modal fade" id="achievementModal"  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Add Achievement</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              ...
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
+        <div>
+          {this.fetchProjects()}
         </div>
-      </div>
+        <div id="AchievementModal">
+        <Modal show={this.state.showAchievement} onHide={this.handleCloseAchievement}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Achievement</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Title
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="achievementTitle" type="text" value={this.state.achievementTitle} onChange={this.OnInputChangeAchievement} placeholder="Title" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          URL
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="achievementURL" value={this.state.achievementURL} onChange={this.OnInputChangeAchievement} type="text" placeholder="URL" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Year
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="achievementYear" type="text" value={this.state.achievementYear} onChange={this.OnInputChangeAchievement}  placeholder="Year" />
+        </Col>
+      </Form.Group>
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleCloseAchievement}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addAchievement}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         </div>
+        <div id="ProjectModal">
+        <Modal show={this.state.showProject} onHide={this.handleShowProject}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Project</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Title
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="projectTitle" type="text" value={this.state.projectTitle} onChange={this.OnInputChangeProject} placeholder="Title" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          URL
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="projectURL" value={this.state.projectURL} onChange={this.OnInputChangeProject} type="text" placeholder="URL" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Year
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="projectYear" type="text" value={this.state.projectYear} onChange={this.OnInputChangeProject}  placeholder="Year" />
+        </Col>
+      </Form.Group>
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleCloseProject}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addProject}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        </div>
+
+
+
         </div>
       )
 
