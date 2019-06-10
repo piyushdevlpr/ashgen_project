@@ -4943,6 +4943,30 @@ a:hover {
 	position : absolute ;
 	bottom:48px;
 }
+.posrel {
+	position : relative ;
+	align-content: center;
+}
+.img-thumbnail {
+	width : 100% ;
+}
+.buttn {
+	position: absolute;
+	/* top: 50%;
+	left: 50%; */
+	/* transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%); */
+	margin-top : 20% ;
+	left : 35% ;
+	/* top: */
+	background-color: #555;
+	color: white;
+	font-size: 16px;
+	padding: 12px 24px;
+	border: none;
+	cursor: pointer;
+	border-radius: 5px;
+}
 .but1 {
 	float: left;
 	width: 5%;

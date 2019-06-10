@@ -304,7 +304,7 @@ export default class TeamProfile extends Component{
         <div id="about">
           <ul class="list-group">
           <li class="list-group-item">Field: {this.state.teamData.field}</li>
-          <li class="list-group-item">Institude: {this.state.teamData.institute}</li>
+          <li class="list-group-item">Institute: {this.state.teamData.institute}</li>
           <li class="list-group-item">Establishment:{this.state.teamData.establishment}</li>
           
       </ul>

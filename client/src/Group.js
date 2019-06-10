@@ -6,6 +6,7 @@ import ChatVideo from './ChatVideo';
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import socketIOClient from "socket.io-client";
+import {Modal,Form,Button,Col,Row} from 'react-bootstrap'
 const socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
         
 class People extends Component {
@@ -25,6 +26,7 @@ class People extends Component {
             toshowgroupname:'', 
             groupusers : [],
             grouprequestedusers : [],
+            creatingtitle:false,
             admin:'',
             members : [],
             newgroupname : '',
@@ -45,6 +47,9 @@ class People extends Component {
         event.preventDefault();
         this.setState({
             creating : !this.state.creating,
+            creatingtitle : true,
+            showDone : false,
+            newgroupname : "",
             members : [],
             tochatwith : '',
             tochatwithid: '',
@@ -79,7 +84,7 @@ class People extends Component {
             credentials:'include'
           }).then(res => res.json()).then(data => {
               console.log(data);
-              this.setState({creating :false , groups : data},function(){
+              this.setState({creating :false ,creatingtitle:false, groups : data},function(){
             //   this.getgroups() ;
             console.log(this.state)
           })})
@@ -240,6 +245,12 @@ class People extends Component {
     }
     componentWillUnmount(){
         // window.removeEventListener('beforeunload',this.doSomethingBeforeUnload());
+    }
+    handleClose=()=>{
+        this.setState({creatingtitle : false , creating : false}) ;
+    }
+    addgroupname=()=>{
+        this.setState({creatingtitle : false}) ;
     }
     componentDidMount(){
         this.getgroups() ;
@@ -569,12 +580,40 @@ class People extends Component {
                     {this.state.creating ? 
                     (
                         <span>
-                            <div className="messages-list">
+                            {this.state.showDone ? <button onClick={this.creategroup}>Done</button> : null }
+
+                            {/* <div className="messages-list">
                             <form>
                             {this.state.showDone ? <button onClick={this.creategroup}>Done</button> : null }
                                 GroupName : <input required={true} value={this.state.newgroupchange} onChange={this.handlechange} name = "newgroupname" />
                             </form>
-                            </div>
+                            </div> */}
+           <Modal show={this.state.creatingtitle} onHide={this.handleClose}>
+                <Modal.Header closeButton>
+                <Modal.Title>Create Group</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+            <Form.Label column sm="2">
+            Title
+            </Form.Label>
+          <Col sm="10">
+          <Form.Control name="newgroupname" type="text" value={this.state.newgroupname} onChange={this.handlechange} placeholder="Name" />
+        </Col>
+        </Form.Group>
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addgroupname}>
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
                                 <div class="messages-list">
                                     <ul>
                                         {this.showfriends()}

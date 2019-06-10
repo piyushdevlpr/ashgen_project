@@ -33,7 +33,8 @@ class People extends Component {
             message : '',
             emoji : false ,
             previousmess : [{from:'',data:''}],
-            file: null
+            file: null,
+            uploading: false 
         }
         this.handlechange=this.handlechange.bind(this);
         this.sendmsg=this.sendmsg.bind(this);
@@ -141,11 +142,10 @@ class People extends Component {
     filehandleChange(event)
     {
         event.preventDefault();
-        this.setState({[event.target.name]: event.target.files[0]},
+        this.setState({[event.target.name]: event.target.files[0] , uploading:true },
             ()=>{console.log(this.state.file)}
             );
     }
-
     sendmsg=(event)=>{
         event.preventDefault() ;
         if(this.state.file==null)
@@ -161,11 +161,12 @@ class People extends Component {
         else{
             var msg = this.state.message ;
             // if(msg){
-            var file= this.state.file;
-            var fileName= file.name;
+            var file = this.state.file;
+            var fileName = file.name;
             var fileType = file.type.split('/')[0];
             this.setState({message : ""},function(){
                 socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:this.state.file,fileName,fileType}) ;
+                this.setState({file:null} ) ;
             }); 
             // }
         }
@@ -178,7 +179,7 @@ class People extends Component {
             if(data.data.format=="text") 
             {   
                return( <ChatText data={data} user={this.props.location.state.username}/>)
-
+        
             }
             else if(data.data.format=="image")
             {
@@ -233,11 +234,7 @@ class People extends Component {
         this.showfriends() ;
         socket.emit('join',{username:this.props.location.state.username}) ;
         socket.on("newmessagereceived",data=>{
-            this.setState(state => {
-                // if(data.message.from !== this.state.tochatwith && data.message.from === this.props.location.state.username){
-                //     return ;
-                // }
-                
+            this.setState(state => {       
                 if(data.messages.from !== this.state.tochatwith && data.messages.from !== this.props.location.state.username){ //if currentuser is not the one who has sent msg and the person with whom the user is chatting has not sent the message
                     var list2 = this.state.friendsnewmessage ;
                     list2[data.messages.from]++ ;
