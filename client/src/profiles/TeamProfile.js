@@ -39,7 +39,9 @@ export default class TeamProfile extends Component{
             projectYear:'',
             achievements:null,
             projects:null,
-            projectLoading: true
+            projectLoading: true,
+            profilePhotoUpload : null,
+            profileTimelineUpload:null,
             
         }
         this.fetchProfile = this.fetchProfile.bind(this);
@@ -55,10 +57,50 @@ export default class TeamProfile extends Component{
       this.addProject  = this.addProject.bind(this);
       this.OnInputChangeProject = this.OnInputChangeProject.bind(this);
       this.fetchProjects = this.fetchProjects.bind(this);
+      this.profilePhotoHandle = this.profilePhotoHandle.bind(this);
+      this.profileTimelineHandle = this.profileTimelineHandle.bind(this);
 
     }
 
+    profileTimelineHandle(event)
+    {
+        event.preventDefault();
+        this.setState({[event.target.name]: event.target.files[0]},
+            ()=>{console.log(this.state.profileTimelineUpload)}
+            );
+    }
 
+    profilePhotoHandle(event)
+    {
+        event.preventDefault();
+        this.setState({[event.target.name]: event.target.files[0]},
+          ()=>{
+            const config = {
+              headers: {
+                'content-type': 'multipart/form-data'
+
+              },      
+              withCredentials: true, // default
+          };
+          var formData = new FormData();
+          formData.append('profilePhotoUpload',this.state.profilePhotoUpload);
+          formData.append('team_id',this.state.teamData._id)
+          
+          axios.post('http://localhost:2000/team/profile-photo',formData,config)
+          .then((response)=>{
+            console.log(response);
+            this.setState({teamData:response.data});
+            // this.setState(prevState => {
+            //   let teamData = Object.assign({}, prevState.teamData);  // creating copy of state variable jasper
+            //   teamData.profilePhoto = response.data.profilePhoto;                     // update the name property, assign a new value                 
+            //   return { teamData };                                 // return new object jasper object
+            // })
+          })
+          .catch((err)=>{throw err})
+          }
+            
+            );
+    }
 
     async fetchProfile()
     {
@@ -179,10 +221,10 @@ export default class TeamProfile extends Component{
 
           return(
             <div id="projects">
-          <ul class="list-group">
-          <li class="list-group-item">Title: {item.title}</li>
-          <li class="list-group-item">URL: {item.url}</li>
-          <li class="list-group-item">Year:{item.year}</li>
+          <ul className="list-group">
+          <li className="list-group-item">Title: {item.title}</li>
+          <li className="list-group-item">URL: {item.url}</li>
+          <li className="list-group-item">Year:{item.year}</li>
           
       </ul>
 
@@ -215,10 +257,10 @@ export default class TeamProfile extends Component{
 
           return(
             <div id="achievements">
-          <ul class="list-group">
-          <li class="list-group-item">Title: {item.title}</li>
-          <li class="list-group-item">URL: {item.url}</li>
-          <li class="list-group-item">Year:{item.year}</li>
+          <ul className="list-group">
+          <li className="list-group-item">Title: {item.title}</li>
+          <li className="list-group-item">URL: {item.url}</li>
+          <li className="list-group-item">Year:{item.year}</li>
           
       </ul>
 
@@ -302,10 +344,10 @@ export default class TeamProfile extends Component{
       {
         return(
         <div id="about">
-          <ul class="list-group">
-          <li class="list-group-item">Field: {this.state.teamData.field}</li>
-          <li class="list-group-item">Institude: {this.state.teamData.institute}</li>
-          <li class="list-group-item">Establishment:{this.state.teamData.establishment}</li>
+          <ul className="list-group">
+          <li className="list-group-item">Field: {this.state.teamData.field}</li>
+          <li className="list-group-item">Institude: {this.state.teamData.institute}</li>
+          <li className="list-group-item">Establishment:{this.state.teamData.establishment}</li>
           
       </ul>
 
@@ -668,8 +710,10 @@ export default class TeamProfile extends Component{
               </div>
             </header>{/*header end*/}	
             <section className="cover-sec">
-              <img src="../assets/images/resources/cover-img.jpg" alt />
-              <a href="#" style={{right:'89.5px', color:'#ff0000'}} ><i className="fa fa-camera"></i> Change Image</a>
+              <img src={this.state.teamData.profileTimeline} alt />
+              <input type="file" id="uploadTimeline" name="profileTimelineUpload" style={{display:'none'}} />
+
+              <a href="#" onClick={()=>{document.getElementById('uploadTimeline').click()}} style={{right:'89.5px', color:'#ff0000'}} ><i className="fa fa-camera"></i> Change Image</a>
             </section>
             <main>
               <div className="main-section">
@@ -680,8 +724,9 @@ export default class TeamProfile extends Component{
                         <div className="main-left-sidebar">
                           <div className="user_profile">
                             <div className="user-pro-img">
-                              <img src="../assets/images/resources/user-pro-img.png" alt />
-                              <a href="#" title=""><i class="fa fa-camera"></i></a>
+                              <img src={this.state.teamData.profilePhoto} alt />
+                              <input type="file" id="uploadPhoto" onChange={this.profilePhotoHandle} name="profilePhotoUpload" style={{display:'none'}} />
+                              <a href="#" onClick={()=>{document.getElementById('uploadPhoto').click()}} title=""><i className="fa fa-camera"></i></a>
                             </div>{/*user-pro-img end*/}
                             <div className="user_pro_status">
                               {/* <ul className="flw-hr">

@@ -22,7 +22,8 @@ var TeamSchema = new mongoose.Schema({
   vision: {type:String},
   funding_status: {type:String},
   rating:{type:Number},
-
+  profilePhoto :{type:String, default:'https://drive.google.com/uc?export=download&id=1cZuz8C5ZUNl5Si2F34RR4_H9sebF5P9z'},
+  profileTimeline:{type:String,default:'https://drive.google.com/uc?export=download&id=1O1PQWchJbWnT4g3hYyI5T48hyOjHSbDq'},
   postedAt: {
     type:String,
     default: moment().format('LLL').toString()
