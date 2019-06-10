@@ -24,6 +24,7 @@ var express            = require("express"),
     var profileRoute   = require('./routes/profiles/profile');
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
+    var Dropbox        = require('dropbox').Dropbox;
     mongoose.Promise = global.Promise;
 //mongodb://localhost/login-ashgen.......process.env.DATABASEURL
 var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
@@ -785,6 +786,8 @@ socket.on("newmessage",function(data){
         })
       }
       else{
+         //Upload to dropbox
+     var dbx = new Dropbox({ accessToken: "AYVLLAhjYcAAAAAAAAAATEk58hbsRiUSoR09dPZLc2VD34rqlK2KoUSdMBsACHWQ" });
         var fileName = data.fileName;
         var DateNow = new Date().getTime();
         fileName   = DateNow+fileName;
@@ -793,40 +796,70 @@ socket.on("newmessage",function(data){
           if(err) {
               return console.log(err);
           }
-        var usercombo1 = currentuser+'/'+friendname ;
-        var usercombo2 = friendname+'/'+currentuser ;
-        var message = data.message ;
-        var obj = {};
-        obj.format=fileType;
-        obj.message = message;
-        obj.url = "/public/uploads/chat/"+fileName;
-      
-        ms = { "from":currentuser,"data":obj } ;
-            // io.to(friendname).emit("newmessagereceived",{messages:ms});
-        Message.findOneAndUpdate({$or:[{usercombo:usercombo1},{usercombo:usercombo2}]},{$push:{messaged:ms}},{new:true},function(err,cuser){
-          if(err){
-            console.log(err) ;
-          }else{
-            console.log(cuser.messaged[cuser.messaged.length - 1]) ;
-            io.to(friendname).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});               
-            io.to(currentuser).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});
-          } 
-        })
-        User.findOneAndUpdate({username : friendname, 'friends.name' : currentuser},{$set:{'friends.$.lastUpdatedAt':Date.now()},$inc:{'friends.$.newmess' : 1}},{new:true},function(err,cuser){
-          if(err){
-            console.log(err) ;
-          }else{
-            console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
-            // User.findOneAndUpdate({username : friendname},{$pullAll:{friends}}) ;
-            User.findOneAndUpdate({username : currentuser, 'friends.name' : friendname},{$set:{'friends.$.lastUpdatedAt':Date.now()}},function(err,cuser2){
+          fs.readFile(path.join(__dirname+"/public/uploads/chat/"+fileName), function (err, contents) {
+            if (err) {
+              console.log('Error: ', err);
+            }
+
+            dbx.filesUpload({ path: '/Uploads/'+fileName, contents: contents })
+           .then(function (response) { 
+            dbx.sharingCreateSharedLinkWithSettings({path:'/Uploads/'+fileName }).then(function (res) { 
+              var usercombo1 = currentuser+'/'+friendname ;
+            var usercombo2 = friendname+'/'+currentuser ;
+            var message = data.message ;
+            var obj = {};
+            obj.format=fileType;
+            obj.message = message;
+            obj.url =  res.url.split('?')[0]+'?dl=1';
+          
+            ms = { "from":currentuser,"data":obj } ;
+                // io.to(friendname).emit("newmessagereceived",{messages:ms});
+            Message.findOneAndUpdate({$or:[{usercombo:usercombo1},{usercombo:usercombo2}]},{$push:{messaged:ms}},{new:true},function(err,cuser){
               if(err){
                 console.log(err) ;
               }else{
-                 console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
-              }
+                console.log(cuser.messaged[cuser.messaged.length - 1]) ;
+                io.to(friendname).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});               
+                io.to(currentuser).emit("newmessagereceived",{messages:cuser.messaged[cuser.messaged.length - 1]});
+              } 
             })
-          }
-        }) 
+            User.findOneAndUpdate({username : friendname, 'friends.name' : currentuser},{$set:{'friends.$.lastUpdatedAt':Date.now()},$inc:{'friends.$.newmess' : 1}},{new:true},function(err,cuser){
+              if(err){
+                console.log(err) ;
+              }else{
+                console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
+                // User.findOneAndUpdate({username : friendname},{$pullAll:{friends}}) ;
+                User.findOneAndUpdate({username : currentuser, 'friends.name' : friendname},{$set:{'friends.$.lastUpdatedAt':Date.now()}},function(err,cuser2){
+                  if(err){
+                    console.log(err) ;
+                  }else{
+                     console.log(cuser+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") ;
+                  }
+                })
+              }
+            }) 
+
+
+
+
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+
+
+           })
+           .catch(function (err) {
+            console.log(err);
+          });
+
+
+            
+
+          });
+
+        
+       
       })
       }        
       });
@@ -902,6 +935,8 @@ socket.on("newmessage",function(data){
           })
         }
         else{
+      //Upload to dropbox
+     var dbx = new Dropbox({ accessToken: "AYVLLAhjYcAAAAAAAAAATEk58hbsRiUSoR09dPZLc2VD34rqlK2KoUSdMBsACHWQ" });
 
           var fileName = data.fileName;
           var DateNow = new Date().getTime();
@@ -911,7 +946,15 @@ socket.on("newmessage",function(data){
             if(err) {
                 return console.log(err);
             }
-            var obj ={};
+            fs.readFile(path.join(__dirname+"/public/uploads/chat/"+fileName), function (err, contents) {
+              if (err) {
+                console.log('Error: ', err);
+              }
+  
+              dbx.filesUpload({ path: '/Uploads/'+fileName, contents: contents })
+             .then(function (response) { 
+              dbx.sharingCreateSharedLinkWithSettings({path:'/Uploads/'+fileName }).then(function (res) { 
+                var obj ={};
             obj.format = fileType;
             obj.message = message;
             obj.url = "/public/uploads/chat/"+fileName;
@@ -951,6 +994,22 @@ socket.on("newmessage",function(data){
             }
             // }
             })
+  
+              })
+              .catch(function (err) {
+                console.log(err);
+              });
+  
+  
+             })
+             .catch(function (err) {
+              console.log(err);
+            });
+  
+  
+              
+  
+            });
 
 
           });
