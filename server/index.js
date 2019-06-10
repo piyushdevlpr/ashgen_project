@@ -957,7 +957,7 @@ socket.on("newmessage",function(data){
                 var obj ={};
             obj.format = fileType;
             obj.message = message;
-            obj.url = "/public/uploads/chat/"+fileName;
+            obj.url = res.url.split('?')[0]+'?dl=1';
             
             ms = { "from":currentuser,"data":obj } ;
             // io.to(friendname).emit("newmessagereceived",{messages:ms});
