@@ -142,7 +142,7 @@ class People extends Component {
     filehandleChange(event)
     {
         event.preventDefault();
-        this.setState({[event.target.name]: event.target.files[0] , uploading:true },
+        this.setState({[event.target.name]: event.target.files[0]},
             ()=>{console.log(this.state.file)}
             );
     }
@@ -164,7 +164,7 @@ class People extends Component {
             var file = this.state.file;
             var fileName = file.name;
             var fileType = file.type.split('/')[0];
-            this.setState({message : ""},function(){
+            this.setState({message : "",uploading:true},function(){
                 socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:this.state.file,fileName,fileType}) ;
                 this.setState({file:null} ) ;
             }); 
@@ -260,6 +260,9 @@ class People extends Component {
                 var z = []
                 z = this.state.friends ;
                 if(data.messages.from === this.props.location.state.username){
+                    if(data.messages.data.format !== "text"){
+                    this.setState({uploading:false})
+                    }
                     var x = {} ;
                     for(var i = 0 ; i < z.length ; i++){
                         if(z[i].name == this.state.tochatwith){
@@ -279,6 +282,11 @@ class People extends Component {
               });
             }
             );
+    }
+    getmsgloader=()=>{
+        if(this.state.uploading){
+            return(<div className="loader">sending......</div>)
+        }
     }
     handleClick = (e) => {
         e.preventDefault();
@@ -341,11 +349,10 @@ class People extends Component {
 			(              
                  <span>
 								<div className="messages-line" ref={div => this.messageList = div}>
-                                    <span>
-                                        {this.showpreviousmessages()}
-                                    </span>
-                                    
+                                {this.showpreviousmessages()}
+                                {this.getmsgloader()}
                                 </div>
+                                
                                 <div class="message-send-area">
 									<form>
 										<div class="mf-field">

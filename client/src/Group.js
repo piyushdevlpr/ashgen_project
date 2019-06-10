@@ -33,7 +33,8 @@ class People extends Component {
             groups:[],
             friends: [],
             previousmess:[],
-            file: null
+            file: null,
+            uploading : false ,
         }
         this.handlechange = this.handlechange.bind(this);
         this.getCreating = this.getCreating.bind(this);
@@ -67,7 +68,7 @@ class People extends Component {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include',
             body:JSON.stringify(data)
-          }).then(res=>res.json()).then(data=> {if(this._ismounted === true){console.log(data)}})
+          }).then(res=>res.json()).then(data=> {console.log(data)})
           .catch(err=> {
             //   if(err.name === 'AbortError') return
               throw err
@@ -252,6 +253,11 @@ class People extends Component {
     addgroupname=()=>{
         this.setState({creatingtitle : false}) ;
     }
+    getmsgloader=()=>{
+        if(this.state.uploading){
+            return(<div className="loader">sending......</div>)
+        }
+    }
     componentDidMount(){
         this.getgroups() ;
         this.getfriends() ;
@@ -260,6 +266,11 @@ class People extends Component {
             this.setState(state => {
                 const list = state.previousmess.slice();
                 list.push(data.messages);
+                if(data.messages.from === this.props.location.state.username){
+                    if(data.messages.data.format !== "text"){
+                        this.setState({uploading:false}) ;
+                    }
+                }
                 console.log(data.messages.data) ;
                 socket.emit("newmesstozerogrp",{groupid:this.state.tochatwithid,currentuser:this.props.location.state.username});
                 return {
@@ -270,7 +281,7 @@ class People extends Component {
             );
         socket.on("newnotification",data=>{  
             this.setState(state => {
-
+        
                     var list2 = this.state.friendsnewmessage ;
                     if(this.state.tochatwithid !== data.groupid && data.from !== this.props.location.state.username){  // if current group is not opened nor is the user the sender of the message,  increment the message number
                     list2[data.groupid]++ ;
@@ -289,10 +300,8 @@ class People extends Component {
                     return {
                       friendsnewmessage:list2 , groups : z
                     };
-                  });
-                
                 });
-        
+            });
     }
     showpreviousmessages=()=>{        
         const list = this.state.previousmess.map((data,index)=>
@@ -343,8 +352,9 @@ class People extends Component {
             var fileName= file.name;
             var fileType = file.type.split('/')[0];
             //var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
-            this.setState({message : ""},function(){
+            this.setState({message : "",uploading:true},function(){
                 socket.emit("newgroupmessage",{username:this.props.location.state.username,groupid:this.state.tochatwithid , message:msg,file:this.state.file,fileName,fileType}) ;
+                this.setState({file:null}) ;
             }); 
 
         }
@@ -652,6 +662,7 @@ class People extends Component {
      <span>
                     <div className="messages-line" ref={div => this.messageList = div}>
                         {this.showpreviousmessages()}
+                        {this.getmsgloader()}
                     </div>
                     
                     <div class="message-send-area">

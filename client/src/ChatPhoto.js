@@ -10,8 +10,12 @@ export default class ChatPhoto extends Component{
         this.state = {
             loading : false ,
             loaded : false ,
+            data: this.props.data
         }
         this.getImage = this.getImage.bind(this) ;
+    }
+    makeloaderfalse=()=>{
+        this.setState({loading:false}) ;
     }
     getImage=(e)=>{
         e.preventDefault() ;
@@ -34,7 +38,7 @@ export default class ChatPhoto extends Component{
                         <div className="posrel">
                         {/* <div> */}
                         {this.state.loading || this.state.loaded
-                        ?<img  src="https://cdn1.goibibo.com/t_tg_fs/new-delhi-india-gate-147623366844-orijgp.jpg" onLoad={this.makeloadedtrue} alt="..." class="img-thumbnail" />
+                        ?<img  src={this.props.data.data.url} onError={this.makeloaderfalse} onLoad={this.makeloadedtrue} alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" class="img-thumbnail" />
                           
                         :<img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" alt="..." class="img-thumbnail" />
                         
@@ -83,11 +87,10 @@ export default class ChatPhoto extends Component{
            <span>
            <div class="incoming_msg">
                         <div class="received_msg">
-                            <div class="received_withd_msg">
                             <div className="posrel">
                         {/* <div> */}
                         {this.state.loading || this.state.loaded
-                        ?<img  src="https://cdn1.goibibo.com/t_tg_fs/new-delhi-india-gate-147623366844-orijgp.jpg" onLoad={this.makeloadedtrue} alt="..." class="img-thumbnail" />
+                        ?<img  src={this.props.data.data.url} onLoad={this.makeloadedtrue} onError={this.makeloaderfalse} alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" class="img-thumbnail" />
                           
                         :<img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" alt="..." class="img-thumbnail" />
                         
@@ -98,9 +101,6 @@ export default class ChatPhoto extends Component{
                         } 
                         {console.log(this.state)}                       
                         {/* <img src={"C:\Users\piyush\Desktop\ashgen_project\server\public\uploads\chat\"} + this.prop.data.data.url.slice(21) alt="..." class="img-thumbnail" />  */}
-                          
-                            </div>
-   
                             </div>
                         </div>
                     </div>
