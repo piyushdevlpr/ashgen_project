@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ChatText from './ChatText';
 import ChatPhoto from './ChatPhoto';
 import ChatVideo from './ChatVideo';
+import ChatFile from './ChatFile';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
@@ -188,6 +189,10 @@ class People extends Component {
             else if(data.data.format=="video")
             {
                 return(<ChatVideo data={data} user={this.props.location.state.username}/>)
+            }
+            else if(data.data.format=="application")
+            {
+                return(<ChatFile data={data} user={this.props.location.state.username}/>)
             }
         }
             );

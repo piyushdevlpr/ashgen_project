@@ -23,15 +23,7 @@ export default class ChatText extends Component{
                         <div class="sent_msg">
                         <p>{this.props.data.data.message}</p>
                         </div>
-                    </div>
-                    
-                   
-                    //   <div class="message sent">
-                    //     <p>{this.props.data.data.message}</p>
-                    //     {/* <span class="metadata">
-                    //         <span class="time"></span>
-                    //     </span> */}
-                    //   </div>
+                    </div>   
                     
                     )
                     :
@@ -43,12 +35,7 @@ export default class ChatText extends Component{
                             {/* </div> */}
                         </div>
                     </div>
-                //     <div class="message received">
-                //   <p>{this.props.data.data.message}</p>
-                //   {/* <span class="metadata"><span class="time"></span></span> */}
-                // </div>
                     )
-                // </span>
         )
     }
 }
