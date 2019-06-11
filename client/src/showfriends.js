@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ChatText from './ChatText';
 import ChatPhoto from './ChatPhoto';
 import ChatVideo from './ChatVideo';
+import ChatFile from './ChatFile';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
@@ -33,7 +34,8 @@ class People extends Component {
             message : '',
             emoji : false ,
             previousmess : [{from:'',data:''}],
-            file: null
+            file: null,
+            uploading: false 
         }
         this.handlechange=this.handlechange.bind(this);
         this.sendmsg=this.sendmsg.bind(this);
@@ -145,7 +147,6 @@ class People extends Component {
             ()=>{console.log(this.state.file)}
             );
     }
-
     sendmsg=(event)=>{
         event.preventDefault() ;
         if(this.state.file==null)
@@ -161,11 +162,12 @@ class People extends Component {
         else{
             var msg = this.state.message ;
             // if(msg){
-            var file= this.state.file;
-            var fileName= file.name;
+            var file = this.state.file;
+            var fileName = file.name;
             var fileType = file.type.split('/')[0];
-            this.setState({message : ""},function(){
+            this.setState({message : "",uploading:true},function(){
                 socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:this.state.file,fileName,fileType}) ;
+                this.setState({file:null} ) ;
             }); 
             // }
         }
@@ -178,7 +180,7 @@ class People extends Component {
             if(data.data.format=="text") 
             {   
                return( <ChatText data={data} user={this.props.location.state.username}/>)
-
+        
             }
             else if(data.data.format=="image")
             {
@@ -187,6 +189,10 @@ class People extends Component {
             else if(data.data.format=="video")
             {
                 return(<ChatVideo data={data} user={this.props.location.state.username}/>)
+            }
+            else if(data.data.format=="application")
+            {
+                return(<ChatFile data={data} user={this.props.location.state.username}/>)
             }
         }
             );
@@ -233,11 +239,7 @@ class People extends Component {
         this.showfriends() ;
         socket.emit('join',{username:this.props.location.state.username}) ;
         socket.on("newmessagereceived",data=>{
-            this.setState(state => {
-                // if(data.message.from !== this.state.tochatwith && data.message.from === this.props.location.state.username){
-                //     return ;
-                // }
-                
+            this.setState(state => {       
                 if(data.messages.from !== this.state.tochatwith && data.messages.from !== this.props.location.state.username){ //if currentuser is not the one who has sent msg and the person with whom the user is chatting has not sent the message
                     var list2 = this.state.friendsnewmessage ;
                     list2[data.messages.from]++ ;
@@ -263,6 +265,9 @@ class People extends Component {
                 var z = []
                 z = this.state.friends ;
                 if(data.messages.from === this.props.location.state.username){
+                    if(data.messages.data.format !== "text"){
+                    this.setState({uploading:false})
+                    }
                     var x = {} ;
                     for(var i = 0 ; i < z.length ; i++){
                         if(z[i].name == this.state.tochatwith){
@@ -282,6 +287,11 @@ class People extends Component {
               });
             }
             );
+    }
+    getmsgloader=()=>{
+        if(this.state.uploading){
+            return(<div className="loader">sending......</div>)
+        }
     }
     handleClick = (e) => {
         e.preventDefault();
@@ -344,11 +354,10 @@ class People extends Component {
 			(              
                  <span>
 								<div className="messages-line" ref={div => this.messageList = div}>
-                                    <span>
-                                        {this.showpreviousmessages()}
-                                    </span>
-                                    
+                                {this.showpreviousmessages()}
+                                {this.getmsgloader()}
                                 </div>
+                                
                                 <div class="message-send-area">
 									<form>
 										<div class="mf-field">

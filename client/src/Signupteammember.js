@@ -10,8 +10,13 @@ class App extends Component {
         personid : "",
         valid : "not-set" ,
         val : false,
-        emailid : "" 
+        loading : true,
+        emailid : "",
+        username:'',
+        password:'' 
     }
+    this.submitform = this.submitform.bind(this) ;
+    this.handleChange = this.handleChange.bind(this) ; 
 }
 getids=()=>{
     var id = this.props.location.pathname.slice(21) ;
@@ -44,31 +49,64 @@ getinformation=()=>{
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body : JSON.stringify(this.state) ,
             credentials:'include'
-          }).then(res => res.json()).then(data => {this.setState({val:data.val},function(){
+          }).then(res => res.json()).then(data => {this.setState({val:data.val,loading:false},function(){
               if(data.val){
                  this.setState({emailid : data.emailid});
               }
           })})
          
 }
+handleChange=(e)=>{
+    e.preventDefault() ;
+    this.setState({
+        [e.target.name] : e.target.value
+    })
+}
+submitform=(e)=>{
+    e.preventDefault();
+    fetch("http://localhost:2000/register", {
+    method: "POST",
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(this.state),
+    credentials:'include'
+  }).then(res => res.json()).then(data => {this.setState({signedup : data},function(){
+      if(data === true){
+          this.getprofilepage() ;
+      }
+  })})
+}
+getprofilepage=()=>{
+    // this.props.history.push()
+}
 componentWillMount(){
    this.getids() ;
 }
 render() {
     return (
-        this.state.valid === "not-set" 
+        this.state.loading
         ?
             <div>Loading ....</div>
         :   
             this.state.valid && this.state.val
             ?
             <div className="App container mt-3">
-                 Sign Up here {this.state.emailid}
+                <h3>
+                    Sign Up here {this.state.emailid}
+                </h3><br/>
+                 <div>
+                     <form onSubmit={this.submitform}>
+                         <input className='form-control' type="text" name="username" placeholder="Enter Username" onChange={this.handleChange} value={this.state.username} /><br/>
+                         <input className='form-control' type="password" name="password" placeholder="Enter password" onChange={this.handleChange} value={this.state.password} /><br/>
+                         <button className="btn btn-default addallborder">Sign Up</button>
+                     </form>
+                 </div>
+                {console.log(this.state)}
             </div>                
             :
             <div className="App container mt-3">
                 Not a valid link
             </div>
+            
     );
   }
 }

@@ -6,6 +6,7 @@ import ChatVideo from './ChatVideo';
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import socketIOClient from "socket.io-client";
+import {Modal,Form,Button,Col,Row} from 'react-bootstrap'
 const socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
         
 class People extends Component {
@@ -25,13 +26,15 @@ class People extends Component {
             toshowgroupname:'', 
             groupusers : [],
             grouprequestedusers : [],
+            creatingtitle:false,
             admin:'',
             members : [],
             newgroupname : '',
             groups:[],
             friends: [],
             previousmess:[],
-            file: null
+            file: null,
+            uploading : false ,
         }
         this.handlechange = this.handlechange.bind(this);
         this.getCreating = this.getCreating.bind(this);
@@ -45,6 +48,9 @@ class People extends Component {
         event.preventDefault();
         this.setState({
             creating : !this.state.creating,
+            creatingtitle : true,
+            showDone : false,
+            newgroupname : "",
             members : [],
             tochatwith : '',
             tochatwithid: '',
@@ -62,7 +68,7 @@ class People extends Component {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include',
             body:JSON.stringify(data)
-          }).then(res=>res.json()).then(data=> {if(this._ismounted === true){console.log(data)}})
+          }).then(res=>res.json()).then(data=> {console.log(data)})
           .catch(err=> {
             //   if(err.name === 'AbortError') return
               throw err
@@ -79,7 +85,7 @@ class People extends Component {
             credentials:'include'
           }).then(res => res.json()).then(data => {
               console.log(data);
-              this.setState({creating :false , groups : data},function(){
+              this.setState({creating :false ,creatingtitle:false, groups : data},function(){
             //   this.getgroups() ;
             console.log(this.state)
           })})
@@ -241,6 +247,17 @@ class People extends Component {
     componentWillUnmount(){
         // window.removeEventListener('beforeunload',this.doSomethingBeforeUnload());
     }
+    handleClose=()=>{
+        this.setState({creatingtitle : false , creating : false}) ;
+    }
+    addgroupname=()=>{
+        this.setState({creatingtitle : false}) ;
+    }
+    getmsgloader=()=>{
+        if(this.state.uploading){
+            return(<div className="loader">sending......</div>)
+        }
+    }
     componentDidMount(){
         this.getgroups() ;
         this.getfriends() ;
@@ -249,6 +266,11 @@ class People extends Component {
             this.setState(state => {
                 const list = state.previousmess.slice();
                 list.push(data.messages);
+                if(data.messages.from === this.props.location.state.username){
+                    if(data.messages.data.format !== "text"){
+                        this.setState({uploading:false}) ;
+                    }
+                }
                 console.log(data.messages.data) ;
                 socket.emit("newmesstozerogrp",{groupid:this.state.tochatwithid,currentuser:this.props.location.state.username});
                 return {
@@ -259,7 +281,7 @@ class People extends Component {
             );
         socket.on("newnotification",data=>{  
             this.setState(state => {
-
+        
                     var list2 = this.state.friendsnewmessage ;
                     if(this.state.tochatwithid !== data.groupid && data.from !== this.props.location.state.username){  // if current group is not opened nor is the user the sender of the message,  increment the message number
                     list2[data.groupid]++ ;
@@ -278,10 +300,8 @@ class People extends Component {
                     return {
                       friendsnewmessage:list2 , groups : z
                     };
-                  });
-                
                 });
-        
+            });
     }
     showpreviousmessages=()=>{        
         const list = this.state.previousmess.map((data,index)=>
@@ -332,8 +352,9 @@ class People extends Component {
             var fileName= file.name;
             var fileType = file.type.split('/')[0];
             //var socket = socketIOClient('http://127.0.0.1:2000', {transports: ['websocket']});
-            this.setState({message : ""},function(){
+            this.setState({message : "",uploading:true},function(){
                 socket.emit("newgroupmessage",{username:this.props.location.state.username,groupid:this.state.tochatwithid , message:msg,file:this.state.file,fileName,fileType}) ;
+                this.setState({file:null}) ;
             }); 
 
         }
@@ -569,12 +590,40 @@ class People extends Component {
                     {this.state.creating ? 
                     (
                         <span>
-                            <div className="messages-list">
+                            {this.state.showDone ? <button onClick={this.creategroup}>Done</button> : null }
+
+                            {/* <div className="messages-list">
                             <form>
                             {this.state.showDone ? <button onClick={this.creategroup}>Done</button> : null }
                                 GroupName : <input required={true} value={this.state.newgroupchange} onChange={this.handlechange} name = "newgroupname" />
                             </form>
-                            </div>
+                            </div> */}
+           <Modal show={this.state.creatingtitle} onHide={this.handleClose}>
+                <Modal.Header closeButton>
+                <Modal.Title>Create Group</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+            <Form.Label column sm="2">
+            Title
+            </Form.Label>
+          <Col sm="10">
+          <Form.Control name="newgroupname" type="text" value={this.state.newgroupname} onChange={this.handlechange} placeholder="Name" />
+        </Col>
+        </Form.Group>
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addgroupname}>
+              Done
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
                                 <div class="messages-list">
                                     <ul>
                                         {this.showfriends()}
@@ -613,6 +662,7 @@ class People extends Component {
      <span>
                     <div className="messages-line" ref={div => this.messageList = div}>
                         {this.showpreviousmessages()}
+                        {this.getmsgloader()}
                     </div>
                     
                     <div class="message-send-area">

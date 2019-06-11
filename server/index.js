@@ -695,6 +695,7 @@ app.post("/get-info-requestedmember",function(req,res){
           if(team.requested[i]._id == personid){
            console.log("here1") ;
             res.json({emailid : team.requested[i].email , val : true});
+            break ;
           }else if(i === team.requested.length - 1){
             console.log("here2") ;
             res.json({val:false});
