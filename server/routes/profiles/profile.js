@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 var TeamProfileModel = require('../../models/profiles/team/team')
 var TeamAchievementModel = require('../../models/profiles/team/team_achievements');
 var TeamProjectModel = require('../../models/profiles/team/team_projects');
+var Dropbox =require('dropbox').Dropbox;
+var fs     = require('fs');
 
 
 router.post('/team_profile',(req,res)=>{   // form data is post here
@@ -125,5 +127,62 @@ router.post('/team_project',function(req,res)
 
 });
 
+
+//profile photo upload
+const storagePhoto = multer.diskStorage({
+    destination: "./public/uploads/photo",
+    filename: function(req, file, cb){
+       cb(null,"IMAGE-" + Date.now() + path.extname(file.originalname));
+    }
+ });
+
+ const uploadPhoto = multer({
+    storage: storagePhoto,
+    limits:{fileSize: 1000000},
+ }).single("profilePhotoUpload");
+
+router.post('/team/profile-photo',function(req,res)
+{
+    uploadPhoto(req, res, (err) => {
+        
+        if(err)
+            throw err;
+        console.log(req.file);
+        console.log(req.body);
+        var dbx = new Dropbox({ accessToken: "AYVLLAhjYcAAAAAAAAAATEk58hbsRiUSoR09dPZLc2VD34rqlK2KoUSdMBsACHWQ" });
+        fs.readFile(path.join(__dirname+'/../../public/uploads/photo/'+req.file.filename), function (err, contents) {
+            if (err) {
+              console.log('Error: ', err);
+            }
+            dbx.filesUpload({ path: '/Uploads/'+req.file.filename, contents: contents })
+         .then(function (response) {
+            dbx.sharingCreateSharedLinkWithSettings({path:'/Uploads/'+req.file.filename }).then(function (response) {
+                var profilePhoto= response.url.split('?')[0]+'?dl=1';
+                // console.log(profilePhoto);
+
+                TeamProfileModel.findOneAndUpdate({_id:req.body.team_id},{"profilePhoto":profilePhoto},function(err,model)
+                {
+                    if(err)
+                        throw err;
+                    console.log(model[0]);
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(model);
+
+                })
+
+
+            })
+            .catch((err)=>{throw err})
+
+
+
+         })
+         .catch((err)=>{throw err})
+        });
+
+    })
+
+
+})
 
 module.exports = router;
