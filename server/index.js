@@ -749,7 +749,7 @@ socket.on("newmessage",function(data){
         var currentuser = data.username ;
         var friendname = data.friendname ;
         var file   =  data.file;
-        
+        // console.log(data.file + "see HERE") ;
       if(file==null)
       {
         var usercombo1 = currentuser+'/'+friendname ;

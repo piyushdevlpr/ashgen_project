@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Spinner} from 'react-bootstrap' ;
 import socketIOClient from "socket.io-client";
 
 const axios = require("axios");
@@ -13,8 +14,10 @@ export default class ChatPhoto extends Component{
             data: this.props.data
         }
         this.getImage = this.getImage.bind(this) ;
+        this.makeloaderfalse = this.makeloaderfalse.bind(this) ;
     }
-    makeloaderfalse=()=>{
+    makeloaderfalse=(e)=>{
+        e.preventDefault() ;
         this.setState({loading:false}) ;
     }
     getImage=(e)=>{
@@ -44,7 +47,9 @@ export default class ChatPhoto extends Component{
                         
                         }
                         {(!this.state.loading && !this.state.loaded) ? <button className="buttn" onClick={this.getImage}>D</button>
-                        : (this.state.loading) ? <div className="buttn">...</div>
+                        : (this.state.loading) ? 
+                        // <div className="buttn">...</div>
+                        <Spinner className="buttn2" animation="grow" />
                         :null  
                         } 
                         {console.log(this.state)}                       
@@ -96,7 +101,9 @@ export default class ChatPhoto extends Component{
                         
                         }
                         {(!this.state.loading && !this.state.loaded) ? <button className="buttn" onClick={this.getImage}>D</button>
-                        : (this.state.loading) ? <div className="buttn">...</div>
+                        : (this.state.loading) ? 
+                        // <div className="buttn">...</div>
+                        <Spinner onClick={this.makeloaderfalse} className="buttn2" animation="grow" />
                         :null  
                         } 
                         {console.log(this.state)}                       

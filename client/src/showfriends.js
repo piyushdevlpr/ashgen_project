@@ -35,7 +35,9 @@ class People extends Component {
             emoji : false ,
             previousmess : [{from:'',data:''}],
             file: null,
-            uploading: false 
+            uploadingimage: false,
+            uploadingfile: false,
+            uploadingvideo: false, 
         }
         this.handlechange=this.handlechange.bind(this);
         this.sendmsg=this.sendmsg.bind(this);
@@ -165,13 +167,21 @@ class People extends Component {
             var file = this.state.file;
             var fileName = file.name;
             var fileType = file.type.split('/')[0];
-            this.setState({message : "",uploading:true},function(){
+            this.setState({message : ""},function(){
                 socket.emit("newmessage",{username:this.props.location.state.username,friendname:this.state.tochatwith ,message:msg,file:this.state.file,fileName,fileType}) ;
                 this.setState({file:null} ) ;
+                console.log(this.state.file.fileType)
+                if(this.state.file.type.slice(0,5) === "image"){
+                    this.setState({uploadingimage:true} ) ;
+                }
+                else if(this.state.file.type.slice(0,5) === "video"){
+                    this.setState({uploadingvideo:true} ) ;
+                }
+                else if(this.state.file.type.slice(0,11) === "application"){
+                    this.setState({uploadingfile:true} ) ;
+                }
             }); 
-            // }
-        }
-        
+        }    
         this.mainInput.value = "";
     }   
     showpreviousmessages=()=>{        
@@ -265,8 +275,12 @@ class People extends Component {
                 var z = []
                 z = this.state.friends ;
                 if(data.messages.from === this.props.location.state.username){
-                    if(data.messages.data.format !== "text"){
-                    this.setState({uploading:false})
+                    if(data.messages.data.format === "image"){
+                    this.setState({uploadingimage:false})
+                    }else if(data.messages.data.format === "video"){
+                        this.setState({uploadingvideo:false})
+                    }else if(data.messages.data.format === "application"){
+                        this.setState({uploadingfile:false})
                     }
                     var x = {} ;
                     for(var i = 0 ; i < z.length ; i++){
@@ -289,8 +303,12 @@ class People extends Component {
             );
     }
     getmsgloader=()=>{
-        if(this.state.uploading){
-            return(<div className="loader">sending......</div>)
+        if(this.state.uploadingimage){
+            return(<div className="loader">sending image......</div>)
+        }else if(this.state.uploadingvideo){
+            return(<div className="loader">sending video......</div>)
+        }else if(this.state.uploadingfile){
+            return(<div className="loader">sending file......</div>)
         }
     }
     handleClick = (e) => {
@@ -311,7 +329,7 @@ class People extends Component {
             return(
         // <div class="container1">
             <div>
-                            {console.log(this.state)}
+            {console.log(this.state)}
             <section class="messages-page">
 			<div class="container">
 				<div class="messages-sec">

@@ -683,8 +683,13 @@ class People extends Component {
     ):
     (
         this.state.toshowgroupid ? 
-            (
-                    // <h3 className="get_to_right">{this.state.toshowgroupname} - Information</h3><button className="get_to_right_2" onClick={()=>this.delete_group()}>delete</button>
+            (  
+                 <span>
+                     <div class="message-bar-head">
+                     <div className="usr-msg-details">
+                    <div className="usr-mg-info"><h3 className="get_to_right">{this.state.toshowgroupname} - Information</h3>{(this.state.admin===this.props.location.state.username)?<button className="get_to_right_2" onClick={()=>this.delete_group()}>delete</button>:null }</div>
+                    </div>
+                    </div>
                     <div class="messages-list2">
                         {/* <div> */}
                         <ul>
@@ -692,7 +697,8 @@ class People extends Component {
                         {this.showfriendstoaddingroup()}
                         {/* </div> */}
                         </ul>
-                        </div>          
+                        </div>
+                </span>          
             )
             :
             null
