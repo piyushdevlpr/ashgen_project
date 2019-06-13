@@ -16,7 +16,7 @@ import Group from './Group';
 import * as serviceWorker from './serviceWorker';
 import DashboardInd from './DashboardInd';
 
-import Signupteammember from './Signupteammember';
+import Signupteammember from './profiles/Signupteammember';
 import TeamProfile from './profiles/TeamProfile';
 import TeamForm from './profiles/TeamForm';
 

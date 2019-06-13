@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import './App.css';
+import '../App.css';
 
 class App extends Component {
    _ismounted = true ;
@@ -8,10 +8,12 @@ class App extends Component {
     super(props);
     this.state = {
         _id:'',
+        team:false,
         loading : true,
         emailid : "",
         username:'',
-        password:'' 
+        password:'',
+        signedup:null
     }
     this.submitform = this.submitform.bind(this) ;
     this.handleChange = this.handleChange.bind(this) ; 
