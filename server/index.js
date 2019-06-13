@@ -21,7 +21,7 @@ var express            = require("express"),
     io                 = require("socket.io").listen(server),
     getUserRoute       = require('./routes/getUser'),
     postRoute          = require('./routes/post');
-    var profileRoute   = require('./routes/profiles/profile');
+    var teamProfileRoute   = require('./routes/profiles/TeamProfile');
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
     var Dropbox        = require('dropbox').Dropbox;
@@ -77,7 +77,7 @@ app.use(siofu.router)
 var port = process.env.PORT || 2000 ;
 app.use(getUserRoute);
 app.use(postRoute);
-app.use(profileRoute);
+app.use(teamProfileRoute);
 
 
 // app.use(function(req, res, next){

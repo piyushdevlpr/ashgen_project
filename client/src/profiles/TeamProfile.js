@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 //Css file import
-import MemberForm from './MemberForm';
+import AddMemberForm from './AddMemberForm';
 import '../assets/css/animate.css'
 import '../assets/css/bootstrap.min.css'
 import '../assets/css/flatpickr.min.css'
@@ -12,6 +12,7 @@ import '../assets/css/line-awesome-font-awesome.min.css'
 import '../assets/css/responsive.css'
 import '../assets/css/style.css'
 import {Modal,Form,Button,Col,Row} from 'react-bootstrap'
+import { resolveNaptr } from 'dns';
 
 
 export default class TeamProfile extends Component{
@@ -40,6 +41,8 @@ export default class TeamProfile extends Component{
             achievements:null,
             projects:null,
             projectLoading: true,
+            profilePhoto: '',
+            profileTimeline:'',
             profilePhotoUpload : null,
             profileTimelineUpload:null,
             
@@ -89,12 +92,8 @@ export default class TeamProfile extends Component{
           axios.post('http://localhost:2000/team/profile-photo',formData,config)
           .then((response)=>{
             console.log(response);
-            this.setState({teamData:response.data});
-            // this.setState(prevState => {
-            //   let teamData = Object.assign({}, prevState.teamData);  // creating copy of state variable jasper
-            //   teamData.profilePhoto = response.data.profilePhoto;                     // update the name property, assign a new value                 
-            //   return { teamData };                                 // return new object jasper object
-            // })
+            this.setState({profilePhoto:response.data});
+           
           })
           .catch((err)=>{throw err})
           }
@@ -109,6 +108,7 @@ export default class TeamProfile extends Component{
       await axios.get('http://localhost:2000/fetch_team_profile',{withCredentials: true}).then((response)=>{
 
       this.setState({teamData:response.data[0]},()=>{
+        this.setState({profilePhoto:response.data[0].profilePhoto})
         this.setState({loading:false});
       });
       })
@@ -468,7 +468,7 @@ export default class TeamProfile extends Component{
     else if(this.state.members)
     {
       //write add member code
-      return <MemberForm />
+      return <AddMemberForm />
     }
 
     }
@@ -724,7 +724,7 @@ export default class TeamProfile extends Component{
                         <div className="main-left-sidebar">
                           <div className="user_profile">
                             <div className="user-pro-img">
-                              <img src={this.state.teamData.profilePhoto} alt />
+                              <img src={this.state.profilePhoto} alt />
                               <input type="file" id="uploadPhoto" onChange={this.profilePhotoHandle} name="profilePhotoUpload" style={{display:'none'}} />
                               <a href="#" onClick={()=>{document.getElementById('uploadPhoto').click()}} title=""><i className="fa fa-camera"></i></a>
                             </div>{/*user-pro-img end*/}
