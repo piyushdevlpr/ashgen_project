@@ -647,63 +647,7 @@ app.post("/update-new-message-number-group",function(req,res){
       })
 })
 
-app.post("/send-email",function(req,res){
-  console.log("nodemailer here:") ;
-  var requested = {} ;
-  console.log(req.body) ;
-  requested.email = req.body.emailid ;
-  Teamsignup.findOneAndUpdate({teamname:req.user.username},{$push:{requested:requested}},{new:true},function(err,cuser){
-    var link = "http://localhost:3000/sign-up-team-member/"+cuser._id+"-"+cuser.requested[cuser.requested.length - 1]._id ;
-    var transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: 'ojas.sign.up@gmail.com',
-        pass: 'password@ojas'
-      }
-    });
-    let mailOptions = {
-      from: '"Ojas" <ojas.sign.up@gmail.com>', // sender address
-      to: req.body.emailid, // list of receivers
-      subject:"Signup request",
-      text:"You have received a sign up request from "+req.user.username+". Kindly click on following link to go to signup page for the team : "+link+".", // plain text body
-      // html: '<b>NodeJS Email Tutorial</b>' // html body
-      };
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message %s sent: %s', info.messageId, info.response);
-            // res.render('index');
-      });
-  })
-});
-app.post("/get-info-requestedmember",function(req,res){
-    var teamid = req.body.teamid ;
-    var personid = req.body.personid ;
-    console.log(req.body) ;
-    Teamsignup.findById(teamid,function(err,team){
-      if(err){
-        console.log("here0") ;
-        res.json({val:false}) ;
-      }else{
-        for(var i = 0 ; i < team.requested.length ; i++){
-          console.log("length : "+team.requested.length)
-          console.log("teamid : "+team.requested[i]._id)
-          console.log("personid : "+personid)
-          if(team.requested[i]._id == personid){
-           console.log("here1") ;
-            res.json({emailid : team.requested[i].email , val : true});
-            break ;
-          }else if(i === team.requested.length - 1){
-            console.log("here2") ;
-            res.json({val:false});
-          }
-        }
-      }
-    })
-});
+
 //----------------Getting asynchronous calls from front end to access data base-----------
 io.sockets.on("connection",function(socket){
 //----------------Removing a member from private group------------------------------------
