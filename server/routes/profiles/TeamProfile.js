@@ -225,13 +225,13 @@ router.post("/send-email",function(req,res){
               return console.log(error);
           }
           console.log('Message %s sent: %s', info.messageId, info.response);
+          res.sendStatus(200);
               // res.render('index');
         });
     })
   });
 
   router.post("/get-info-requestedmember",function(req,res){
-    console.log(req.body);
     var _id = mongoose.Types.ObjectId(req.body._id);
     AddMemberModel.findById(_id,function(err,model){
       if(err){
@@ -244,4 +244,23 @@ router.post("/send-email",function(req,res){
 });
 
 //********** */
+
+router.get('/pending_members',function(req,res)
+{
+    var team ={
+        "id":req.user._id,
+        "username":req.user.username
+    }
+
+    AddMemberModel.find({team:team},function(err,model)
+    {
+        if(err)
+            return err;
+            res.setHeader('Content-Type', 'application/json');
+            console.log(model);
+            res.send(model);
+
+    })
+
+})
 module.exports = router;

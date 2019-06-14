@@ -184,6 +184,8 @@ app.post("/register",function(req, res,next){
                   })
               }
               console.log("true");  
+              // var response = {"status":true, "team":req.user.team}
+              // res.send(response)
               res.json("true") ;
             });
         });

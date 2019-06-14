@@ -12,7 +12,8 @@ class Signup extends Component {
         login: false ,
         team:false,
         loggedin : false ,
-        signedup : false
+        signedup : false,
+        isteam: null
     }
     this.handleChange = this.handleChange.bind(this);
     this.click = this.click.bind(this);
