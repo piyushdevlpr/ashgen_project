@@ -32,7 +32,8 @@ class Dashboard extends Component {
     componentDidMount(){ 
         this.ismounted = true ;
         this.fetchPosts();
-     
+        console.log(this.props.location)
+
     }
     componentWillUnmount(){
         this.ismounted = false ; 
@@ -186,12 +187,26 @@ class Dashboard extends Component {
     }
     async gotoprofile(event){
         event.preventDefault() ;
-         this.props.history.push({
-          pathname:'/team_profile/',
-          state :{
-              username : this.props.location.state.username 
-          }
-        }) ;
+        if(this.props.location.state.isTeam)
+        {
+            this.props.history.push({
+                pathname:'/team_profile/',
+                state :{
+                    username : this.props.location.state.username 
+                }
+              }) ;
+
+        }
+        else{
+            this.props.history.push({
+                pathname:'/member-profile/',
+                state :{
+                    username : this.props.location.state.username 
+                }
+              }) ;
+
+        }
+         
        
     }
 

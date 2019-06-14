@@ -45,7 +45,7 @@ export default class TeamForm extends Component{
 
         axios.post('http://localhost:2000/member_profile',data,config)
         .then((response)=>{
-            // this.gotoprofile();
+            this.gotoprofile();
             console.log(response);
         })
         .catch((err)=>{throw err})

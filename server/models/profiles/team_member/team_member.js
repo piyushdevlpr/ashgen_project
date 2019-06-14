@@ -27,6 +27,9 @@ var MemberSchema = new mongoose.Schema({
   institute:{type:String},
   vision: {type:String},
   rating:{type:Number},
+  skills:[{skill:String,default:''}],
+  hobbies:[{hobby:String,default:''}],
+  interests:[{interest:String,default:''}],
   profilePhoto :{type:String, default:'https://drive.google.com/uc?export=download&id=1cZuz8C5ZUNl5Si2F34RR4_H9sebF5P9z'},
   profileTimeline:{type:String,default:'https://drive.google.com/uc?export=download&id=1O1PQWchJbWnT4g3hYyI5T48hyOjHSbDq'},
   postedAt: {

@@ -33,7 +33,7 @@ var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
   var whitelist = [];
-  whitelist = ['http://localhost:3000', 'http://localhost:3000/team_profile/','http://localhost:3000/people/']
+  whitelist = ['http://localhost:3000', 'http://localhost:3000/team_profile/','http://localhost:3000/people/','http://localhost:3000/member_profile/']
   // whitelist = ['https://ojus-client-12341fclksjvgjb.herokuapp.com','https://ojus-client-12341fclksjvgjb.herokuapp.com/','https://ojus-client-12341fclksjvgjb.herokuapp.com/your-profile/','https://ojus-client-12341fclksjvgjb.herokuapp.com/team-profile/','https://ojus-client-12341fclksjvgjb.herokuapp.com/people/','https://ojus-client-12341fclksjvgjb.herokuapp.com/groups/','https://ojus-client-12341fclksjvgjb.herokuapp.com/friends/']
   var corsOptions = {
     credentials:true,                           //using credentials from frontend aftr authentication
@@ -94,11 +94,15 @@ app.use(memberProfileRoute);
 //----------Authnticating the login credentials enterd by user-------------------------
 app.get("/loggedin",function(req,res,next){
   console.log(req.user + "true") ;
-  res.json("true") ;
+  res.setHeader('Content-Type', 'application/json');
+  var response = {"status":true, "team":req.user.team}
+  console.log(response);
+  res.send(response);
 });
 app.get("/wrong",function(req,res){
-  console.log("false") ;
-  res.json("false") ;
+  res.setHeader('Content-Type', 'application/json');
+  var response = {"status":false}
+  res.send(response);
 });
 app.post("/login", passport.authenticate("userlocal",
     {   
