@@ -22,6 +22,7 @@ var express            = require("express"),
     getUserRoute       = require('./routes/getUser'),
     postRoute          = require('./routes/post');
     var teamProfileRoute   = require('./routes/profiles/TeamProfile');
+    var memberProfileRoute = require('./routes/profiles/MemberProfile');
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
     var Dropbox        = require('dropbox').Dropbox;
@@ -78,6 +79,7 @@ var port = process.env.PORT || 2000 ;
 app.use(getUserRoute);
 app.use(postRoute);
 app.use(teamProfileRoute);
+app.use(memberProfileRoute);
 
 
 // app.use(function(req, res, next){
@@ -125,7 +127,6 @@ app.post("/loginind", passport.authenticate("indlocal",
 //---------------Authenticating the register credntials -------------------------------
 //app.post("/register",upload.single('profileImage'), function(req, res,next){
 app.post("/register",function(req, res,next){
-    console.log("hello") ;
     console.log(req.body) ;
     var tof = req.body.team ;
     var newUser = new User({username: req.body.username,email:req.body.emailid, team:tof});

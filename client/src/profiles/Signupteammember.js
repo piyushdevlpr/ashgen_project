@@ -13,12 +13,14 @@ class App extends Component {
         emailid : "",
         username:'',
         password:'',
-        signedup:null
+        signedup:null,
+        info : null         //all data of schema
     }
     this.submitform = this.submitform.bind(this) ;
     this.handleChange = this.handleChange.bind(this) ; 
     this.getids = this.getids.bind(this);
     this.getinformation = this.getinformation.bind(this);
+    this.getForm   = this.getForm.bind(this);
 }
 getids=()=>{
     console.log(this.props.location.pathname.split('/')[2])
@@ -40,7 +42,8 @@ getinformation=()=>{
     .then((response)=>{
         this.setState({loading:false})
         console.log(response);
-        this.setState({emailid:response.data.email})
+        this.setState({emailid:response.data.email});
+        this.setState({info:response.data});
     })
     .catch((err)=>{throw err})
          
@@ -59,14 +62,24 @@ submitform=(e)=>{
     body: JSON.stringify(this.state),
     credentials:'include'
   }).then(res => res.json()).then(data => {this.setState({signedup : data},function(){
-      if(data === true){
-          this.getprofilepage() ;
+      console.log(data);
+      if(data == 'true'){
+          console.log('BOLLL');
+          this.getForm() ;
       }
   })})
 }
-getprofilepage=()=>{
+getForm=()=>{
     // this.props.history.push()
-}
+    this.props.history.push({
+        pathname:'/member-form/',
+        state :{
+            username : this.state.username,
+            info : this.state.info
+        }
+      }) ;
+  }
+
 componentWillMount(){
    this.getids() ;
 }

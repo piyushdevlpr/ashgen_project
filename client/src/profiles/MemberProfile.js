@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 //Css file import
-import AddMemberForm from './AddMemberForm';
 import '../assets/css/animate.css'
 import '../assets/css/bootstrap.min.css'
 import '../assets/css/flatpickr.min.css'
@@ -21,25 +20,41 @@ export default class TeamProfile extends Component{
     constructor(props){
         super(props) ;
         this.state = {
-            teamData:null,
+            memberData:null,
             loading: true,    //true----> in loading state
             feed:true,
             about:false,
             portfolio:false,
-            members:false,
-            achievements:[],
+            Connections:false,
             portfolioLoading: true,
-            showAchievement: false,
-            showProject: false,
+            showAchievement: false,  // for modal
+            showProject: false,    // for modal
+            showEducation: false,
+            showExperience: false,
+            education:null,
+            educationInstitute:'',
+            educationStart:'',
+            educationEnd:'',
+            experience:null,
+            experienceCompany:'',
+            experiencePosition:'',
+            experienceStart:'',
+            experienceEnd:'',
+            interests:null,
+            interest:'',
+            hobbies:null,
+            hobby:'',
+            skills:null,
+            skill:'',
+            achievements:null,
             achievementTitle:'',
             achievementURL:'',
             achievementYear:'',
             achievementLoading:true,
+            projects:null,
             projectTitle:'',
             projectURL:'',
             projectYear:'',
-            achievements:null,
-            projects:null,
             projectLoading: true,
             profilePhoto: '',
             profileTimeline:'',
@@ -105,9 +120,9 @@ export default class TeamProfile extends Component{
     {
       
 
-      await axios.get('http://localhost:2000/fetch_team_profile',{withCredentials: true}).then((response)=>{
+      await axios.get('http://localhost:2000/fetch_member_profile',{withCredentials: true}).then((response)=>{
 
-      this.setState({teamData:response.data[0]},()=>{
+      this.setState({memberData:response.data[0]},()=>{
         this.setState({profilePhoto:response.data[0].profilePhoto})
         this.setState({loading:false});
       });

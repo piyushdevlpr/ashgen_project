@@ -8,14 +8,14 @@ var TsuSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-    Team: {                             // Team id and its username
+    team: {                             // Team id and its username
       id:{
           type:mongoose.Schema.Types.ObjectId,
           ref: "User"
       },
       username: String
   },
-
+  team_name: String,
   email: String,
   position: String,
   dept: String,

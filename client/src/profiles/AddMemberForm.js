@@ -8,7 +8,8 @@ export default class AddMemberForm extends Component{
         this.state = {
             emailid:'',
             dept:'',
-            position:''
+            position:'',
+            team_name:this.props.team_name,
         }
         this.OnInputChange = this.OnInputChange.bind(this);
         this.submitForm = this.submitForm.bind(this);
@@ -48,15 +49,15 @@ export default class AddMemberForm extends Component{
                 <form>
             <div className="form-group">
                 <label for="exampleFormControlInput1">Email ID</label>
-                <input type="text" className="form-control" onChange={this.OnInputChange} value={this.state.team_name} name="emailid" id="exampleFormControlInput1" placeholder="Enter email id " />
+                <input type="text" className="form-control" onChange={this.OnInputChange} value={this.state.emailid} name="emailid" id="exampleFormControlInput1" placeholder="Enter email id " />
             </div>
             <div className="form-group">
                 <label for="exampleFormControlInput1">Department</label>
-                <input type="text" className="form-control" onChange={this.OnInputChange} value={this.state.team_name} name="dept" id="exampleFormControlInput1" placeholder="Enter email id " />
+                <input type="text" className="form-control" onChange={this.OnInputChange} value={this.state.dept} name="dept" id="exampleFormControlInput1" placeholder="Enter email id " />
             </div>
             <div className="form-group">
                 <label for="exampleFormControlInput1">Position</label>
-                <input type="text" className="form-control" onChange={this.OnInputChange} value={this.state.team_name} name="position" id="exampleFormControlInput1" placeholder="Enter email id " />
+                <input type="text" className="form-control" onChange={this.OnInputChange} value={this.state.position} name="position" id="exampleFormControlInput1" placeholder="Enter email id " />
             </div>
             <button type="submit" onClick={this.submitForm} class="btn btn-danger">Add Member</button>
                 </form>

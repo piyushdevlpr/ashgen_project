@@ -193,12 +193,13 @@ router.post("/send-email",function(req,res){
         "email":req.body.emailid,
         "dept":req.body.dept,
         "position":req.body.position,
+        "team_name": req.body.team_name
     }
-    var author = {
+    var team = {
         "id":req.user._id,
         "username":req.user.username
     }
-    data.author = author;
+    data.team = team;
     AddMemberModel.create(data,function(err,cuser){
         if(err)
             throw err;
