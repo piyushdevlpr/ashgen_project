@@ -726,7 +726,7 @@ export default class TeamProfile extends Component{
                             <div className="user-pro-img">
                               <img src={this.state.teamData.profilePhoto} alt />
                               <input type="file" id="uploadPhoto" onChange={this.profilePhotoHandle} name="profilePhotoUpload" style={{display:'none'}} />
-                              <a href="#" onClick={()=>{document.getElementById('uploadPhoto').click()}} title=""><i className="fa fa-camera"></i></a>
+                              <a onClick={()=>{document.getElementById('uploadPhoto').click()}} title=""><i className="fa fa-camera"></i></a>
                             </div>{/*user-pro-img end*/}
                             <div className="user_pro_status">
                               {/* <ul className="flw-hr">

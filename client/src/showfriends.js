@@ -77,6 +77,7 @@ class People extends Component {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             credentials:'include'
           }).then(res => res.json()).then(data => {
+              console.log(data);
               this.setState({friends:data.sort(function(m1,m2){return m2.lastUpdatedAt - m1.lastUpdatedAt})},function(){
             var map = this.state.friendsnewmessage;  
             for(var i = 0 ; i < this.state.friends.length ; i++){
@@ -114,7 +115,7 @@ class People extends Component {
         <li >
 			<div class="usr-msg-details">
 				<div class="usr-ms-img">
-					<img src="images/resources/m-img1.png" alt=""/>
+					<img src={data.profilePhoto} alt=""/>
 						{/* <span class="msg-status"></span> */}
 				</div>
 				<div class="usr-mg-info">
@@ -163,7 +164,6 @@ class People extends Component {
         }
         else{
             var msg = this.state.message ;
-            // if(msg){
             var file = this.state.file;
             var fileName = file.name;
             var fileType = file.type.split('/')[0];

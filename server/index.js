@@ -9,8 +9,8 @@ var express            = require("express"),
     nodemailer         = require("nodemailer"),
     Teamsignup         = require("./models/teamsignup"),
     Individual         = require("./models/individual")
-    Yourprofile        = require("./models/yourprofile"),
-    Teamprofile        = require("./models/teamprofile"),
+    // Yourprofile        = require("./models/yourprofile"),
+    // Teamprofile        = require("./models/teamprofile"),
     Message            = require("./models/message"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage       = require("./models/groupmessage"),
@@ -146,29 +146,8 @@ app.post("/register",function(req, res,next){
                 }
               })
               if(tof === false){
-                var newUser = new Yourprofile({
-              username: req.user.username 
-                });
-              newUser.save(function(err,cuser){
-              if(err){
-                console.log(err);
-              }else{
-                console.log(cuser) ;
-              }
-              });
               }else{
                 var user = req.user.username ;
-              
-                var newUser = new Teamprofile({
-                  username: user 
-                    });
-                  newUser.save(function(err,cuser){
-                  if(err){
-                    console.log(err);
-                  }else{
-                    console.log(cuser) ;
-                  }
-                  });
                   var newteamsignup = new Teamsignup({teamname : user}) ;
                   newteamsignup.save(function(err,teamuser){
                     if(!err){
@@ -582,11 +561,24 @@ app.get("/verdict-team-declined/:key",function(req,res){
 });
 app.get("/get-friends",function(req,res){
   var username = req.user.username ;
+  friends= [] ;
   User.findOne({username:username},function(err,cuser){
+    var i = 0 ;
     if(err){
       console.log(err) ;
     }else{
-      res.json(cuser.friends) ;
+     friends = cuser.friends ; 
+     console.log(friends);
+     for(let i = 0 ; i < friends.length ; i++){
+        User.findOne({username : friends[i].name},function(err,fuser){
+          friends[i].profilePhoto = fuser.profilePhoto ;
+          if(i === (friends.length - 1)){
+            console.log(friends + "here");
+            res.json(friends) ;
+          }
+        });
+        
+      }
     }
   });
 });

@@ -1,6 +1,7 @@
 var router  = require('express').Router();
 var mongoose = require('mongoose');
 var TeamProfileModel = require('../../models/profiles/team/team')
+var User = require('../../models/user')
 var TeamAchievementModel = require('../../models/profiles/team/team_achievements');
 var TeamProjectModel = require('../../models/profiles/team/team_projects');
 var Dropbox =require('dropbox').Dropbox;
@@ -167,9 +168,12 @@ router.post('/team/profile-photo',function(req,res)
                     console.log(model[0]);
                     res.setHeader('Content-Type', 'application/json');
                     res.send(model);
-
+                    User.findOneAndUpdate({username : model.author.username},{profilePhoto:profilePhoto},function(err,cuser){
+                        if(err){
+                            console.log(err) ;    
+                        }
+                    })
                 })
-
 
             })
             .catch((err)=>{throw err})

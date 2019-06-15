@@ -16,12 +16,14 @@ var UserSchema = new mongoose.Schema({
     username: {type:String,index:true,auto:false},
     password: String,
     team:Boolean,
+    profilePhoto :{type:String, default:'https://drive.google.com/uc?export=download&id=1cZuz8C5ZUNl5Si2F34RR4_H9sebF5P9z'},
     groups : [
       {
         groupid : String,
         groupname:String,
         newmess: {type:Number,default:0},
         lastUpdatedAt : {type:Number , default:Date.now()},
+        profilePhoto :{type:String, default:'https://drive.google.com/uc?export=download&id=1cZuz8C5ZUNl5Si2F34RR4_H9sebF5P9z'}
         // exists : {type:Boolean , default:true}
       }
     ],
@@ -33,10 +35,12 @@ var UserSchema = new mongoose.Schema({
     friends: [
       {  
          name: String,
-         propic: String,
+         profilePhoto :{type:String, default:'https://drive.google.com/uc?export=download&id=1cZuz8C5ZUNl5Si2F34RR4_H9sebF5P9z'},
          newmess: {type:Number,default:0},
-         lastUpdatedAt : {type:Number , default:Date.now()}
-      }
+         lastUpdatedAt : {type:Number , default:Date.now()},
+         profilePhoto :{type:String, default:'https://drive.google.com/uc?export=download&id=1cZuz8C5ZUNl5Si2F34RR4_H9sebF5P9z'}
+       
+        }
     ],
     email: {
         type: String,
