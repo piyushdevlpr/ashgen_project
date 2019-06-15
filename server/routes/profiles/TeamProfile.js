@@ -168,18 +168,15 @@ router.post('/team/profile-photo',function(req,res)
                         throw err;
                     
                     res.setHeader('Content-Type', 'application/json');
-<<<<<<< HEAD:server/routes/profiles/profile.js
                     res.send(model);
                     User.findOneAndUpdate({username : model.author.username},{profilePhoto:profilePhoto},function(err,cuser){
                         if(err){
                             console.log(err) ;    
                         }
                     })
-=======
                     console.log(profilePhoto);
                     res.send(profilePhoto);
 
->>>>>>> 7a64d90a33a8f543de499bbcf10e419165da012a:server/routes/profiles/TeamProfile.js
                 })
 
             })
