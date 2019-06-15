@@ -12,7 +12,8 @@ class Login extends Component {
         login: false ,
         team:false,
         loggedin : false ,
-        signedup : false
+        signedup : false,
+        isTeam:null,
     }
     this.handleChange = this.handleChange.bind(this);
     this.click2 = this.click2.bind(this);
@@ -79,20 +80,22 @@ click3=(event)=>{
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state),
     credentials: 'include'
-  }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
+  }).then(res => res.json()).then(data => {if(this._ismounted === true){
+    this.setState({isTeam:data.team},()=>{this.setState({loggedin:data.status})})}})
   // console.log(this.state) ;
   }
 }
 gotohome=()=>{
   //event.preventDefault();
-  if(this.state.loggedin === "true" && this._ismounted === true){
+  if(this.state.loggedin == true && this._ismounted === true){
     this.props.history.push({
     pathname: '/home/',
     state: {
       loggedin: "true",
       signedup: false,
       username: this.state.username,
-      emailid: this.state.emailid
+      emailid: this.state.emailid,
+      isTeam:this.state.isTeam
     }
   });
   }

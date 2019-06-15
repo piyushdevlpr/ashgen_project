@@ -1,59 +1,51 @@
 import React, { Component } from 'react';
-import './App.css';
+import axios from 'axios'
+import '../App.css';
 
 class App extends Component {
    _ismounted = true ;
   constructor(props){
     super(props);
     this.state = {
-        teamid : "",
-        personid : "",
-        valid : "not-set" ,
-        val : false,
+        _id:'',
+        team:false,
         loading : true,
         emailid : "",
         username:'',
-        password:'' 
+        password:'',
+        signedup:null,
+        info : null         //all data of schema
     }
     this.submitform = this.submitform.bind(this) ;
     this.handleChange = this.handleChange.bind(this) ; 
+    this.getids = this.getids.bind(this);
+    this.getinformation = this.getinformation.bind(this);
+    this.getForm   = this.getForm.bind(this);
 }
 getids=()=>{
-    var id = this.props.location.pathname.slice(21) ;
-    var teamid = "";
-    for(var i = 0 ; i < id.length ; i++){
-        if(id[i] !== '-'){
-            teamid = teamid+id[i] ;
-        }else{
-            break ;
-        }
-    }
-    var personid = id.slice(i+1) ;
-    this.setState({personid:personid,teamid:teamid},function(){
-        if(this.state.teamid && this.state.personid){
-            this.setState({valid:true},function(){
-                    this.getinformation() ;
-                console.log(this.state) ;
-            })
-          }else{
-            this.setState({valid:false},function(){
-                console.log(this.state) ;
-            })
-        }
-    });
+    console.log(this.props.location.pathname.split('/')[2])
+    var id = this.props.location.pathname.split('/')[2] ;
+    this.setState({_id:id},()=>{this.getinformation()});
+    
+     
 }
 getinformation=()=>{
-    fetch("http://localhost:2000/get-info-requestedmember", {
-        // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/get-friends", {
-            method: "POST",
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body : JSON.stringify(this.state) ,
-            credentials:'include'
-          }).then(res => res.json()).then(data => {this.setState({val:data.val,loading:false},function(){
-              if(data.val){
-                 this.setState({emailid : data.emailid});
-              }
-          })})
+    const config = {
+        headers: {
+            'content-type': 'application/json'
+        },
+        withCredentials: true, // default
+
+    };
+   var  data = {"_id":this.state._id}
+    axios.post('http://localhost:2000/get-info-requestedmember',data,config)
+    .then((response)=>{
+        this.setState({loading:false})
+        console.log(response);
+        this.setState({emailid:response.data.email});
+        this.setState({info:response.data});
+    })
+    .catch((err)=>{throw err})
          
 }
 handleChange=(e)=>{
@@ -70,14 +62,24 @@ submitform=(e)=>{
     body: JSON.stringify(this.state),
     credentials:'include'
   }).then(res => res.json()).then(data => {this.setState({signedup : data},function(){
-      if(data === true){
-          this.getprofilepage() ;
+      console.log(data);
+      if(data == 'true'){
+          console.log('BOLLL');
+          this.getForm() ;
       }
   })})
 }
-getprofilepage=()=>{
+getForm=()=>{
     // this.props.history.push()
-}
+    this.props.history.push({
+        pathname:'/member-form/',
+        state :{
+            username : this.state.username,
+            info : this.state.info
+        }
+      }) ;
+  }
+
 componentWillMount(){
    this.getids() ;
 }
@@ -87,8 +89,7 @@ render() {
         ?
             <div>Loading ....</div>
         :   
-            this.state.valid && this.state.val
-            ?
+           
             <div className="App container mt-3">
                 <h3>
                     Sign Up here {this.state.emailid}
@@ -102,10 +103,7 @@ render() {
                  </div>
                 {console.log(this.state)}
             </div>                
-            :
-            <div className="App container mt-3">
-                Not a valid link
-            </div>
+       
             
     );
   }

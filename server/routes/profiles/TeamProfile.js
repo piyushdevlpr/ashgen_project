@@ -4,8 +4,10 @@ var TeamProfileModel = require('../../models/profiles/team/team')
 var User = require('../../models/user')
 var TeamAchievementModel = require('../../models/profiles/team/team_achievements');
 var TeamProjectModel = require('../../models/profiles/team/team_projects');
+var AddMemberModel  = require('../../models/profiles/team/add_member');
 var Dropbox =require('dropbox').Dropbox;
 var fs     = require('fs');
+var nodemailer = require('nodemailer');
 
 
 router.post('/team_profile',(req,res)=>{   // form data is post here
@@ -159,20 +161,25 @@ router.post('/team/profile-photo',function(req,res)
          .then(function (response) {
             dbx.sharingCreateSharedLinkWithSettings({path:'/Uploads/'+req.file.filename }).then(function (response) {
                 var profilePhoto= response.url.split('?')[0]+'?dl=1';
-                // console.log(profilePhoto);
 
                 TeamProfileModel.findOneAndUpdate({_id:req.body.team_id},{"profilePhoto":profilePhoto},function(err,model)
                 {
                     if(err)
                         throw err;
-                    console.log(model[0]);
+                    
                     res.setHeader('Content-Type', 'application/json');
+<<<<<<< HEAD:server/routes/profiles/profile.js
                     res.send(model);
                     User.findOneAndUpdate({username : model.author.username},{profilePhoto:profilePhoto},function(err,cuser){
                         if(err){
                             console.log(err) ;    
                         }
                     })
+=======
+                    console.log(profilePhoto);
+                    res.send(profilePhoto);
+
+>>>>>>> 7a64d90a33a8f543de499bbcf10e419165da012a:server/routes/profiles/TeamProfile.js
                 })
 
             })
@@ -188,5 +195,81 @@ router.post('/team/profile-photo',function(req,res)
 
 
 })
+//adding memeber to team
+router.post("/send-email",function(req,res){
+    console.log("nodemailer here:") ;
+    var data ={
+        "email":req.body.emailid,
+        "dept":req.body.dept,
+        "position":req.body.position,
+        "team_name": req.body.team_name
+    }
+    var team = {
+        "id":req.user._id,
+        "username":req.user.username
+    }
+    data.team = team;
+    AddMemberModel.create(data,function(err,cuser){
+        if(err)
+            throw err;
+      var link = "http://localhost:3000/sign-up-team-member/"+cuser._id;
+      var transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'ojas.sign.up@gmail.com',
+          pass: 'password@ojas'
+        }
+      });
+      let mailOptions = {
+        from: '"Ojas" <ojas.sign.up@gmail.com>', // sender address
+        to: req.body.emailid, // list of receivers
+        subject:"Signup request",
+        text:"You have received a sign up request from "+req.user.username+". Kindly click on following link to go to signup page for the team : "+link+".", // plain text body
+        // html: '<b>NodeJS Email Tutorial</b>' // html body
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              return console.log(error);
+          }
+          console.log('Message %s sent: %s', info.messageId, info.response);
+          res.sendStatus(200);
+              // res.render('index');
+        });
+    })
+  });
 
+  router.post("/get-info-requestedmember",function(req,res){
+    var _id = mongoose.Types.ObjectId(req.body._id);
+    AddMemberModel.findById(_id,function(err,model){
+      if(err){
+        throw err; ;
+      }else{
+        res.setHeader('Content-Type', 'application/json');
+        res.send(model);
+      }
+    })
+});
+
+//********** */
+
+router.get('/pending_members',function(req,res)
+{
+    var team ={
+        "id":req.user._id,
+        "username":req.user.username
+    }
+
+    AddMemberModel.find({team:team},function(err,model)
+    {
+        if(err)
+            return err;
+            res.setHeader('Content-Type', 'application/json');
+            console.log(model);
+            res.send(model);
+
+    })
+
+})
 module.exports = router;

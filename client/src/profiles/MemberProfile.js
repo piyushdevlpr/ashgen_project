@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 //Css file import
-import AddMemberForm from './AddMemberForm';
 import '../assets/css/animate.css'
 import '../assets/css/bootstrap.min.css'
 import '../assets/css/flatpickr.min.css'
@@ -15,32 +14,62 @@ import {Modal,Form,Button,Col,Row} from 'react-bootstrap'
 import { resolveNaptr } from 'dns';
 
 
-export default class TeamProfile extends Component{
+export default class memberProfile extends Component{
 
   ismounted = true ;
     constructor(props){
         super(props) ;
         this.state = {
-            teamData:null,
+            memberData:null,
             loading: true,    //true----> in loading state
             feed:true,
             about:false,
             portfolio:false,
-            members:false,
-            achievements:[],
+            connections:false,
             portfolioLoading: true,
-            showAchievement: false,
-            showProject: false,
+            showAchievement: false,  // for modal
+            showProject: false,    // for modal
+            showEducation: false,
+            showExperience: false,
+            showInterests:false,
+            showHobbies:false,
+            showSkills:false,
+            education:null,
+            educationSchool:'',
+            educationCourse:'',
+            educationStart:'',
+            educationEnd:'',
+            educationLoading:true,
+            experience:null,
+            experienceCompany:'',
+            experiencePosition:'',
+            experienceStart:'',
+            experienceEnd:'',
+            experienceLoading:true,
+            interests:[],
+            interest:'',
+            hobbies:[],
+            hobby:'',
+            hobbiesLoading:true,
+            skills:[],
+            skill:'',
+            skillsLoading: true,
+            interests:null,
+            interest:'',
+            interestLoading: true,
+            achievements:null,
             achievementTitle:'',
             achievementURL:'',
             achievementYear:'',
             achievementLoading:true,
+            projects:null,
             projectTitle:'',
             projectURL:'',
             projectYear:'',
-            achievements:null,
-            projects:null,
             projectLoading: true,
+            
+
+
             profilePhoto: '',
             profileTimeline:'',
             profilePhotoUpload : null,
@@ -60,8 +89,39 @@ export default class TeamProfile extends Component{
       this.addProject  = this.addProject.bind(this);
       this.OnInputChangeProject = this.OnInputChangeProject.bind(this);
       this.fetchProjects = this.fetchProjects.bind(this);
+      this.fetchEducation = this.fetchEducation.bind(this);
+      this.addEducation = this.addEducation.bind(this);
+      this.onInputChangeEducation = this.onInputChangeEducation.bind(this);
+      this.handleShowEducation = this.handleShowEducation.bind(this);
+      this.handleCloseEducation = this.handleCloseEducation.bind(this);
+      this.fetchExperience = this.fetchExperience.bind(this);
+      this.addExperience    = this.addExperience.bind(this);
+      this.onInputChangeExperience = this.onInputChangeExperience.bind(this); 
+      this.handleShowExperience = this.handleShowExperience.bind(this);
+      this.handleCloseExperience = this.handleCloseExperience.bind(this);
+
+      this.fetchSkills    = this.fetchSkills.bind(this);
+      this.addSkills = this.addSkills.bind(this);
+      this.onInputChangeSkills = this.onInputChangeSkills.bind(this);
+      this.handleShowSkills      = this.handleShowSkills.bind(this);
+      this.handleCloseSkills    = this.handleCloseSkills.bind(this);
+
+      this.fetchInterests    = this.fetchInterests.bind(this);
+      this.addInterests = this.addInterests.bind(this);
+      this.onInputChangeInterests = this.onInputChangeInterests.bind(this);
+      this.handleShowInterests      = this.handleShowInterests.bind(this);
+      this.handleCloseInterests    = this.handleCloseInterests.bind(this);
+
+      this.fetchHobbies    = this.fetchHobbies.bind(this);
+      this.addHobbies = this.addHobbies.bind(this);
+      this.onInputChangeHobbies = this.onInputChangeHobbies.bind(this);
+      this.handleShowHobbies      = this.handleShowHobbies.bind(this);
+      this.handleCloseHobbies    = this.handleCloseHobbies.bind(this);
+
+
       this.profilePhotoHandle = this.profilePhotoHandle.bind(this);
       this.profileTimelineHandle = this.profileTimelineHandle.bind(this);
+    
 
     }
 
@@ -87,9 +147,9 @@ export default class TeamProfile extends Component{
           };
           var formData = new FormData();
           formData.append('profilePhotoUpload',this.state.profilePhotoUpload);
-          formData.append('team_id',this.state.teamData._id)
+          formData.append('member_id',this.state.memberData._id)
           
-          axios.post('http://localhost:2000/team/profile-photo',formData,config)
+          axios.post('http://localhost:2000/member/profile-photo',formData,config)
           .then((response)=>{
             console.log(response);
             this.setState({profilePhoto:response.data});
@@ -105,9 +165,9 @@ export default class TeamProfile extends Component{
     {
       
 
-      await axios.get('http://localhost:2000/fetch_team_profile',{withCredentials: true}).then((response)=>{
+      await axios.get('http://localhost:2000/fetch_member_profile',{withCredentials: true}).then((response)=>{
 
-      this.setState({teamData:response.data[0]},()=>{
+      this.setState({memberData:response.data[0]},()=>{
         this.setState({profilePhoto:response.data[0].profilePhoto})
         this.setState({loading:false});
       });
@@ -130,6 +190,50 @@ export default class TeamProfile extends Component{
     handleShowAchievement() {
       this.setState({ showAchievement: true });
     }
+
+    handleCloseEducation() {
+        this.setState({ showEducation: false });
+      }
+    
+      handleShowEducation() {
+        this.setState({ showEducation: true });
+      }
+
+      handleCloseExperience() {
+        this.setState({ showExperience: false });
+      }
+    
+      handleShowExperience() {
+        this.setState({ showExperience: true });
+      }
+
+
+      handleCloseSkills() {
+        this.setState({ showSkills: false });
+      }
+    
+      handleShowSkills() {
+        this.setState({ showSkills: true });
+      }
+
+
+      handleCloseHobbies() {
+        this.setState({ showHobbies: false });
+      }
+    
+      handleShowHobbies() {
+        this.setState({ showHobbies: true });
+      }
+
+      handleCloseInterests() {
+        this.setState({ showInterests: false });
+      }
+    
+      handleShowInterests() {
+        this.setState({ showInterests: true });
+      }
+
+
     OnInputChangeProject(event)
     {
         event.preventDefault();
@@ -151,6 +255,61 @@ export default class TeamProfile extends Component{
 
           
     }
+
+    onInputChangeEducation(event)
+    {
+        event.preventDefault();
+        // console.log(this.state.event.target.name)
+        this.setState({
+            [event.target.name]: event.target.value,
+          })
+
+          
+    }
+    onInputChangeExperience(event)
+    {
+        event.preventDefault();
+        // console.log(this.state.event.target.name)
+        this.setState({
+            [event.target.name]: event.target.value,
+          })
+
+          
+    }
+
+    onInputChangeSkills(event)
+    {
+        event.preventDefault();
+        // console.log(this.state.event.target.name)
+        this.setState({
+            [event.target.name]: event.target.value,
+          })
+
+          
+    }
+
+    onInputChangeInterests(event)
+    {
+        event.preventDefault();
+        // console.log(this.state.event.target.name)
+        this.setState({
+            [event.target.name]: event.target.value,
+          })
+
+          
+    }
+
+    onInputChangeHobbies(event)
+    {
+        event.preventDefault();
+        // console.log(this.state.event.target.name)
+        this.setState({
+            [event.target.name]: event.target.value,
+          })
+
+          
+    }
+
     addProject(e)
     {
       e.preventDefault();
@@ -166,7 +325,7 @@ export default class TeamProfile extends Component{
       "url":this.state.projectURL,
       "year":this.state.projectYear,
     }
-    axios.post('http://localhost:2000/team_project',data,config)
+    axios.post('http://localhost:2000/member_project',data,config)
     .then((response)=>{
       this.setState({projectLoading:true});
       this.handleCloseProject();
@@ -192,7 +351,7 @@ export default class TeamProfile extends Component{
       "url":this.state.achievementURL,
       "year":this.state.achievementYear,
     }
-    axios.post('http://localhost:2000/team_achievement',data,config)
+    axios.post('http://localhost:2000/member_achievement',data,config)
     .then((response)=>{
       this.setState({achievementLoading:true});
       this.handleCloseAchievement();
@@ -203,12 +362,142 @@ export default class TeamProfile extends Component{
 
     }
 
+    addEducation(e)
+    {
+      e.preventDefault();
+      const config = {
+        headers: {
+            'content-type': 'application/json'
+        },
+        withCredentials: true, // default
+
+    };
+    var data = {
+      "educationSchool":this.state.educationSchool,
+      "educationCourse":this.state.educationCourse,
+      "educationStart":this.state.educationStart,
+      "educationEnd":this.state.educationEnd
+    }
+    axios.post('http://localhost:2000/member_education',data,config)
+    .then((response)=>{
+      this.setState({educationLoading:true});
+      this.handleCloseEducation();
+     
+    })
+    .catch((err)=>{throw err})
+
+
+    }
+
+    addExperience(e)
+    {
+      e.preventDefault();
+      const config = {
+        headers: {
+            'content-type': 'application/json'
+        },
+        withCredentials: true, // default
+
+    };
+    var data = {
+      "experienceCompany":this.state.experienceCompany,
+      "experiencePosition":this.state.experiencePosition,
+      "experienceStart":this.state.experienceStart,
+      "experienceEnd":this.state.experienceEnd
+    }
+    axios.post('http://localhost:2000/member_experience',data,config)
+    .then((response)=>{
+      this.setState({experienceLoading:true});
+      this.handleCloseExperience();
+     
+    })
+    .catch((err)=>{throw err})
+
+
+    }
+
+    addSkills(e)
+    {
+      e.preventDefault();
+      const config = {
+        headers: {
+            'content-type': 'application/json'
+        },
+        withCredentials: true, // default
+
+    };
+    var data = {
+     "skill":this.state.skill
+    }
+    axios.post('http://localhost:2000/member_skill',data,config)
+    .then((response)=>{
+      this.setState({skillsLoading:true});
+      this.handleCloseSkills();
+     
+    })
+    .catch((err)=>{throw err})
+
+
+    }
+
+    addInterests(e)
+    {
+      e.preventDefault();
+      const config = {
+        headers: {
+            'content-type': 'application/json'
+        },
+        withCredentials: true, // default
+
+    };
+    var data = {
+     "interest":this.state.interest
+    }
+    axios.post('http://localhost:2000/member_interest',data,config)
+    .then((response)=>{
+      this.setState({interestLoading:true});
+      this.handleCloseInterests();
+     
+    })
+    .catch((err)=>{throw err})
+
+
+    }
+
+    
+    addHobbies(e)
+    {
+      e.preventDefault();
+      const config = {
+        headers: {
+            'content-type': 'application/json'
+        },
+        withCredentials: true, // default
+
+    };
+    var data = {
+     "hobby":this.state.hobby
+    }
+    axios.post('http://localhost:2000/member_hobby',data,config)
+    .then((response)=>{
+      this.setState({hobbiesLoading:true});
+      this.handleCloseHobbies();
+     
+    })
+    .catch((err)=>{throw err})
+
+
+    }
+
+
+
+
     fetchProjects()
     {
       
       if(this.state.projectLoading)
       {
-        axios.get('http://localhost:2000/team_project',{withCredentials: true})
+        axios.get('http://localhost:2000/member_project',{withCredentials: true})
         .then((response)=>{this.setState({projects:response.data})
       
           this.setState({projectLoading:false});
@@ -244,7 +533,7 @@ export default class TeamProfile extends Component{
       
       if(this.state.achievementLoading)
       {
-        axios.get('http://localhost:2000/team_achievement',{withCredentials: true})
+        axios.get('http://localhost:2000/member_achievement',{withCredentials: true})
         .then((response)=>{this.setState({achievements:response.data})
       
           this.setState({achievementLoading:false});
@@ -262,6 +551,187 @@ export default class TeamProfile extends Component{
           <li className="list-group-item">URL: {item.url}</li>
           <li className="list-group-item">Year:{item.year}</li>
           
+      </ul>
+
+        </div>
+          )
+
+        })
+
+        return list;
+
+      }
+
+    
+    }
+
+    fetchEducation()
+    {
+      
+      if(this.state.educationLoading)
+      {
+        axios.get('http://localhost:2000/member_education',{withCredentials: true})
+        .then((response)=>{this.setState({education:response.data})
+      
+          this.setState({educationLoading:false});
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.education.map(function(item){
+
+          return(
+            <div id="education">
+          <ul className="list-group">
+          <li className="list-group-item">School: {item.school}</li>
+          <li className="list-group-item">Course: {item.course}</li>
+          <li className="list-group-item">Start Year:{item.startYear}</li>
+          <li className="list-group-item">End Year:{item.endYear}</li>
+
+          
+      </ul>
+
+        </div>
+          )
+
+        })
+
+        return list;
+
+      }
+
+    
+    }
+
+    
+    fetchExperience()
+    {
+      
+      if(this.state.experienceLoading)
+      {
+        axios.get('http://localhost:2000/member_experience',{withCredentials: true})
+        .then((response)=>{this.setState({experience:response.data})
+      
+          this.setState({experienceLoading:false});
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.experience.map(function(item){
+
+          return(
+            <div id="experience">
+          <ul className="list-group">
+          <li className="list-group-item">Company: {item.company}</li>
+          <li className="list-group-item">Position: {item.position}</li>
+          <li className="list-group-item">Start Year:{item.startYear}</li>
+          <li className="list-group-item">End Year:{item.endYear}</li>
+
+          
+      </ul>
+
+        </div>
+          )
+
+        })
+
+        return list;
+
+      }
+
+    
+    }
+
+    fetchSkills()
+    {
+      
+      if(this.state.skillsLoading)
+      {
+        axios.get('http://localhost:2000/member_skill',{withCredentials: true})
+        .then((response)=>{this.setState({skills:response.data})
+      
+          this.setState({skillsLoading:false});
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.skills.map(function(item){
+
+          return(
+            <div id="skills">
+          <ul className="list-group">
+          <li className="list-group-item">{item.skill}</li>
+      </ul>
+
+        </div>
+          )
+
+        })
+
+        return list;
+
+      }
+
+    
+    }
+
+    fetchInterests()
+    {
+      
+      if(this.state.interestLoading)
+      {
+        axios.get('http://localhost:2000/member_interest',{withCredentials: true})
+        .then((response)=>{this.setState({interests:response.data})
+      
+          this.setState({interestLoading:false});
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.interests.map(function(item){
+
+          return(
+            <div id="interest">
+          <ul className="list-group">
+          <li className="list-group-item">{item.interest}</li>
+      </ul>
+
+        </div>
+          )
+
+        })
+
+        return list;
+
+      }
+
+    
+    }
+
+    fetchHobbies()
+    {
+      
+      if(this.state.hobbiesLoading)
+      {
+        axios.get('http://localhost:2000/member_hobby',{withCredentials: true})
+        .then((response)=>{this.setState({hobbies:response.data})
+        console.log(response);
+          this.setState({hobbiesLoading:false});
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.hobbies.map(function(item){
+
+          return(
+            <div id="experience">
+          <ul className="list-group">
+          <li className="list-group-item">{item.hobby}</li>
       </ul>
 
         </div>
@@ -344,12 +814,159 @@ export default class TeamProfile extends Component{
       {
         return(
         <div id="about">
+            <div>
           <ul className="list-group">
-          <li className="list-group-item">Field: {this.state.teamData.field}</li>
-          <li className="list-group-item">Institude: {this.state.teamData.institute}</li>
-          <li className="list-group-item">Establishment:{this.state.teamData.establishment}</li>
-          
+          <li className="list-group-item">Team Name: {this.state.memberData.team_name}</li>
+          <li className="list-group-item">Institute: {this.state.memberData.institute}</li>
+          <li className="list-group-item">Department:{this.state.memberData.dept}</li>
+          <li className="list-group-item">Position:{this.state.memberData.position}</li> 
       </ul>
+      </div>
+      <div id="education">
+      <div>
+      <button type="button" onClick={this.handleShowEducation} className="btn btn-danger">Add Education</button>
+      </div>
+      <div>
+        {this.fetchEducation()}
+        </div>
+
+      </div>
+      
+
+      <div style={{marginTop:20}} id="interests">
+      <div>
+      <button type="button" onClick={this.handleShowInterests} className="btn btn-danger">Add interests</button>
+      </div>
+      <div>
+        {this.fetchInterests()}
+        </div>
+
+      </div>
+
+      <div style={{marginTop:20}} id="hobbies">
+      <div>
+      <button type="button" onClick={this.handleShowHobbies} className="btn btn-danger">Add hobbies</button>
+      </div>
+      <div>
+        {this.fetchHobbies()}
+        </div>
+
+      </div>
+
+       {/* Education Modal */}
+       <div id="EducationModal">
+        <Modal show={this.state.showEducation} onHide={this.handleShowEducation}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Education</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          School
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="educationSchool" type="text" value={this.state.educationSchool} onChange={this.onInputChangeEducation} placeholder="School" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Course
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="educationCourse" value={this.state.educationCourse} onChange={this.onInputChangeEducation} type="text" placeholder="Course" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Start Year
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="educationStart" type="text" value={this.state.educationStart} onChange={this.onInputChangeEducation}  placeholder="Start Year" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          End Year
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="educationEnd" type="text" value={this.state.educationEnd} onChange={this.onInputChangeEducation} placeholder="End Year" />
+        </Col>
+      </Form.Group>
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleCloseEducation}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addEducation}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        </div>
+
+         {/* Hobbies Modal */}
+       <div id="HobbiesModal">
+        <Modal show={this.state.showHobbies} onHide={this.handleShowHobbies}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Hobby</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Hobby
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="hobby" type="text" value={this.state.hobby} onChange={this.onInputChangeHobbies} placeholder="Hobby" />
+        </Col>
+      </Form.Group>
+      
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleCloseHobbies}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addHobbies}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        </div>
+
+        <div id="InterestModal">
+        <Modal show={this.state.showInterests} onHide={this.handleShowInterests}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Interests</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Interest
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="interest" type="text" value={this.state.interest} onChange={this.onInputChangeInterests} placeholder="Interest" />
+        </Col>
+      </Form.Group>
+      
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleCloseInterests}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addInterests}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        </div>
 
         </div>
         )
@@ -358,18 +975,42 @@ export default class TeamProfile extends Component{
     {
       return(
         <div id="portfolio" className="container">
-          <div>
+     <div id="experience">
+        <div>
+            <button type="button" onClick={this.handleShowExperience} className="btn btn-danger">Add Experience</button>
+        </div>
+        <div>
+            {this.fetchExperience()}
+        </div>
+      </div>
+      <div style={{marginTop:20}} id="skills">
+      <div>
+      <button type="button" onClick={this.handleShowSkills} className="btn btn-danger">Add Skills</button>
+      </div>
+      <div>
+        {this.fetchSkills()}
+        </div>
+
+      </div>
+
+
+            <div id="achievement">
+          <div style={{marginTop:20}}>
       <button type="button" onClick={this.handleShowAchievement} className="btn btn-danger">Add Achievement</button>
       </div>
       <div>
         {this.fetchAchievements()}
         </div>
+        </div>
+        <div id="project">
       <div style={{marginTop:20}}>
         <button type="button" onClick={this.handleShowProject} className="btn btn-danger">Add Project</button>
         </div>
         <div>
           {this.fetchProjects()}
         </div>
+        </div>
+
         <div id="AchievementModal">
         <Modal show={this.state.showAchievement} onHide={this.handleCloseAchievement}>
           <Modal.Header closeButton>
@@ -459,35 +1100,116 @@ export default class TeamProfile extends Component{
 
         </div>
 
+       
+        <div id="ExperienceModal">
+        <Modal show={this.state.showExperience} onHide={this.handleShowExperience}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Experience</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Company
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="experienceCompany" type="text" value={this.state.experienceCompany} onChange={this.onInputChangeExperience} placeholder="Company" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Position
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="experiencePosition" value={this.state.experiencePosition} onChange={this.onInputChangeExperience} type="text" placeholder="Position" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Start Year
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="experienceStart" type="text" value={this.state.experienceStart} onChange={this.onInputChangeExperience}  placeholder="Start Year" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          End Year
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="experienceEnd" type="text" value={this.state.experienceEnd} onChange={this.onInputChangeExperience} placeholder="End Year" />
+        </Col>
+      </Form.Group>
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleCloseExperience}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addExperience}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        </div>
+        <div id="SkillsModal">
+        <Modal show={this.state.showSkills} onHide={this.handleShowSkills}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Skills</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+          <Form.Group as={Row} controlId="formPlaintextEmail">
+        <Form.Label column sm="2">
+          Skills
+        </Form.Label>
+        <Col sm="10">
+          <Form.Control name="skill" type="text" value={this.state.skill} onChange={this.onInputChangeSkills} placeholder="Skill" />
+        </Col>
+      </Form.Group>
+      
+        </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleCloseSkills}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.addSkills}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        </div>
 
 
         </div>
       )
 
     }
-    else if(this.state.members)
+    else if(this.state.connections)
     {
       //write add member code
-      return <AddMemberForm team_name={this.state.teamData.team_name}/>
+      
     }
 
     }
 
-    fetchPortfolio()
-    {
-      axios.get('http://localhost:2000/fetch_achievement').then((response)=>{
-        this.setState({portfolio:response});
-        this.setState({portfolio:false});
+    // fetchPortfolio()
+    // {
+    //   axios.get('http://localhost:2000/fetch_member_achievement').then((response)=>{
+    //     this.setState({portfolio:false});
 
 
-      })
-      .catch((err)=>{throw err})
-    }
+    //   })
+    //   .catch((err)=>{throw err})
+    // }
 
     toggleMiddleContent(event)   // toggle middle content feed-->about-->portfolio
     {
       event.preventDefault();
-      this.setState({feed:false,about:false,portfolio:false, members:false}); // resetting all tabs 
+      this.setState({feed:false,about:false,portfolio:false, connections:false}); // resetting all tabs 
       this.setState({[event.currentTarget.dataset.tag]:true})
     
     }
@@ -496,7 +1218,6 @@ export default class TeamProfile extends Component{
     {
        this.fetchProfile();
       
-          
     }
 
 
@@ -710,7 +1431,7 @@ export default class TeamProfile extends Component{
               </div>
             </header>{/*header end*/}	
             <section className="cover-sec">
-              <img src={this.state.teamData.profileTimeline} alt />
+              <img src={this.state.memberData.profileTimeline} alt />
               <input type="file" id="uploadTimeline" name="profileTimelineUpload" style={{display:'none'}} />
 
               <a href="#" onClick={()=>{document.getElementById('uploadTimeline').click()}} style={{right:'89.5px', color:'#ff0000'}} ><i className="fa fa-camera"></i> Change Image</a>
@@ -726,7 +1447,7 @@ export default class TeamProfile extends Component{
                             <div className="user-pro-img">
                               <img src={this.state.profilePhoto} alt />
                               <input type="file" id="uploadPhoto" onChange={this.profilePhotoHandle} name="profilePhotoUpload" style={{display:'none'}} />
-                              <a onClick={()=>{document.getElementById('uploadPhoto').click()}} title=""><i className="fa fa-camera"></i></a>
+                              <a href="#" onClick={()=>{document.getElementById('uploadPhoto').click()}} title=""><i className="fa fa-camera"></i></a>
                             </div>{/*user-pro-img end*/}
                             <div className="user_pro_status">
                               {/* <ul className="flw-hr">
@@ -819,9 +1540,9 @@ export default class TeamProfile extends Component{
                       <div className="col-lg-6">
                         <div className="main-ws-sec">
                           <div className="user-tab-sec">
-                            <h3>{this.state.teamData.team_name}</h3>
+                            <h3>{this.state.memberData.name}</h3>
                             <div className="star-descp">
-                              <span>{this.state.teamData.cur_work}</span>
+                              <span>{this.state.memberData.team_name}</span>
                               <ul>
                                 <li><i className="fa fa-star" /></li>
                                 <li><i className="fa fa-star" /></li>
@@ -850,10 +1571,10 @@ export default class TeamProfile extends Component{
                                     <span>Portfolio</span>
                                   </a>
                                 </li>
-                                <li  className={this.state.members?'active':''}  data-tab="portfolio-dd">
-                                  <a data-tag="members" onClick={this.toggleMiddleContent} href="#" title>
+                                <li  className={this.state.connections?'active':''}  data-tab="portfolio-dd">
+                                  <a data-tag="connections" onClick={this.toggleMiddleContent} href="#" title>
                                     <img src="../assets/images/ic3.png" alt />
-                                    <span>Members</span>
+                                    <span>Connections</span>
                                   </a>
                                 </li>
                                 
