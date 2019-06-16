@@ -4,14 +4,15 @@ import ReactDOM from 'react-dom';
 import { Route, BrowserRouter as Router, Switch} from 'react-router-dom'
 import './index.css';
 import App from './App';
-import Profileind from './Profileind';
-import Profileteam from './Profileteam';
+import Profilemember from './Profilemember';
+// import Profileteam from './Profileteam';
 import People from './People';
 import Login from './Login';
 import Signup from './Signup';
 import Shownotifications from './shownotifications';
 import Showfriends from './showfriends';
 import Dashboard from './Dashboard';
+import Profileteam from './Profileteam';
 import Group from './Group';
 import * as serviceWorker from './serviceWorker';
 import DashboardInd from './DashboardInd';
@@ -41,8 +42,8 @@ ReactDOM.render((
        <Route path = "/team_form/" component = {TeamForm} />
        <Route path = "/member-form/" component = {MemberForm} />
        <Route path = "/member-profile/" component = {MemberProfile} />
-
-
+       <Route path = "/team/Profile/:name" component = {Profileteam} />
+       <Route path = "/member/Profile/:name" component = {Profilemember} />
        </Switch>
  </Router>
 ), document.getElementById('root'));

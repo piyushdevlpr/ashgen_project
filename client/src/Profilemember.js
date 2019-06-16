@@ -13,12 +13,11 @@ class Profile extends Component {
     constructor(props){
         super(props);
         this.state= {
-            teamData:null,
+            memberData:null,
             profilePhoto:null,
             profileTimeline:null,
             about:true,
             portfolio:false,
-            members:false,
         }
         this.toggleMiddleContent = this.toggleMiddleContent.bind(this) ;
         this.handleChange = this.handleChange.bind(this) ;
@@ -26,7 +25,7 @@ class Profile extends Component {
     toggleMiddleContent(event)   // toggle middle content feed-->about-->portfolio
     {
       event.preventDefault();
-      this.setState({about:false,portfolio:false, members:false}); // resetting all tabs 
+      this.setState({about:false,portfolio:false}); // resetting all tabs 
       this.setState({[event.currentTarget.dataset.tag]:true})
     }
     handleChange=(event)=>{
@@ -69,12 +68,6 @@ class Profile extends Component {
       )
 
     }
-    else if(this.state.members)
-     {
-      //write add member code
-      return <div>members will be shown here</div> ;
-    }
-
     }
 
     render(){
@@ -421,13 +414,6 @@ class Profile extends Component {
                                     <span>Portfolio</span>
                                   </a>
                                 </li>
-                                <li  className={this.state.members?'active':''}  data-tab="portfolio-dd">
-                                  <a data-tag="members" onClick={this.toggleMiddleContent} href="#" title>
-                                    <img src="../assets/images/ic3.png" alt />
-                                    <span>Members</span>
-                                  </a>
-                                </li>
-                                
                               </ul>
                             </div>{/* tab-feed end*/}
                           </div>{/*user-tab-sec end*/}

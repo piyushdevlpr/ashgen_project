@@ -326,8 +326,11 @@ app.get("/delete-group/:id",function(req,res){
 app.get('/people/:name',function(req,res){
   var name = '' ;
   name = req.params.name ;
-  if(name === null || name === undefined){
+  console.log(name) ;
+  if(name === null || name === undefined || name == ''){
     name = '' ;
+    response = [];
+    res.json(response);
   }
   //resuser = [] ;
   response = [];

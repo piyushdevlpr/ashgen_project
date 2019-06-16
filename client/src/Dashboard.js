@@ -11,6 +11,9 @@ class Dashboard extends Component {
     constructor(props){
         super(props) ;
         this.state = {
+            filter:'',
+            people : '',
+            user : [],
             username : '' ,
             userId : null,
             desc: '',
@@ -28,7 +31,27 @@ class Dashboard extends Component {
         this.filehandleChange = this.filehandleChange.bind(this);
         this.renderPosts   = this.renderPosts.bind(this);
     }
- 
+    fetchdetails=()=>{
+        if(this.state.people === undefined){
+            this.setState({
+                people:''
+            });
+        }
+        
+        fetch("http://localhost:2000/people/"+this.state.people)
+        // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/people/"+this.state.people)    
+        .then(response => response.json())
+        .then(datas =>{
+          this.setState({
+            //propiclink: datas.propic,
+            user : datas
+          })
+          console.log(this.state.people) ;
+          console.log(this.state.user) ;
+        }
+        )
+        .catch(error => console.log(error));
+    }
     componentDidMount(){ 
         this.ismounted = true ;
         this.fetchPosts();
@@ -53,8 +76,124 @@ class Dashboard extends Component {
         })
         
     }
-
-   
+    showusers=()=>{
+        if(this.state.people){
+        if(this.state.user.length === 0){
+            return (
+                <div>
+                    NO SUCH USER
+                </div>
+            );
+        }else{
+        if(this.state.filter === "All" || this.state.filter === ""){
+        return(
+        this.state.user.map((name,key)=>
+        <li >
+        <div class="usr-msg-details">
+            <div class="usr-ms-img">
+                {/* <img src={data.profilePhoto} alt=""/> */}
+            </div>
+                <div class="usr-mg-info">
+                    <h3><a onClick={()=>this.gotouserprofile(name)}>{name.user}</a> </h3>
+                </div>
+            </div>
+        </li>             
+        )
+        );
+        }else if(this.state.filter === "team"){
+            return(
+                this.state.user.map((name,key)=>
+                <span>{
+                name.team 
+                ?
+                <li>
+                <div class="usr-msg-details">
+                    <div class="usr-ms-img">
+                        {/* <img src={data.profilePhoto} alt=""/> */}
+                    </div>
+                        <div class="usr-mg-info">
+                            <h3><a onClick={()=>this.gototeamprofile(name.user)}>{name.user}</a></h3>
+                        </div>
+                    </div>
+                </li>
+                :
+                 null
+                }  
+                </span>            
+                )
+                );
+        }else{
+            return(
+                this.state.user.map((name,key)=>
+                <span>{
+                !name.team 
+                ?
+                <li>
+                <div class="usr-msg-details">
+                    <div class="usr-ms-img">
+                        {/* <img src={data.profilePhoto} alt=""/> */}
+                    </div>
+                        <div class="usr-mg-info">
+                            <h3><a onClick={()=>this.gotomemberprofile(name.user)}>{name.user}</a></h3>
+                        </div>
+                    </div>
+                </li>
+                :
+                 null
+                }  
+                </span>            
+                )
+                );
+        }
+    }
+    }
+    }
+    gototeamprofile=(name)=>{
+        this.props.history.push({
+            pathname:'/team/Profile/'+name,
+            state :{
+                username : this.props.location.state.username,
+                profileuser : name 
+            }
+          }) ;
+    }
+    gotouserprofile=(name)=>{
+        if(name.team){
+            this.props.history.push({
+                pathname:'/team/Profile/'+name.user,
+                state :{
+                    username : this.props.location.state.username,
+                    profileuser : name.user 
+                }
+              }) ;
+        }else{
+            this.props.history.push({
+                pathname:'/member/Profile/'+name.user,
+                state :{
+                    username : this.props.location.state.username,
+                    profileuser : name.user 
+                }
+              }) ;    
+        }
+        
+    }
+    gotomemberprofile=(name)=>{
+        this.props.history.push({
+            pathname:'/member/Profile/'+name,
+            state :{
+                username : this.props.location.state.username,
+                profileuser : name 
+            }
+          }) ;
+    }
+    handlechange=(event)=>{
+        event.preventDefault();
+        this.setState({
+            [event.target.name]:event.target.value
+         },function(){
+            this.fetchdetails() ;
+         })
+    }
 
     uploadPost(event)
     {
@@ -257,12 +396,7 @@ class Dashboard extends Component {
 
            return list;
        }
-        
-       
-
     }
-
-
 
     render(){
         if(this.props.location.state === undefined){
@@ -271,7 +405,30 @@ class Dashboard extends Component {
         }else{
             return(
                 <div className="container">
-                   <div>
+                    <div className="row">
+                    <div className="col-3"> 
+                        <div>
+                            <div>
+                                <form>
+                                    <input className="form-control" placeholder="search" value={this.state.people} onChange={this.handlechange} name = "people"/><br/>
+                                    <select className="form-control browser-default custom-select" name="filter" value={this.state.filter} onChange={this.handleChange}>
+                                        <option selected>All</option>
+                                        <option>team</option>
+                                        <option>team members</option>
+                                    </select>
+                                </form>
+                        <div class="msgs-list">
+                        <div class="messages-list">
+									<ul>
+                                        {this.showusers()}                                
+									</ul>
+								</div>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div className="col-6 container">
+                    <div>
                         <button onClick={this.gotopeople}>PEOPLE</button>
                         <button onClick={this.gotonoti}>NOTIFICATIONS</button>
                         <button onClick={this.gotofriends}>FRIENDS</button>
@@ -280,46 +437,40 @@ class Dashboard extends Component {
 
                         {/* <button onClick={this.gotoprofile}>PROFILE</button> */}
                     </div>
-                    <div className="col">
-      
-                    </div>
-                    <div className="col-6 container">
                         <div className="card" style={{marginBottom:"25px"}}>
-                        <div className="card-body">
-                        <h5 className="card-title">Create Post</h5>
-
-                    <div>
-                    <form onSubmit={this.uploadPost} encType="multipart/form-data">
-                    <div className="form-group">
-                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" name="desc" value={this.state.desc} onChange={this.handleChange} placeholder="write your post"></textarea>
-                 </div>
-                 <div >
-                 <div style={{display:'inline'}}  className="form-group">
+                          <div className="card-body">
+                            <h5 className="card-title">Create Post</h5>
+                          <div>
+                            <form onSubmit={this.uploadPost} encType="multipart/form-data">
+                                <div className="form-group">
+                                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" name="desc" value={this.state.desc} onChange={this.handleChange} placeholder="write your post"></textarea>
+                                </div>
+                                <div >
+                                   <div style={{display:'inline'}}  className="form-group">
                 {/* <label htmlFor="exampleFormControlFile1">Post Upload</label> */}
-                <input style={{display:'inline', width:'50%'}}    type="file" name="post"  onChange={this.filehandleChange} className="form-control-file" id="post-upload" />
-                </div>
-                <div style={{display:'inline', float:'right'}}>
-                <button type="submit" className="btn btn-primary">Post</button>
-                </div>
-                </div>
+                                     <input style={{display:'inline', width:'50%'}}    type="file" name="post"  onChange={this.filehandleChange} className="form-control-file" id="post-upload" />
+                                    </div>
+                                    <div style={{display:'inline', float:'right'}}>
+                                        <button type="submit" className="btn btn-primary">Post</button>
+                                    </div>
+                                </div>
 
-             </form>
+                            </form>
+                          </div>
+                    </div>
              </div>
-             </div>
-             </div>
-          
+            
                 <div className="posts"> 
-                {this.renderPosts()}
-                
+                    {this.renderPosts()}
                 </div>
                 </div>
                 
 
-                <div className="col">
-
+                <div className="col-3">
+                
                 </div>
-
-
+                </div>
+                {console.log(this.state)}
                 </div>
             );
         }        
