@@ -18,7 +18,7 @@ class Dashboard extends Component {
             userId : null,
             desc: '',
             post : null,
-            data : {},
+            data : {},     // all posts
             loading: true
         }
         this.uploadPost = this.uploadPost.bind(this);

@@ -5,6 +5,7 @@ var User = require('../../models/user')
 var TeamAchievementModel = require('../../models/profiles/team/team_achievements');
 var TeamProjectModel = require('../../models/profiles/team/team_projects');
 var AddMemberModel  = require('../../models/profiles/team/add_member');
+var PostModel         = require('../../models/posts/posts');
 var Dropbox =require('dropbox').Dropbox;
 var fs     = require('fs');
 var nodemailer = require('nodemailer');
@@ -269,4 +270,28 @@ router.get('/pending_members',function(req,res)
     })
 
 })
+
+
+
+//**************************************************** */
+//posts
+router.get('/team_posts',function(req,res)
+{
+    author ={
+        "id": req.user._id,
+        "username":req.user.username
+    }
+    PostModel.find({author:author},function(err,model)
+    {
+        if(err)
+            throw err;
+        res.setHeader('Content-Type', 'application/json');
+        console.log(model);
+        res.send(model);
+        
+    })
+})
+
+
+
 module.exports = router;
