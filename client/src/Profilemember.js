@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 import './assets/css/animate.css'
 import './assets/css/bootstrap.min.css'
 import './assets/css/flatpickr.min.css'
@@ -13,14 +14,96 @@ class Profile extends Component {
     constructor(props){
         super(props);
         this.state= {
+            username:'',
+            id:'',
             memberData:null,
-            profilePhoto:null,
-            profileTimeline:null,
+            loading:true,
+            achievements:[],
+            projects:[],
+            projectLoading:true,
+            achievementLoading:true,
             about:true,
             portfolio:false,
+            friends:[],
+            peoplewithnotis:[],
         }
         this.toggleMiddleContent = this.toggleMiddleContent.bind(this) ;
         this.handleChange = this.handleChange.bind(this) ;
+    }
+    componentDidMount()
+    {
+      console.log(this.props.location.pathname.split('/')[3])
+      console.log(this.props.location.pathname.split('/')[4])
+      var username = this.props.location.pathname.split('/')[3] ;
+      var id = this.props.location.pathname.split('/')[4] ;
+      this.setState({
+        username:username,
+        id:id
+      })
+      this.getfriends();
+      this.getpeoplewithnotis();
+      this.fetchProfile(username,id); 
+    }
+    sendnoti=(key)=>{
+      //event.preventDefault();
+      console.log(key) ;
+      
+      fetch("http://localhost:2000/notification/"+key, {
+          // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/notification/"+key, {
+          method: "GET",
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          credentials:'include'
+        }).then(res => res.json()).then(data => {
+            console.log(data);
+            var list = this.state.peoplewithnotis ;
+            list[data.friendname] = 1 ;
+          this.setState({peoplewithnotis : list},function(){
+              console.log(this.state) ;
+          })})
+  }
+  
+    async getfriends(){
+      await fetch("http://localhost:2000/get-friends2", {
+      // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/get-friends", {
+          method: "GET",
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          credentials:'include'
+        }).then(res => res.json()).then(data => {
+          console.log(data);
+          var result = data.reduce(function(map, obj) {
+              map[obj.name] = obj.profilePhoto;
+              return map;
+          }, {}); 
+          this.setState({friends:result},function(){console.log(this.state) })}
+          )
+  }
+  async getpeoplewithnotis(){
+    
+     await fetch("http://localhost:2000/get-notis", {
+      // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/get-notis", {
+          method: "GET",
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          credentials:'include'
+        }).then(res => res.json()).then(data => {if(this.ismounted === true){
+          var result = data.reduce(function(map, obj) {
+              map[obj.to] = 1;
+              return map;
+          }, {}); 
+          this.setState({peoplewithnotis:result},function(){console.log(this.state) })}
+          }
+          )
+  }
+  
+   async fetchProfile(username,id){
+     await axios.get('http://localhost:2000/fetch_clicked_member_profile/'+username+'/'+id ,{withCredentials: true}).then((response)=>{
+
+      this.setState({memberData:response.data[0]},()=>{
+        this.setState({loading:false});
+        console.log(this.state);
+            });
+      })
+      .catch((err)=>{throw err})
+
     }
     toggleMiddleContent(event)   // toggle middle content feed-->about-->portfolio
     {
@@ -34,6 +117,88 @@ class Profile extends Component {
             [event.target.name] : event.target.value
         })
     }
+    fetchAchievements(){
+      if(this.state.achievementLoading)
+      {
+        axios.get('http://localhost:2000/clicked_member_achievement/'+this.state.username+'/'+this.state.id,{withCredentials: true})
+        .then((response)=>{this.setState({achievements:response.data})
+      
+          this.setState({achievementLoading:false});
+          console.log(this.state) ;
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.achievements.map(function(item){
+
+          return(
+            <div id="projects">
+          <ul className="list-group">
+          <li className="list-group-item">Title: {item.title}</li>
+          <li className="list-group-item">URL: {item.url}</li>
+          <li className="list-group-item">Year:{item.year}</li>
+          
+      </ul>
+
+        </div>
+          )
+
+        })
+        if(list.length === 0){
+          return <div>NO Achievements</div>
+        }else{
+        return list;
+        }
+      }
+  
+    }
+    fetchProjects(){
+      if(this.state.projectLoading)
+      {
+        axios.get('http://localhost:2000/clicked_member_project/'+this.state.username+'/'+this.state.id,{withCredentials: true})
+        .then((response)=>{this.setState({projects:response.data})
+      
+          this.setState({projectLoading:false});
+          console.log(this.state) ;
+      })
+        .catch((err)=>{throw err})
+
+      }
+      else{
+        var list = this.state.projects.map(function(item){
+
+          return(
+            <div id="projects">
+          <ul className="list-group">
+          <li className="list-group-item">Title: {item.title}</li>
+          <li className="list-group-item">URL: {item.url}</li>
+          <li className="list-group-item">Year:{item.year}</li>
+          
+      </ul>
+
+        </div>
+          )
+
+        })
+        if(list.length === 0){
+          return <div>NO Projects</div>
+        }else{
+        return list;
+        }
+      }
+
+    }
+    gotochat=()=>{
+      this.props.history.push(
+        {
+          pathname:'/friends/',
+            state :{
+                username : this.props.location.state.username, 
+            }
+        }
+      )
+    }
     middleContent()
     {
       if(this.state.about)
@@ -41,13 +206,12 @@ class Profile extends Component {
         return(
         <div id="about">
           <ul className="list-group">
-          {/* <li className="list-group-item">Field: {this.state.teamData.field}</li>
-          <li className="list-group-item">Institude: {this.state.teamData.institute}</li>
-          <li className="list-group-item">Establishment:{this.state.teamData.establishment}</li>
-           */}
-      </ul>
-
-        </div>
+             <li className="list-group-item">Team Name: {this.state.memberData.team_name}</li>
+             <li className="list-group-item">Institute: {this.state.memberData.institute}</li>
+             <li className="list-group-item">Department:{this.state.memberData.dept}</li>
+             <li className="list-group-item">Position:{this.state.memberData.position}</li> 
+           </ul>
+         </div>
         )
       }
     else if(this.state.portfolio)
@@ -57,12 +221,12 @@ class Profile extends Component {
           <div>
       </div>
       <div>
-        {/* {this.fetchAchievements()} */}
+        {this.fetchAchievements()}
         </div>
       <div style={{marginTop:20}}>
         </div>
         <div>
-          {/* {this.fetchProjects()} */}
+          {this.fetchProjects()}
         </div>
         </div>
       )
@@ -71,10 +235,13 @@ class Profile extends Component {
     }
 
     render(){
-        if(this.props.location.state === undefined){
-            this.props.history.push("/") ;
-            return null ;
-        }else{
+          if(this.state.loading){
+            return (
+              <div>
+                Loading...
+                </div>
+            )
+          }else{
         return(
 <div className="body-element">
             <div className="wrapper">
@@ -280,7 +447,7 @@ class Profile extends Component {
               </div>
             </header>{/*header end*/}	
             <section className="cover-sec">
-              <img src="{}" alt />
+              <img src={this.state.memberData.profileTimeline} alt />
               {/* <input type="file" id="uploadTimeline" name="profileTimelineUpload" style={{display:'none'}} />
  */}
               {/* <a href="#" onClick={()=>{document.getElementById('uploadTimeline').click()}} style={{right:'89.5px', color:'#ff0000'}} ><i className="fa fa-camera"></i> Change Image</a> */}
@@ -294,20 +461,26 @@ class Profile extends Component {
                         <div className="main-left-sidebar">
                           <div className="user_profile">
                             <div className="user-pro-img">
-                              <img src="{}" alt />
+                              <img src={this.state.memberData.profilePhoto} alt />
                               {/* <input type="file" id="uploadPhoto" onChange={this.profilePhotoHandle} name="profilePhotoUpload" style={{display:'none'}} />
                               <a onClick={()=>{document.getElementById('uploadPhoto').click()}} title=""><i className="fa fa-camera"></i></a> */}
                             </div>{/*user-pro-img end*/}
                             <div className="user_pro_status">
-                              {/* <ul className="flw-hr">
-                              <li><a href="#" title className="hre">Connect</a></li>
-                                <li><a href="#" title className="flww"><i className="la la-plus" /> Follow</a></li>
-                              </ul> */}
+                              {this.state.friends[this.state.username] ? 
+                              <ul className="flw-hr">
+                                <li><a href="#" title className="hre">friend</a></li>
+                              </ul>  
+                              :
+                              this.state.peoplewithnotis[this.state.username] ?
+                              <ul className="flw-hr">
+                                <li><a href="#" title className="hre">Requested</a></li>
+                              </ul>
+                              :
+                              <ul className="flw-hr">
+                                <li><a onClick={()=>this.sendnoti(this.state.username)} title className="hre">Befriend</a></li>
+                              </ul>
+                              }
                               <ul className="flw-status">
-                                <li>
-                                  <span>Connections</span>
-                                  <b>34</b>
-                                </li>
                                 <li>
                                   <span>Followers</span>
                                   <b>155</b>
@@ -540,9 +713,14 @@ class Profile extends Component {
                       </div>
                       <div className="col-lg-3">
                         <div className="right-sidebar">
+                        {this.state.friends[this.state.username]
+                          ?
                           <div className="message-btn">
-                            <a href="#" title><i className="fa fa-envelope" /> Message</a>
+                            <a onClick={()=>this.gotochat()} title><i className="fa fa-envelope" /> Message</a>
                           </div>
+                          :
+                          null
+                          }
                           <div className="widget widget-portfolio">
                             <div className="wd-heady">
                               <h3>Portfolio</h3>
@@ -609,14 +787,11 @@ class Profile extends Component {
               </div>{/*overview-edit end*/}
             </div>{/*overview-box end*/}
           </div>
-
-    
-
-
            </div>
            
         );
-                }
+                            }
+                
     }
 }
 export default Profile ;

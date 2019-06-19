@@ -38,7 +38,11 @@ class Dashboard extends Component {
             });
         }
         
-        fetch("http://localhost:2000/people/"+this.state.people)
+        fetch("http://localhost:2000/people/"+this.state.people,{
+            method: "GET",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            credentials:'include',
+        })    
         // fetch("https://ojus-server-132kgu2rdjqbfc.herokuapp.com/people/"+this.state.people)    
         .then(response => response.json())
         .then(datas =>{
@@ -91,7 +95,7 @@ class Dashboard extends Component {
         <li >
         <div class="usr-msg-details">
             <div class="usr-ms-img">
-                {/* <img src={data.profilePhoto} alt=""/> */}
+                <img src={name.profilePhoto} alt=""/>
             </div>
                 <div class="usr-mg-info">
                     <h3><a onClick={()=>this.gotouserprofile(name)}>{name.user}</a> </h3>
@@ -109,10 +113,10 @@ class Dashboard extends Component {
                 <li>
                 <div class="usr-msg-details">
                     <div class="usr-ms-img">
-                        {/* <img src={data.profilePhoto} alt=""/> */}
+                        <img src={name.profilePhoto} alt=""/>
                     </div>
                         <div class="usr-mg-info">
-                            <h3><a onClick={()=>this.gototeamprofile(name.user)}>{name.user}</a></h3>
+                            <h3><a onClick={()=>this.gototeamprofile(name)}>{name.user}</a></h3>
                         </div>
                     </div>
                 </li>
@@ -131,10 +135,10 @@ class Dashboard extends Component {
                 <li>
                 <div class="usr-msg-details">
                     <div class="usr-ms-img">
-                        {/* <img src={data.profilePhoto} alt=""/> */}
+                        <img src={name.profilePhoto} alt="pic"/>
                     </div>
                         <div class="usr-mg-info">
-                            <h3><a onClick={()=>this.gotomemberprofile(name.user)}>{name.user}</a></h3>
+                            <h3><a onClick={()=>this.gotomemberprofile(name)}>{name.user}</a></h3>
                         </div>
                     </div>
                 </li>
@@ -150,17 +154,17 @@ class Dashboard extends Component {
     }
     gototeamprofile=(name)=>{
         this.props.history.push({
-            pathname:'/team/Profile/'+name,
+            pathname:'/team/Profile/'+name.user+'/'+name.id,
             state :{
                 username : this.props.location.state.username,
-                profileuser : name 
+                profileuser : name.user 
             }
           }) ;
     }
     gotouserprofile=(name)=>{
         if(name.team){
             this.props.history.push({
-                pathname:'/team/Profile/'+name.user,
+                pathname:'/team/Profile/'+name.user+'/'+name.id,
                 state :{
                     username : this.props.location.state.username,
                     profileuser : name.user 
@@ -168,7 +172,7 @@ class Dashboard extends Component {
               }) ;
         }else{
             this.props.history.push({
-                pathname:'/member/Profile/'+name.user,
+                pathname:'/member/Profile/'+name.user+'/'+name.id,
                 state :{
                     username : this.props.location.state.username,
                     profileuser : name.user 
@@ -179,10 +183,10 @@ class Dashboard extends Component {
     }
     gotomemberprofile=(name)=>{
         this.props.history.push({
-            pathname:'/member/Profile/'+name,
+            pathname:'/member/Profile/'+name.user+'/'+name.id,
             state :{
                 username : this.props.location.state.username,
-                profileuser : name 
+                profileuser : name.user 
             }
           }) ;
     }
@@ -416,6 +420,13 @@ class Dashboard extends Component {
                                         <option>team</option>
                                         <option>team members</option>
                                     </select>
+                                    {/* {this.state.filter === 'team' ? 
+                                    <select className="form-control browser-default custom-select" name="filter2" value={this.state.filter2} onChange={this.handleChange}>
+                                        <option selected>Username</option>
+                                        <option>Field</option>
+                                        <option>Institute</option>
+                                    </select>
+                                    :null} */}
                                 </form>
                         <div class="msgs-list">
                         <div class="messages-list">

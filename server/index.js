@@ -236,7 +236,7 @@ app.post('/newgroup',function(req,res){
               data = cuser2.groups ;
               res.json(data) ;
             }
-          }) ;
+          });
         }
       });
     }
@@ -339,8 +339,10 @@ app.get('/people/:name',function(req,res){
       console.log(err);
     }else{
        cuser.forEach(function(user){
-        response.push({user:user.username,team:user.team,propic:user.propic}) ;
-       });
+         if(user.username !== req.user.username){
+            response.push({user:user.username,team:user.team,profilePhoto:user.profilePhoto,id:user._id}) ;
+         }
+      });
        //response = {users: resuser}
        console.log(response) ;
        res.json(response) ;
@@ -593,6 +595,20 @@ app.get("/get-friends",function(req,res){
   });
 });
 
+app.get("/get-friends2",function(req,res){
+  var username = req.user.username ;
+  friends= [] ;
+  User.findOne({username:username},function(err,cuser){
+    var i = 0 ;
+    if(err){
+      console.log(err) ;
+    }else{
+     res.json(cuser.friends) ; 
+    }
+  });
+});
+
+
 app.get("/get-notis",function(req,res){
   var username = req.user.username ;
   Notification.findOne({handlename:username},function(err,cuser){
@@ -751,7 +767,7 @@ socket.on("newmessage",function(data){
             dbx.filesUpload({ path: '/Uploads/'+fileName, contents: contents })
            .then(function (response) { 
             dbx.sharingCreateSharedLinkWithSettings({path:'/Uploads/'+fileName }).then(function (res) { 
-              var usercombo1 = currentuser+'/'+friendname ;
+            var usercombo1 = currentuser+'/'+friendname ;
             var usercombo2 = friendname+'/'+currentuser ;
             var message = data.message ;
             var obj = {};

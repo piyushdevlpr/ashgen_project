@@ -16,12 +16,16 @@ export default class ChatPhoto extends Component{
         this.getImage = this.getImage.bind(this) ;
         this.makeloaderfalse = this.makeloaderfalse.bind(this) ;
     }
+    componentDidMount(){
+
+    }
     makeloaderfalse=(e)=>{
         e.preventDefault() ;
         this.setState({loading:false}) ;
     }
-    getImage=(e)=>{
-        e.preventDefault() ;
+    getImage(){
+        // e.preventDefault() ;
+        
         this.setState({loading : true })
     }
     makeloadedtrue=()=>{
@@ -38,20 +42,21 @@ export default class ChatPhoto extends Component{
                         <span>
                     <div class="outgoing_msg">
                         <div class="sent_msg">
-                        <div className="posrel">
+                        <div className="posrel" >
                         {/* <div> */}
                         {this.state.loading || this.state.loaded
                         ?<img  src={this.props.data.data.url} onError={this.makeloaderfalse} onLoad={this.makeloadedtrue} alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" class="img-thumbnail" />
                           
-                        :<img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" alt="..." class="img-thumbnail" />
-                        
+                        :<img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" alt="..." onLoad={this.getImage} class="img-thumbnail" />
                         }
-                        {(!this.state.loading && !this.state.loaded) ? <button className="buttn" onClick={this.getImage}>D</button>
-                        : (this.state.loading) ? 
-                        // <div className="buttn">...</div>
+                        {/* {(!this.state.loading && !this.state.loaded) ? <button className="buttn" onClick={this.getImage}>D</button>
+                        : */}
+                        {/* {!this.state.loading ? this.getImage() : null} */}
+                        {(this.state.loading) ? 
+                         //<div className="buttn">...</div> 
                         <Spinner className="buttn2" animation="grow" />
-                        :null  
-                        } 
+                         :null  
+                        }  
                         {console.log(this.state)}                       
                     {/* <img src={"C:\Users\piyush\Desktop\ashgen_project\server\public\uploads\chat\"} + this.prop.data.data.url.slice(21) alt="..." class="img-thumbnail" />  */}
                           
@@ -92,19 +97,20 @@ export default class ChatPhoto extends Component{
            <span>
            <div class="incoming_msg">
                         <div class="received_msg">
-                            <div className="posrel">
+                        <div className="posrel" >
                         {/* <div> */}
                         {this.state.loading || this.state.loaded
-                        ?<img  src={this.props.data.data.url} onLoad={this.makeloadedtrue} onError={this.makeloaderfalse} alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" class="img-thumbnail" />
+                        ?<img  src={this.props.data.data.url} onError={this.makeloaderfalse} onLoad={this.makeloadedtrue} alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" class="img-thumbnail" />
                           
-                        :<img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" alt="..." class="img-thumbnail" />
-                        
+                        :<img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQUxPpo4PyDKi49cPqaV03_7InMkEBjKcOd5CVB4n4DNdH7jk2Bg" alt="..." onLoad={this.getImage} class="img-thumbnail" />
                         }
-                        {(!this.state.loading && !this.state.loaded) ? <button className="buttn" onClick={this.getImage}>D</button>
-                        : (this.state.loading) ? 
-                        // <div className="buttn">...</div>
-                        <Spinner onClick={this.makeloaderfalse} className="buttn2" animation="grow" />
-                        :null  
+                        {/* {(!this.state.loading && !this.state.loaded) ? <button className="buttn" onClick={this.getImage}>D</button>
+                        : */}
+                        {/* {!this.state.loading ? this.getImage() : null} */}
+                        {(this.state.loading) ? 
+                         //<div className="buttn">...</div> 
+                        <Spinner className="buttn2" animation="grow" />
+                         :null  
                         } 
                         {console.log(this.state)}                       
                         {/* <img src={"C:\Users\piyush\Desktop\ashgen_project\server\public\uploads\chat\"} + this.prop.data.data.url.slice(21) alt="..." class="img-thumbnail" />  */}

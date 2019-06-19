@@ -26,7 +26,7 @@ componentDidMount(){
     password: '',
     emailid: '',
     login: false ,
-    loggedin : false ,
+    loggedin : '' ,
     signedup : false
   })
 }
@@ -65,7 +65,7 @@ click2=(event)=>{
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(this.state),
     credentials: 'include'
-  }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data})}})
+  }).then(res => res.json()).then(data => {if(this._ismounted === true){this.setState({loggedin : data.status})}})
   // console.log(this.state) ;
   }
 }
@@ -116,13 +116,13 @@ gotohome3rdpartyuser=()=>{
 }
 teamtrue=()=>{
   if(this._ismounted){
-  this.setState({team : true}) ;
+  this.setState({team : true,loggedin:''}) ;
   }//event.preventDefault();
   //event.target.classList.add('lohgintrue') ;
 }
 teamfalse=()=>{
   if(this._ismounted){
-  this.setState({team : false});
+  this.setState({team : false , loggedin:''});
 }
 }
 teamorind=()=>{
@@ -138,8 +138,8 @@ getloginteam=()=>{
   <div>
   <form onSubmit={this.click3} method='POST' action='http://localhost:2000/login'>
   <div> 
-      <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
-      <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
+      <input className={'form-control loginsuccess'+this.state.loggedin} type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
+      <input className={'form-control loginsuccess'+this.state.loggedin} type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
       <button className='btn btn-default addallborder'>LOGIN</button>
       {this.gotohome()}
   </div>
@@ -152,8 +152,8 @@ getlogin=()=>{
   <div>
   <form onSubmit={this.click2} method='POST' action='http://localhost:2000/loginind'>
   <div>
-      <input className='form-control' type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
-      <input className='form-control' type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
+      <input className={'form-control loginsuccess'+this.state.loggedin} type='text' placeholder='USERNAME' name='username' value={this.state.username}  onChange={this.handleChange}></input><br/>
+      <input className={'form-control loginsuccess'+this.state.loggedin} type='password' placeholder='PASSWORD' name='password' value={this.state.password} onChange={this.handleChange}></input><br/>
       <button className='btn btn-default addallborder'>LOGIN</button>
       {this.gotohome3rdpartyuser()}
   </div>

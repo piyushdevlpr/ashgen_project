@@ -40,6 +40,24 @@ router.post('/member_profile',(req,res)=>{   // form data is post here
 
 
 //fetching
+router.get('/fetch_clicked_member_profile/:name/:id',function(req,res)
+{
+    console.log(req.params.id)
+    console.log(req.params.name)
+    author ={
+        "id":req.params.id,
+        "username":req.params.name
+    }
+    MemberProfileModel.find({'author.username':req.params.name},function(err,model)
+    {
+        if(err)
+            throw err;
+            console.log(model);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+    })
+
+}) ;
 router.get('/fetch_member_profile',function(req,res)
 {
 
@@ -59,6 +77,22 @@ router.get('/fetch_member_profile',function(req,res)
 
 })
 
+router.get('/clicked_member_achievement/:name/:id',function(req,res){
+    author ={
+        "id":req.params.id,
+        "username":req.params.name
+    }
+    MemberAchievementModel.find({'author.username':req.params.name},function(err,model)
+    {
+        if(err) 
+            throw err;
+    console.log(model);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(model);
+    
+    })
+
+})
 
 router.get('/member_achievement',function(req,res){
     author ={
@@ -100,6 +134,24 @@ router.post('/member_achievement',function(req,res)
 });
 
 //projects
+router.get('/clicked_member_project/:name/:id',function(req,res){
+    author ={
+        "id":req.params.id,
+        "username":req.params.username
+    }
+    MemberProjectModel.find({'author.username':req.params.name},function(err,model)
+    {
+        if(err) 
+            throw err;
+    console.log(model);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(model);
+        
+    })
+
+})
+
+
 router.get('/member_project',function(req,res){
     author ={
         "id":req.user._id,
@@ -140,6 +192,24 @@ router.post('/member_project',function(req,res)
 });
 
 //education 
+router.get('/clicked_member_education/:name/:id',function(req,res){
+    author ={
+        "id":req.params._id,
+        "username":req.params.username
+    }
+    MemberEducationModel.find({'author.username':req.params.name},function(err,model)
+    {
+        if(err) 
+            throw err;
+    console.log(model);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(model);
+        
+    })
+
+})
+
+
 router.get('/member_education',function(req,res){
     author ={
         "id":req.user._id,
@@ -182,12 +252,12 @@ router.post('/member_education',function(req,res)
 });
 
 //experience
-router.get('/member_experience',function(req,res){
+router.get('/clicked_member_experience/:name/:id',function(req,res){
     author ={
-        "id":req.user._id,
-        "username":req.user.username
+        "id":req.params._id,
+        "username":req.params.username
     }
-    MemberExperienceModel.find({author:author},function(err,model)
+    MemberExperienceModel.find({'author.username':req.params.name},function(err,model)
     {
         if(err) 
             throw err;

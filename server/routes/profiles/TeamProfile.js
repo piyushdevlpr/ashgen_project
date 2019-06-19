@@ -5,10 +5,26 @@ var User = require('../../models/user')
 var TeamAchievementModel = require('../../models/profiles/team/team_achievements');
 var TeamProjectModel = require('../../models/profiles/team/team_projects');
 var AddMemberModel  = require('../../models/profiles/team/add_member');
+var MemberModel  = require('../../models/profiles/team_member/team_member');
 var Dropbox =require('dropbox').Dropbox;
 var fs     = require('fs');
 var nodemailer = require('nodemailer');
 
+router.get('/get_members/:username/:id',function(req,res)
+{
+    author ={
+        "id":req.params.id,
+        "username":req.params.username
+    }
+    MemberModel.find({'team.username':author.username},function(err,model)
+    {
+        if(err)
+            throw err;
+            console.log(model);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+    })
+})
 
 router.post('/team_profile',(req,res)=>{   // form data is post here
     data={
@@ -32,13 +48,13 @@ router.post('/team_profile',(req,res)=>{   // form data is post here
     })
 })
 
-router.get('/fetch_team_profile',function(req,res)
+router.get('/fetch_clicked_team_profile/:username/:id',function(req,res)
 {
     author ={
-        "id":req.user._id,
-        "username":req.user.username
+        "id":req.params.id,
+        "username":req.params.username
     }
-    TeamProfileModel.find({author:author},function(err,model)
+    TeamProfileModel.find({'author.username':author.username},function(err,model)
     {
         if(err)
             throw err;
@@ -46,6 +62,23 @@ router.get('/fetch_team_profile',function(req,res)
             res.setHeader('Content-Type', 'application/json');
             res.send(model);
 
+    })
+
+})
+
+router.get('/clicked_team_achievement/:username/:id',function(req,res){
+    author ={
+        "id":req.params.id,
+        "username":req.params.username
+    }
+    TeamAchievementModel.find({'author.username':author.username},function(err,model)
+    {
+        if(err) 
+            throw err;
+    console.log(model);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(model);
+        
     })
 
 })
@@ -91,6 +124,23 @@ router.post('/team_achievement',function(req,res)
 });
 
 //projects
+router.get('/clicked_team_project/:username/:id',function(req,res){
+    author ={
+        "id":req.params.id,
+        "username":req.params.username
+    }
+    TeamProjectModel.find({'author.username':author.username},function(err,model)
+    {
+        if(err) 
+            throw err;
+    console.log(model);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(model);
+        
+    })
+
+})
+
 router.get('/team_project',function(req,res){
     author ={
         "id":req.user._id,

@@ -42,8 +42,8 @@ ReactDOM.render((
        <Route path = "/team_form/" component = {TeamForm} />
        <Route path = "/member-form/" component = {MemberForm} />
        <Route path = "/member-profile/" component = {MemberProfile} />
-       <Route path = "/team/Profile/:name" component = {Profileteam} />
-       <Route path = "/member/Profile/:name" component = {Profilemember} />
+       <Route path = "/team/Profile/:name/:id" component = {Profileteam} />
+       <Route path = "/member/Profile/:name/:id" component = {Profilemember} />
        </Switch>
  </Router>
 ), document.getElementById('root'));

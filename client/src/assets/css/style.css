@@ -4944,6 +4944,9 @@ a:hover {
 	bottom:48px;
 }
 .posrel {
+	/* background-color: #00b540 ; */
+	/* width : 100%;
+	height : 150px; */
 	position : relative ;
 	align-content: center;
 }
