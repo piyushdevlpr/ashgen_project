@@ -33,7 +33,7 @@ var DBURL = 'mongodb://project:project123@ds139576.mlab.com:39576/project';
     .then(() =>  console.log('connection successful'))
     .catch((err) => console.error(err));
   var whitelist = [];
-  whitelist = ['http://localhost:3000', 'http://localhost:3000/team_profile/','http://localhost:3000/people/','http://localhost:3000/member_profile/']
+  whitelist = ['http://localhost:3000', 'http://localhost:3000/team_profile/','http://localhost:3000/people/','http://localhost:3000/member_profile/','http://localhost:3000/team_posts']
   // whitelist = ['https://ojus-client-12341fclksjvgjb.herokuapp.com','https://ojus-client-12341fclksjvgjb.herokuapp.com/','https://ojus-client-12341fclksjvgjb.herokuapp.com/your-profile/','https://ojus-client-12341fclksjvgjb.herokuapp.com/team-profile/','https://ojus-client-12341fclksjvgjb.herokuapp.com/people/','https://ojus-client-12341fclksjvgjb.herokuapp.com/groups/','https://ojus-client-12341fclksjvgjb.herokuapp.com/friends/']
   var corsOptions = {
     credentials:true,                           //using credentials from frontend aftr authentication
