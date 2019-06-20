@@ -203,6 +203,7 @@ router.post('/post_comment',function(req,res)
     post.id = post_id;
 
     author.id = req.user._id;
+    author.team = req.user.team;
     author.username = req.user.username;
     comments.comment = req.body.comment;
     comments.author = author;
@@ -359,6 +360,8 @@ router.post('/post_reply',function(req,res)
 
     author.id = req.user._id;
     author.username = req.user.username;
+    author.team = req.user.team;
+
     replies.reply = req.body.reply;
     replies.author = author;
     replies.comment = comment;
@@ -435,16 +438,19 @@ router.post('/comment_check_like',function(req,res)
 //fetch routes for likes
 router.post('/comment_fetch_likes',function(req,res)
 {
-    var comment_id = req.body.comemnt_id;   
+    var comment_id = req.body.comment_id;   
     comment_id= mongoose.Types.ObjectId(comment_id)
     var comment = {};
     comment.id = comment_id;
     // console.log(post);
-    likeCommentModel.find({post:post},function(err,model)
+    console.log(comment);
+
+    likeCommentModel.find({comment:comment},function(err,model)
     {
         if(err)
             throw err;
         else{
+            console.log(model)
             res.setHeader('Content-Type', 'application/json');
             res.send(model);
         }
@@ -537,5 +543,10 @@ router.post('/post_share',function(req,res)
     })
 
 })
+
+
+
+
+
 
 module.exports = router;

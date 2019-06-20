@@ -41,7 +41,7 @@ export default class VideoList extends Component{
                                     {/* <ul className="job-dt">
                                       <li><span>$300 - $350</span></li>
                                     </ul>  */}
-            <iframe style={{width:'100%', height:300}} className="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0"></iframe>
+            <iframe style={{width:'100%', height:30466960}} className="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0"></iframe>
 
                                     {/* <ul className="skill-tags">
                                       <li><a href="#" title>HTML</a></li>

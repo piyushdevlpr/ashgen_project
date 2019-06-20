@@ -1,7 +1,256 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Comment from './Comment'
 
 export default class PhotoList extends Component{
+
+      constructor(props){
+        super(props) ;
+        this.state = {
+          comment:'',   //user can write comment
+          liked:false,
+          item : this.props.item,
+          comments: [],          //posts comments
+          likes: [],           //list of post likes
+          likeInfo:{},
+          commentsLoading: true,
+          likesLoading:true,
+          commentToggle:false,  //when comment button clicked a box appear below
+        }
+        this.postComment = this.postComment.bind(this);
+        this.OnCommentChange  = this.OnCommentChange.bind(this);
+        this.fetchComments  = this.fetchComments.bind(this);
+        this.toggleLike = this.toggleLike.bind(this);
+        this.fetchLikes = this.fetchLikes.bind(this);
+        this.checkIfLiked = this.checkIfLiked.bind(this);
+        // this.fetchShare   = this.fetchShare.bind(this);
+        // this.postShare = this.postShare.bind(this);
+      
+    }
+
+    checkIfLiked()
+    {
+
+        const config = {
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true, // default
+
+        };
+        var data ={};
+        data.post_id = this.props.item._id;
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/check_like',data,config)
+        axios.post('http://localhost:2000/check_like',data,config)
+        .then((response)=>{
+
+            if(response.data.check==true)
+            {
+                this.setState({liked:true});
+                this.setState({likeInfo:response.data.likeInfo});
+            }
+
+        })
+        .catch((err)=>{
+            throw err;
+        })
+
+
+    }
+
+    fetchLikes()
+    {
+       if(this.state.likesLoading)
+       {
+        var data ={}
+        var post_id = this.state.item._id;
+        data.post_id = post_id;
+        const config = {
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true, // default
+
+        };
+        var list;
+
+        axios.post('http://localhost:2000/fetch_likes',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_likes',data,config)
+        .then((response)=>{
+            // console.log(response.data);
+            this.setState({likes:response.data},()=>{this.setState({likesLoading:false})})
+        
+        })
+       }
+      //  else{
+
+      //   list = this.state.likes.map(function(item)
+      //   {
+      //       return(
+      //           <div style={{display:'inline', marginRight:'5px'}} key={item._id}>
+      //               <p style={{display:'inline'}}>{item.author.username}</p>
+      //           </div>
+      //       )
+      //   })
+
+      //   return list;
+
+      //  }
+    }
+    componentWillMount()
+    {
+      this.checkIfLiked();
+    }
+
+    toggleLike(event)
+    {
+        event.preventDefault();
+
+        const config = {
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true, // default
+
+        };
+        if(!this.state.liked)
+        {
+            var  data = {};
+            data.id = this.state.item._id;
+            axios.post('http://localhost:2000/post_like',data,config)
+            // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/post_like',data,config)
+            .then((response)=>{
+
+                var likes  =this.state.likes;
+                likes.unshift(response.data);
+                this.setState({likes:likes}, ()=>{
+                    this.setState({liked:true});
+                    this.checkIfLiked();
+                });
+             
+            
+            })
+            .catch((error)=>{
+                throw error;
+            })
+
+    }
+    else{
+        var  data = {};
+        data.likeInfo = this.state.likeInfo;
+        axios.post('http://localhost:2000/post_unlike',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/un_like',data,config)
+        .then((response)=>{
+            
+                this.setState({liked:false});
+                this.setState({likesLoading:true})
+        })
+        .catch((error)=>{
+            throw error;
+        })
+
+
+    }
+        
+
+    }
+
+
+
+
+
+
+
+    OnCommentChange(event)
+    {
+        event.preventDefault();
+        this.setState({
+            [event.target.name] : event.target.value,
+          })
+
+          console.log(event.target.value);
+    }
+
+    postComment(event)
+    {
+        event.preventDefault() ;
+        const config = {
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true, // default
+
+        };
+        const data = {
+
+        }
+        data._id = this.state.item._id;   //post id
+        data.comment = this.state.comment; // comment
+
+        axios.post('http://localhost:2000/post_comment',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/post_comment',data,config)
+        .then((response)=>{
+        //    console.log(response.data);
+            var comments  =this.state.comments;
+            comments.unshift(response.data);
+            this.setState({comments:comments}, ()=>{
+                this.setState({comment:''})
+            });
+
+        })
+        .catch((error)=>{
+            throw error;
+        })
+
+
+
+    }
+
+    fetchComments()
+    {
+
+        if(this.state.commentsLoading)
+        {
+            var data ={}
+            var post_id = this.state.item._id;
+            data.post_id = post_id;
+            const config = {
+                headers: {
+                    'content-type': 'application/json'
+                },
+                withCredentials: true, // default
+
+            };
+            var list;
+
+            axios.post('http://localhost:2000/fetch_comments',data,config)
+            // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_comments',data,config)
+            .then((response)=>{
+                // console.log(response.data);
+                this.setState({comments:response.data},()=>{this.setState({commentsLoading:false})})
+            
+            })
+    }
+    else{
+      var teamData=this.props.teamData;
+      var profilePhoto = this.props.profilePhoto
+        list = this.state.comments.map(function(item)
+        {
+            return(
+                <Comment  profilePhoto={profilePhoto} key={item._id} comment={item} teamData={teamData}/>
+                
+            )
+        })
+
+        return list;
+
+
+    }
+    }
+    
+
+    
+
     render()
     {
         return(
@@ -54,13 +303,28 @@ export default class PhotoList extends Component{
                                   <div className="job-status-bar">
                                     <ul className="like-com">
                                       <li>
-                                        <a href="#"><i className="la la-heart" /> Like</a>
-                                        <img src="../assets/images/liked-img.png" alt />
-                                        <span>25</span>
+                                        <a href="#" style={{color:this.state.liked?'blue':'#000'}} onClick={this.toggleLike}><i className="la la-thumbs-o-up" /> Upvote</a>
+                                        <p style={{float:'left', marginTop:3}}>{this.state.likes.length}</p>
+                                        {this.fetchLikes()}
                                       </li> 
-                                      <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
+                                      <li><a href="#" title className="com" onClick={()=>{this.setState({commentToggle:true})}}><img src="../assets/images/com.png" alt /> Comment {this.state.comments.length}</a></li>
                                     </ul>
-                                    <a><i className="la la-eye" />Views 50</a>
+                                  </div>
+                                  <div id="comment" style={{display:this.state.commentToggle?'block':'none'}} className="job-status-bar">
+                                    <div  id="comment-sections" style={{width:'100%', padding:10}}>
+                                    <img style={{height:45, width:45, float:'left', borderRadius: '50%'}} src={this.props.profilePhoto} alt />
+                                      <form  style={{float:'left', width:'85%', marginLeft:'1.5%', marginTop:2}} onSubmit={this.postComment}>
+
+                                      <div className="input-group mb-3" >
+          
+                                      <input  type="comment" onChange={this.OnCommentChange} name="comment" value={this.state.comment} className="form-control" placeholder="Write comment" aria-label="comment" aria-describedby="basic-addon1" />
+                                      </div>
+                                      </form>
+                                      </div>
+                                      <div>
+                                      {this.fetchComments()}
+                                      </div>
+
                                   </div>
                                 </div>
 
