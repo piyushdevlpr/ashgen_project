@@ -11,7 +11,9 @@ import '../assets/css/line-awesome-font-awesome.min.css'
 import '../assets/css/responsive.css'
 import '../assets/css/style.css'
 import {Modal,Form,Button,Col,Row} from 'react-bootstrap'
-import { resolveNaptr } from 'dns';
+import PhotoList from './PhotoList';
+import TextList from './TextList';
+import VideoList from './VideoList';
 
 
 export default class memberProfile extends Component{
@@ -67,13 +69,12 @@ export default class memberProfile extends Component{
             projectURL:'',
             projectYear:'',
             projectLoading: true,
-            
-
-
             profilePhoto: '',
             profileTimeline:'',
             profilePhotoUpload : null,
             profileTimelineUpload:null,
+            posts: [],
+            postLoading:true,
             
         }
         this.fetchProfile = this.fetchProfile.bind(this);
@@ -121,7 +122,24 @@ export default class memberProfile extends Component{
 
       this.profilePhotoHandle = this.profilePhotoHandle.bind(this);
       this.profileTimelineHandle = this.profileTimelineHandle.bind(this);
-    
+      this.fetchPosts  = this.fetchPosts.bind(this);
+
+
+    }
+
+    fetchPosts()
+    {
+      axios.get('http://localhost:2000/member_posts',{withCredentials: true}).then((response)=>{
+        // axios.get('https://ojus-server-132kgu2rdjqbfc.herokuapp.com/dashboard_posts').then((response)=>{
+        // console.log(response);
+            this.setState({posts:response.data},()=>{
+
+                this.setState({postLoading:false})
+                console.log(this.state.posts);
+
+            });
+            
+        })
 
     }
 
@@ -750,65 +768,58 @@ export default class memberProfile extends Component{
     {
       if(this.state.feed)
       {
+        if(this.state.postLoading)
+        {
+          return(
+            <div>
+            {this.fetchPosts()}
+            <p>Loading...</p>
+            </div>
+          )
+        }
+        else if(!this.state.loading){
+          var teamData = this.state.teamData;
+          var profilePhoto= this.state.profilePhoto;
+
+          const list = this.state.posts.map(function(item)
+           {
+               if(item.type=='text')
+               {
+                   return(<TextList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+               }
+               else if(item.type=="photo")
+               {
+                return(<PhotoList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+
+               }
+               else{
+                return(<VideoList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+
+               }
+           })
+
+           return list;
+          
+        }
+      
+      }
+      else if(this.state.about)
+      {
         return(
-          <div className="post-bar">
-                                <div className="post_topbar">
-                                  <div className="usy-dt">
-                                    <img src="../assets/images/resources/us-pic.png" alt />
-                                    <div className="usy-name">
-                                      <h3>John Doe</h3>
-                                      <span><img src="../assets/images/clock.png" alt />3 min ago</span>
-                                    </div>
-                                  </div>
-                                  <div className="ed-opts">
-                                    <a href="#" title className="ed-opts-open"><i className="la la-ellipsis-v" /></a>
-                                    <ul className="ed-options">
-                                      <li><a href="#" title>Edit Post</a></li>
-                                      <li><a href="#" title>Unsaved</a></li>
-                                      <li><a href="#" title>Unbid</a></li>
-                                      <li><a href="#" title>Close</a></li>
-                                      <li><a href="#" title>Hide</a></li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                <div className="epi-sec">
-                                  <ul className="descp">
-                                    <li><img src="../assets/images/icon8.png" alt /><span>Front End Developer</span></li>
-                                    <li><img src="../assets/images/icon9.png" alt /><span>India</span></li>
-                                  </ul>
-                                  <ul className="bk-links">
-                                    <li><a href="#" title><i className="la la-bookmark" /></a></li>
-                                    <li><a href="#" title><i className="la la-envelope" /></a></li>
-                                    <li><a href="#" title className="bid_now">Bid Now</a></li>
-                                  </ul>
-                                </div>
-                                <div className="job_descp">
-                                  <h3>Simple Classified Site</h3>
-                                  <ul className="job-dt">
-                                    <li><span>$300 - $350</span></li>
-                                  </ul>
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit amet... <a href="#" title>view more</a></p>
-                                  <ul className="skill-tags">
-                                    <li><a href="#" title>HTML</a></li>
-                                    <li><a href="#" title>PHP</a></li>
-                                    <li><a href="#" title>CSS</a></li>
-                                    <li><a href="#" title>Javascript</a></li>
-                                    <li><a href="#" title>Wordpress</a></li> 	
-                                  </ul>
-                                </div>
-                                <div className="job-status-bar">
-                                  <ul className="like-com">
-                                    <li>
-                                      <a href="#"><i className="la la-heart" /> Like</a>
-                                      <img src="../assets/images/liked-img.png" alt />
-                                      <span>25</span>
-                                    </li> 
-                                    <li><a href="#" title className="com"><img src="../assets/images/com.png" alt /> Comment 15</a></li>
-                                  </ul>
-                                  <a><i className="la la-eye" />Views 50</a>
-                                </div>
-                              </div>
+        <div id="about">
+          <ul className="list-group">
+          <li className="list-group-item">Field: {this.state.teamData.field}</li>
+          <li className="list-group-item">Institude: {this.state.teamData.institute}</li>
+          <li className="list-group-item">Establishment:{this.state.teamData.establishment}</li>
+          
+      </ul>
+
+        </div>
         )
+                         
+                        
+                          
+        
       }
       else if(this.state.about)
       {
