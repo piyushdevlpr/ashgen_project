@@ -228,16 +228,16 @@ export default class VideoList extends Component{
             .then((response)=>{
                 // console.log(response.data);
                 this.setState({comments:response.data},()=>{this.setState({commentsLoading:false})})
-            
             })
     }
     else{
       var teamData=this.props.teamData;
       var profilePhoto = this.props.profilePhoto
+      var member      = this.props.member;
         list = this.state.comments.map(function(item)
         {
             return(
-                <Comment  profilePhoto={profilePhoto} key={item._id} comment={item} teamData={teamData}/>
+                <Comment member={member} profilePhoto={profilePhoto} key={item._id} comment={item} teamData={teamData}/>
                 
             )
         })
@@ -259,7 +259,7 @@ export default class VideoList extends Component{
                                     <div className="usy-dt">
                                       <img style={{height:50, width:50}} src={this.props.profilePhoto} alt />
                                       <div className="usy-name">
-                                        <h3>{this.props.teamData.team_name}</h3>
+                                        <h3>{this.props.member==true?this.props.teamData.name:this.props.teamData.team_name}</h3>
                                         <span><img src="../assets/images/clock.png" alt />3 min ago</span>
                                       </div>
                                     </div>

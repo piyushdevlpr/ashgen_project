@@ -319,15 +319,15 @@ export default class TeamProfile extends Component{
            {
                if(item.type=='text')
                {
-                   return(<TextList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+                   return(<TextList item={item} member={false} teamData={teamData} profilePhoto={profilePhoto} />)
                }
                else if(item.type=="photo")
                {
-                return(<PhotoList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+                return(<PhotoList item={item} member={false} teamData={teamData} profilePhoto={profilePhoto} />)
 
                }
                else{
-                return(<VideoList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+                return(<VideoList item={item}  member={false} teamData={teamData} profilePhoto={profilePhoto} />)
 
                }
            })
