@@ -470,6 +470,24 @@ router.post('/member/profile-photo',function(req,res)
 
 })
 
+//**************************************************** */
+//posts
+router.get('/member_posts',function(req,res)
+{
+    author ={
+        "id": req.user._id,
+        "username":req.user.username
+    }
+    PostModel.find({author:author},function(err,model)
+    {
+        if(err)
+            throw err;
+        res.setHeader('Content-Type', 'application/json');
+        console.log(model);
+        res.send(model);
+        
+    })
+})
 
 
 

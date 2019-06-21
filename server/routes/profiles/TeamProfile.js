@@ -69,6 +69,27 @@ router.post('/team_profile',(req,res)=>{   // form data is post here
     })
 })
 
+//fetching
+
+router.get('/fetch_team_profile',function(req,res)
+{
+
+    author ={
+        "id":req.user._id,
+        "username":req.user.username
+    }
+    TeamProfileModel.find({author:author},function(err,model)
+    {
+        if(err)
+            throw err;
+            console.log(model);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+
+    })
+
+})
+
 router.get('/fetch_clicked_team_profile/:username/:id',function(req,res)
 {
     author ={

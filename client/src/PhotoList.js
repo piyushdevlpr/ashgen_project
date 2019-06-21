@@ -74,6 +74,40 @@ _isMounted = true;
 
 
     }
+    postComment(event)
+    {
+        event.preventDefault() ;
+        const config = {
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true, // default
+
+        };
+        const data = {
+
+        }
+        data._id = this.state.item._id;   //post id
+        data.comment = this.state.comment; // comment
+
+        axios.post('http://localhost:2000/post_comment',data,config)
+        // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/post_comment',data,config)
+        .then((response)=>{
+        //    console.log(response.data);
+            var comments  =this.state.comments;
+            comments.unshift(response.data);
+            this.setState({comments:comments}, ()=>{
+                this.setState({comment:''})
+            });
+
+        })
+        .catch((error)=>{
+            throw error;
+        })
+
+
+
+    }
 
 
     postComment(event)
