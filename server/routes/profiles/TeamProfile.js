@@ -11,6 +11,26 @@ var Dropbox =require('dropbox').Dropbox;
 var fs     = require('fs');
 var nodemailer = require('nodemailer');
 
+router.get('/fetch_team_profile',function(req,res)
+{
+
+    author ={
+        "id":req.user._id,
+        "username":req.user.username
+    }
+    TeamProfileModel.find({author:author},function(err,model)
+    {
+        if(err)
+            throw err;
+            console.log(model);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(model);
+
+    })
+
+})
+
+
 router.get('/get_members/:username/:id',function(req,res)
 {
     author ={

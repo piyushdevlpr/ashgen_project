@@ -23,6 +23,7 @@ var express            = require("express"),
     postRoute          = require('./routes/post');
     var teamProfileRoute   = require('./routes/profiles/TeamProfile');
     var memberProfileRoute = require('./routes/profiles/MemberProfile');
+    var fundingcampaignRoute = require('./routes/crowdfunding/startacampaign');
     var siofu          = require("socketio-file-upload");
     const fs           = require('fs');
     var Dropbox        = require('dropbox').Dropbox;
@@ -80,6 +81,7 @@ app.use(getUserRoute);
 app.use(postRoute);
 app.use(teamProfileRoute);
 app.use(memberProfileRoute);
+app.use(fundingcampaignRoute);
 
 
 // app.use(function(req, res, next){
@@ -571,6 +573,13 @@ app.get("/verdict-team-declined/:key",function(req,res){
     }
   });
 });
+app.get("/get-user",function(req,res){
+  User.findOne({username:req.user.username},function(err,cuser){
+    if(!err){
+      res.send(cuser) ;
+    }
+  })
+})
 app.get("/get-friends",function(req,res){
   var username = req.user.username ;
   friends= [] ;
@@ -579,7 +588,7 @@ app.get("/get-friends",function(req,res){
     if(err){
       console.log(err) ;
     }else{
-     friends = cuser.friends ; 
+     friends = cuser.friends ;
      console.log(friends);
      for(let i = 0 ; i < friends.length ; i++){
         User.findOne({username : friends[i].name},function(err,fuser){

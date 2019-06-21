@@ -1,0 +1,26 @@
+
+
+@media screen and (max-width: 1024px) {
+
+}
+
+
+@media screen and (max-width: 991px) {
+
+}
+
+@media screen and (max-width: 768px) {
+	.demo-item {
+		width: 100%;
+	}
+	.feature-item {
+	    padding-left: 30px;
+	    padding-right: 30px;
+	}
+}
+
+
+
+@media screen and (max-width: 500px) {
+	
+}

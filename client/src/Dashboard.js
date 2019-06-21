@@ -27,6 +27,8 @@ class Dashboard extends Component {
         this.gotonoti = this.gotonoti.bind(this);
         this.gotogroups = this.gotogroups.bind(this);
         this.gotofriends = this.gotofriends.bind(this);
+        this.gotocrowd = this.gotocrowd.bind(this);
+        this.gotosettings = this.gotosettings.bind(this);
         this.gotoprofile = this.gotoprofile.bind(this);
         this.filehandleChange = this.filehandleChange.bind(this);
         this.renderPosts   = this.renderPosts.bind(this);
@@ -301,6 +303,24 @@ class Dashboard extends Component {
           }
         }) ;
     }
+    gotosettings=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/settings/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
+    gotocrowd=(event)=>{
+        event.preventDefault() ;
+        this.props.history.push({
+          pathname:'/crowdfunding/',
+          state :{
+              username : this.props.location.state.username 
+          }
+        }) ;
+    }
     gotonoti=(event)=>{
         event.preventDefault() ;
         this.props.history.push({
@@ -440,12 +460,12 @@ class Dashboard extends Component {
                     </div>
                     <div className="col-6 container">
                     <div>
-                        <button onClick={this.gotopeople}>PEOPLE</button>
                         <button onClick={this.gotonoti}>NOTIFICATIONS</button>
                         <button onClick={this.gotofriends}>FRIENDS</button>
                         <button onClick={this.gotogroups}>Groups</button>
                         <button onClick={this.gotoprofile}>Profile</button>
-
+                        <button onClick={this.gotosettings}>Settings</button>
+                        <button onClick={this.gotocrowd}>CrowdFunding</button>
                         {/* <button onClick={this.gotoprofile}>PROFILE</button> */}
                     </div>
                         <div className="card" style={{marginBottom:"25px"}}>

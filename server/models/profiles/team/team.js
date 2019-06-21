@@ -20,7 +20,7 @@ var TeamSchema = new mongoose.Schema({
   team_size:{type:Number},
   cur_work : {type:String},
   vision: {type:String},
-  funding_status: {type:String},
+  funding_status: {type:Boolean,default:false},
   rating:{type:Number},
   profilePhoto :{type:String, default:'https://drive.google.com/uc?export=download&id=1cZuz8C5ZUNl5Si2F34RR4_H9sebF5P9z'},
   profileTimeline:{type:String,default:'https://drive.google.com/uc?export=download&id=1O1PQWchJbWnT4g3hYyI5T48hyOjHSbDq'},

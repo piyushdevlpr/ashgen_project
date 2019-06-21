@@ -18,6 +18,9 @@ import * as serviceWorker from './serviceWorker';
 import DashboardInd from './DashboardInd';
 
 import Signupteammember from './profiles/Signupteammember';
+import Settings from './Settings/settingshome';
+import Crowdfunding from './Crowdfunding/crowdfundinghome';
+import Startcampaign from './Crowdfunding/startacampaign';
 import TeamProfile from './profiles/TeamProfile';
 import TeamForm from './profiles/TeamForm';
 import MemberForm from './profiles/MemberForm';
@@ -42,6 +45,9 @@ ReactDOM.render((
        <Route path = "/team_form/" component = {TeamForm} />
        <Route path = "/member-form/" component = {MemberForm} />
        <Route path = "/member-profile/" component = {MemberProfile} />
+       <Route path = "/settings/" component = {Settings} />
+       <Route path = "/crowdfunding/" component = {Crowdfunding} />
+       <Route path = "/start-campaign/" component = {Startcampaign} />
        <Route path = "/team/Profile/:name/:id" component = {Profileteam} />
        <Route path = "/member/Profile/:name/:id" component = {Profilemember} />
        </Switch>
