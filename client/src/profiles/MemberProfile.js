@@ -778,22 +778,22 @@ export default class memberProfile extends Component{
           )
         }
         else if(!this.state.loading){
-          var teamData = this.state.teamData;
+          var memberData = this.state.memberData;
           var profilePhoto= this.state.profilePhoto;
 
           const list = this.state.posts.map(function(item)
            {
                if(item.type=='text')
                {
-                   return(<TextList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+                   return(<TextList item={item} teamData={memberData} profilePhoto={profilePhoto} />)
                }
                else if(item.type=="photo")
                {
-                return(<PhotoList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+                return(<PhotoList item={item} teamData={memberData} profilePhoto={profilePhoto} />)
 
                }
                else{
-                return(<VideoList item={item} teamData={teamData} profilePhoto={profilePhoto} />)
+                return(<VideoList item={item} teamData={memberData} profilePhoto={profilePhoto} />)
 
                }
            })
@@ -803,24 +803,24 @@ export default class memberProfile extends Component{
         }
       
       }
-      else if(this.state.about)
-      {
-        return(
-        <div id="about">
-          <ul className="list-group">
-          <li className="list-group-item">Field: {this.state.teamData.field}</li>
-          <li className="list-group-item">Institude: {this.state.teamData.institute}</li>
-          <li className="list-group-item">Establishment:{this.state.teamData.establishment}</li>
+      // else if(this.state.about)
+      // {
+      //   return(
+      //   <div id="about">
+      //     <ul className="list-group">
+      //     <li className="list-group-item">Field: {this.state.memberData.field}</li>
+      //     <li className="list-group-item">Institude: {this.state.memberData.institute}</li>
+      //     <li className="list-group-item">Establishment:{this.state.memberData.establishment}</li>
           
-      </ul>
+      // </ul>
 
-        </div>
-        )
+      //   </div>
+      //   )
                          
                         
                           
         
-      }
+      // }
       else if(this.state.about)
       {
         return(

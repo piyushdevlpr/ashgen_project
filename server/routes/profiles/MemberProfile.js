@@ -7,7 +7,7 @@ var MemberEducationModel = require('../../models/profiles/team_member/member_edu
 var MemberExperienceModel = require('../../models/profiles/team_member/member_experience')
 var Dropbox =require('dropbox').Dropbox;
 var fs     = require('fs');
-
+var PostModel = require('../../models/posts/posts')
 
 //form creatte
 router.post('/member_profile',(req,res)=>{   // form data is post here
