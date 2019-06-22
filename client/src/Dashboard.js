@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import socketIOClient from "socket.io-client";
-import TextList from './TextList';
-import PhotoList from './PhotoList';
-import VideoList from './VideoList';
+import TextList from './profiles/TextList';
+import PhotoList from './profiles/PhotoList';
+import VideoList from './profiles/VideoList';
+import {Modal, Button, Form} from 'react-bootstrap';
 
 const axios = require("axios");
 
@@ -19,7 +20,11 @@ class Dashboard extends Component {
             desc: '',
             post : null,
             data : {},     // all posts
-            loading: true
+            postLoading: true,
+            isTeam : null,   ///fetching whehter the user is team or member initially
+            dashboardLoading: true,
+            userDetails : {},
+            postShow: false
         }
         this.uploadPost = this.uploadPost.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -32,6 +37,10 @@ class Dashboard extends Component {
         this.gotoprofile = this.gotoprofile.bind(this);
         this.filehandleChange = this.filehandleChange.bind(this);
         this.renderPosts   = this.renderPosts.bind(this);
+        this.fetchProfile = this.fetchProfile.bind(this);
+        this.postHandleClose = this.postHandleClose.bind(this);
+        this.postHandleShow   = this.postHandleShow.bind(this);
+        this.fetchUser      = this.fetchUser.bind(this);
     }
     fetchdetails=()=>{
         if(this.state.people === undefined){
@@ -60,8 +69,8 @@ class Dashboard extends Component {
     }
     componentDidMount(){ 
         this.ismounted = true ;
-        this.fetchPosts();
-        console.log(this.props.location)
+        this.fetchUser();
+        this.state.dashboardLoading = true;
 
     }
     componentWillUnmount(){
@@ -82,6 +91,8 @@ class Dashboard extends Component {
         })
         
     }
+   
+
     showusers=()=>{
         if(this.state.people){
         if(this.state.user.length === 0){
@@ -232,6 +243,7 @@ class Dashboard extends Component {
                         data.List.unshift(response.data);
                         this.setState({data:data});
                         this.setState({desc:""})
+                        this.postHandleClose();
 
                     }).catch((error) => {
                 });
@@ -259,7 +271,9 @@ class Dashboard extends Component {
                         var data = this.state.data;
                         data.List.unshift(response.data);
                         this.setState({data:data});
-                        this.setState({desc:""})
+                        this.setState({desc:""});
+                        this.postHandleClose();
+
 
                     }).catch((error) => {
                 });  
@@ -286,7 +300,9 @@ class Dashboard extends Component {
                var data = this.state.data;
                data.List.unshift(response.data);
                this.setState({data:data});
-               this.setState({desc:""})
+               this.setState({desc:""});
+               this.postHandleClose();
+
            }).catch((error) => {
 
        });
@@ -350,7 +366,7 @@ class Dashboard extends Component {
     }
     async gotoprofile(event){
         event.preventDefault() ;
-        if(this.props.location.state.isTeam)
+        if(this.state.userDetails.team)
         {
             this.props.history.push({
                 pathname:'/team_profile/',
@@ -380,7 +396,7 @@ class Dashboard extends Component {
         // console.log(response);
             this.setState({data:response.data},()=>{
 
-                this.setState({loading:false})
+                this.setState({postLoading:false})
 
             });
             
@@ -388,45 +404,118 @@ class Dashboard extends Component {
 
     }
 
+    fetchUser()
+    {
+
+        axios.get('http://localhost:2000/getUser',{withCredentials:true})
+        .then((response)=>{
+            this.setState({isTeam:response.data.team},()=>{this.fetchProfile()})
+
+        })
+        .catch((err)=>{throw err});
+
+    }
+    fetchProfile()
+    {
+        if(this.state.isTeam)
+        {
+            axios.get('http://localhost:2000/fetch_team_profile',{withCredentials:true})
+            .then((response)=>{
+                console.log(response.data);
+                this.setState({userDetails:response.data[0]},()=>{ this.setState({dashboardLoading:false}); this.fetchPosts()})
+               
+            })
+            .catch((err)=>{throw err});
+        }
+        else{
+            axios.get('http://localhost:2000/fetch_member_profile',{withCredentials:true})
+            .then((response)=>{
+                console.log(response.data);
+                this.setState({userDetails:response.data[0]},()=>{this.setState({dashboardLoading:false});this.fetchPosts()})
+            })
+            .catch((err)=>{throw err});
+
+        }
+
+    }
+
+
+    postHandleClose() {
+        this.setState({ postShow: false });
+      }
+    
+      postHandleShow() {
+        this.setState({ postShow: true });
+      }
+
 //returning post
     renderPosts()
     {
 
         
 
-        if(this.state.loading)
+        if(this.state.postLoading)
         {
             return(
                 <p>Loading...</p>
             )
         }
        else{
-           const list = this.state.data.List.map(function(item)
-           {
-               if(item.type=='text')
-               {
-                   return(<TextList item={item} key={item._id} />)
-               }
-               else if(item.type=="photo")
-               {
-                return(<PhotoList item={item} key={item._id} />)
+           var teamData = this.state.userDetails;
+           var props    = this.props;
+           var profilePhoto = this.state.userDetails.profilePhoto;
+            const list = this.state.data.List.map(function(item)
+            {
 
-               }
-               else{
-                return(<VideoList item={item} key={item._id} />)
+                if(props.location.state.isTeam)
+                {
+                    if(item.type=='text')
+                    {
+                        return(<TextList item={item} member={false} profilePhoto={profilePhoto} key={item._id} teamData={teamData} />)
+                    }
+                    else if(item.type=="photo")
+                    {
+                     return(<PhotoList item={item} member={false} profilePhoto={profilePhoto} key={item._id} teamData={teamData} />)
+     
+                    }
+                    else{
+                     return(<VideoList item={item} member={false} profilePhoto={profilePhoto} key={item._id} teamData={teamData} />)
+     
+                    }
 
-               }
-           })
+                }
+                else{
+                    if(item.type=='text')
+                    {
+                        return(<TextList item={item} member={true} profilePhoto={profilePhoto} key={item._id} teamData={teamData} />)
+                    }
+                    else if(item.type=="photo")
+                    {
+                     return(<PhotoList item={item} member={true} profilePhoto={profilePhoto} key={item._id} teamData={teamData} />)
+     
+                    }
+                    else{
+                     return(<VideoList item={item} member={true} profilePhoto={profilePhoto} key={item._id} teamData={teamData} />)
+     
+                    }
+                }
+              
+            })
+            return list;
 
-           return list;
        }
     }
 
     render(){
-        if(this.props.location.state === undefined){
-            this.props.history.push("/") ;
-            return null ;
-        }else{
+      if(this.state.dashboardLoading)
+        {
+            return(
+                <p>Loading</p>
+            )
+
+        }
+        else{
+            console.log(this.state.userDetails);
             return(
                 <div className="container">
                     <div className="row">
@@ -468,28 +557,45 @@ class Dashboard extends Component {
                         <button onClick={this.gotocrowd}>CrowdFunding</button>
                         {/* <button onClick={this.gotoprofile}>PROFILE</button> */}
                     </div>
-                        <div className="card" style={{marginBottom:"25px"}}>
-                          <div className="card-body">
-                            <h5 className="card-title">Create Post</h5>
-                          <div>
-                            <form onSubmit={this.uploadPost} encType="multipart/form-data">
-                                <div className="form-group">
-                                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" name="desc" value={this.state.desc} onChange={this.handleChange} placeholder="write your post"></textarea>
-                                </div>
-                                <div >
-                                   <div style={{display:'inline'}}  className="form-group">
-                {/* <label htmlFor="exampleFormControlFile1">Post Upload</label> */}
-                                     <input style={{display:'inline', width:'50%'}}    type="file" name="post"  onChange={this.filehandleChange} className="form-control-file" id="post-upload" />
-                                    </div>
-                                    <div style={{display:'inline', float:'right'}}>
-                                        <button type="submit" className="btn btn-primary">Post</button>
-                                    </div>
-                                </div>
+                    <div className="post-topbar">
+                        <div className="user-picy">
+                        <img src={this.state.userDetails.profilePhoto} style={{borderRadius:'50%'}} alt />
+                        </div>
+                        <div className="post-st">
+                        <ul>
+                            <li><a className="post_project"  onClick={this.postHandleShow} title>Post</a></li>
+                            <li><a className="post-jb active" href="#" title>Post a Job</a></li>
+                        </ul>
+                        </div>{/*post-st end*/}
+                    </div>{/*post-topbar end*/}
+                <div id="post-modal">
+                <Modal show={this.state.postShow} onHide={this.postHandleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Posts</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form  onSubmit={this.uploadPost} encType="multipart/form-data"> 
+                <Form.Group controlId="exampleForm.ControlTextarea1">
+                    <Form.Control  value={this.state.desc} name="desc" onChange={this.handleChange} placeholder="write your post" as="textarea" rows="3" />
+                </Form.Group>
+                <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Label>Upload Post</Form.Label>
+                <Form.Control type="file" name="post"  onChange={this.filehandleChange} />
+            </Form.Group>
+                </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={this.postHandleClose}>
+                    Close
+                    </Button>
+                    <Button variant="primary"  onClick={this.uploadPost} >
+                    Upload Posts
+                    </Button>
+                </Modal.Footer>
+                </Modal>
+                    </div>    
+                
 
-                            </form>
-                          </div>
-                    </div>
-             </div>
             
                 <div className="posts"> 
                     {this.renderPosts()}

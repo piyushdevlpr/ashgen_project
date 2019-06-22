@@ -31,7 +31,7 @@ router.post('/fetch_team_details',function(req,res)
 router.post('/fetch_member_details',function(req,res)
 {
     var user_id = mongoose.Types.ObjectId(req.body.user_id);
-    MemberProfileModel.findById({user_id},function(err,model)
+    MemberProfileModel.find({"author.id":user_id},function(err,model)
     {
         if(err)
         {

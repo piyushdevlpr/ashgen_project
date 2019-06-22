@@ -21,6 +21,7 @@ var MemberSchema = new mongoose.Schema({
     username: String
 },
   name : {type:String},
+  team:{type:Boolean,default:false},
   team_name: {type:String},
   position: {type:String},
   dept:{type:String},

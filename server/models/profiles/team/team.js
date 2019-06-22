@@ -14,6 +14,7 @@ var TeamSchema = new mongoose.Schema({
       username: String
   },
   team_name: {type:String},
+  team:{type:Boolean,default:true},
   field: {type:String},
   establishment:{type:String},
   institute:{type:String},
