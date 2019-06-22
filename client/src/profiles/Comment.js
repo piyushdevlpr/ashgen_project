@@ -165,6 +165,7 @@ componentWillMount()
     // console.log(this.props.comment.author.team)
     if(this.props.comment.author.team)
     {
+        alert('team');
         axios.post('http://localhost:2000/fetch_team_details',{user_id},config)
         // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_comments',data,config)
         .then((response)=>{
@@ -176,6 +177,7 @@ componentWillMount()
 
     }
     else{
+        alert('member');
         axios.post('http://localhost:2000/fetch_member_details',{user_id},config)
         // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_comments',data,config)
         .then((response)=>{
