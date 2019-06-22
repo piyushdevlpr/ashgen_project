@@ -459,12 +459,12 @@ class Dashboard extends Component {
         }
        else{
            var teamData = this.state.userDetails;
-           var props    = this.props;
+           var isTeam    = this.state.userDetails.team;
            var profilePhoto = this.state.userDetails.profilePhoto;
             const list = this.state.data.List.map(function(item)
             {
 
-                if(props.location.state.isTeam)
+                if(isTeam)
                 {
                     if(item.type=='text')
                     {
