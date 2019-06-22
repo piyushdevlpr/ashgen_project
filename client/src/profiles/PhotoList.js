@@ -201,14 +201,9 @@ export default class PhotoList extends Component{
         .catch((error)=>{
             throw error;
         })
-
-
-
     }
-
     fetchComments()
     {
-
         if(this.state.commentsLoading)
         {
             var data ={}
@@ -222,13 +217,11 @@ export default class PhotoList extends Component{
 
             };
             var list;
-
             axios.post('http://localhost:2000/fetch_comments',data,config)
             // axios.post(' https://ojus-server-132kgu2rdjqbfc.herokuapp.com/fetch_comments',data,config)
             .then((response)=>{
                 // console.log(response.data);
-                this.setState({comments:response.data},()=>{this.setState({commentsLoading:false})})
-            
+                this.setState({comments:response.data},()=>{this.setState({commentsLoading:false})})            
             })
     }
     else{
@@ -237,14 +230,10 @@ export default class PhotoList extends Component{
         list = this.state.comments.map(function(item)
         {
             return(
-                <Comment  profilePhoto={profilePhoto} key={item._id} comment={item} teamData={teamData}/>
-                
+                <Comment  profilePhoto={profilePhoto} key={item._id} comment={item} teamData={teamData}/>                
             )
         })
-
         return list;
-
-
     }
     }
     
