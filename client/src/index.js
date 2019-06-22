@@ -21,6 +21,7 @@ import Signupteammember from './profiles/Signupteammember';
 import Settings from './Settings/settingshome';
 import Crowdfunding from './Crowdfunding/crowdfundinghome';
 import Startcampaign from './Crowdfunding/startacampaign';
+import Yourcampaign from './Crowdfunding/Yourcampaign';
 import TeamProfile from './profiles/TeamProfile';
 import TeamForm from './profiles/TeamForm';
 import MemberForm from './profiles/MemberForm';
@@ -48,6 +49,7 @@ ReactDOM.render((
        <Route path = "/settings/" component = {Settings} />
        <Route path = "/crowdfunding/" component = {Crowdfunding} />
        <Route path = "/start-campaign/" component = {Startcampaign} />
+       <Route path = "/your-campaign/" component = {Yourcampaign} />
        <Route path = "/team/Profile/:name/:id" component = {Profileteam} />
        <Route path = "/member/Profile/:name/:id" component = {Profilemember} />
        </Switch>

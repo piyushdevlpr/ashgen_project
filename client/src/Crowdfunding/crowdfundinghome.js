@@ -22,7 +22,9 @@ export default class CrowdFundingHome extends Component{
          id:'',
         }
         this.gotocamp = this.gotocamp.bind(this) ;
-    }
+        this.gotoyourcamp = this.gotoyourcamp.bind(this) ;
+    
+      }
     getInfo=()=>{
       axios.get('http://localhost:2000/get-user',{withCredentials: true}).then((response)=>{
 
@@ -31,14 +33,14 @@ export default class CrowdFundingHome extends Component{
             axios.get('http://localhost:2000/fetch_team_profile',{withCredentials: true}).then((response)=>{
                this.setState({campaign : response.data[0].funding_status},()=>{
                   this.setState({loading:false});
-                  
+                  console.log(this.state);                  
                })
          }).catch((err)=>{throw err})
    
            }else{
             this.setState({loading:false});
            }
-            console.log(this.state);
+
                });
          })
          .catch((err)=>{throw err})
@@ -50,6 +52,15 @@ export default class CrowdFundingHome extends Component{
     gotocamp=(e)=>{
       this.props.history.push({
          pathname:'/start-campaign/',
+         state :{
+             username : this.props.location.state.username,
+             team:this.state.team, 
+         }
+       }) ;
+    }
+    gotoyourcamp=(e)=>{
+      this.props.history.push({
+         pathname:'/your-campaign/',
          state :{
              username : this.props.location.state.username,
              team:this.state.team, 
@@ -82,7 +93,7 @@ export default class CrowdFundingHome extends Component{
                                 <div class="purchase"><a href="https://themeforest.net/item/greenforest-environmental-ecology-responsive-template/19671308?s_rank=1" target="_blank">Support A Campaign</a></div>
                               {this.state.team ? 
                               (this.state.campaign ?
-                              <div class="purchase"><a onClick={this.gotocamp} target="_blank">Track your Campaign</a></div>
+                              <div class="purchase"><a onClick={this.gotoyourcamp} target="_blank">Track your Campaign</a></div>
                               :
                               <div class="purchase"><a onClick={this.gotocamp} target="_blank">Start A Campaign</a></div>
                               )
