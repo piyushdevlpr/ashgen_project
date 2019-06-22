@@ -451,9 +451,6 @@ class Dashboard extends Component {
 //returning post
     renderPosts()
     {
-
-        
-
         if(this.state.postLoading)
         {
             return(
