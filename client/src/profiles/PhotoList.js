@@ -235,11 +235,7 @@ export default class PhotoList extends Component{
         })
         return list;
     }
-    }
-    
-
-    
-
+    } 
     render()
     {
         return(

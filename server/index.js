@@ -2,6 +2,7 @@ var express            = require("express"),
     app                = express(),
     cors               = require("cors"),
     bodyParser         = require("body-parser"),
+    async               = require("async"),
     mongoose           = require("mongoose"),
     passport           = require("passport"),
     LocalStrategy      = require("passport-local"),
@@ -15,6 +16,8 @@ var express            = require("express"),
     PublicGroup        = require("./models/publicgroup"),
     GroupMessage       = require("./models/groupmessage"),
     Notification       = require("./models/notifications")
+    var TeamProfileModel = require('./models/profiles/team/team')
+    var MemberProfileModel = require('./models/profiles/team_member/team_member')
     multer             = require("multer"),
     path               = require("path"),
     server             = require("http").createServer(app),
@@ -325,32 +328,58 @@ app.get("/delete-group/:id",function(req,res){
       }
     })
 });
-app.get('/people/:name',function(req,res){
+app.get('/people/:name', function(req,res){
   var name = '' ;
   name = req.params.name ;
   console.log(name) ;
+  var response=[] ;
   if(name === null || name === undefined || name == ''){
     name = '' ;
-    response = [];
-    res.json(response);
+    reponse = [] ;
+    res.send(response) ;
   }
-  //resuser = [] ;
-  response = [];
-  User.find({username :  {$regex : ".*"+name+".*"}},function(err,cuser){
-    if(err){
-      console.log(err);
-    }else{
-       cuser.forEach(function(user){
-         if(user.username !== req.user.username){
-            response.push({user:user.username,team:user.team,profilePhoto:user.profilePhoto,id:user._id}) ;
-         }
-      });
-       //response = {users: resuser}
-       console.log(response) ;
-       res.json(response) ;
+  User.find({username :  {$regex : ".*"+name+".*"}}).then(function(cuser){
+      async.map(cuser, function(user, done) {      
+      if(user.team){
+          var user_id = mongoose.Types.ObjectId(user._id);
+          TeamProfileModel.findOne({"author.id":user_id},function(err,model)
+          {
+          if(err)
+          {
+              done(err);
+          }else
+          {
+            if(user.username !== req.user.username){
+            done(null, {
+              user:user.username,team:true,profilePhoto:model.profilePhoto,id:user._id
+            });
+          }
+          }         
+      })
+     }else{
+      var user_id = mongoose.Types.ObjectId(user._id);
+      
+      MemberProfileModel.findOne({"author.id":user_id},function(err,model)
+      {
+          if(err)
+          {
+              done(err);
+          }else
+          {
+            if(user.username !== req.user.username){
+            done(null, {
+              user:user.username,team:true,profilePhoto:model.profilePhoto,id:user._id
+            });
+            }
+          }             
+       })
     }
+  },function(err, array){
+    console.log(array) ;
+      res.json(array) ;
   })
-});
+})
+})
 app.get("/notification/:frname",function(req,res){
   var username = req.user.username ;
   var friend = req.params.frname ;
@@ -588,18 +617,43 @@ app.get("/get-friends",function(req,res){
     if(err){
       console.log(err) ;
     }else{
-     friends = cuser.friends ;
-     console.log(friends);
-     for(let i = 0 ; i < friends.length ; i++){
-        User.findOne({username : friends[i].name},function(err,fuser){
-          friends[i].profilePhoto = fuser.profilePhoto ;
-          if(i === (friends.length - 1)){
-            console.log(friends + "here");
-            res.json(friends) ;
-          }
-        });
-        
-      }
+      async.map(cuser.friends, function(user, done) {      
+        // if(user.team){
+            TeamProfileModel.find({"author.username":user.name},function(err,model)
+            {
+            if(err)
+            {
+                done(err);
+            }else
+            {
+              if(model.length > 0){
+              done(null, {
+                  name:user.name,team:true,profilePhoto:model[0].profilePhoto
+              });
+              }else{
+                MemberProfileModel.find({"author.id":user.name},function(err,model)
+                {
+                    if(err)
+                    {
+                        done(err);
+                    }else
+                    {
+                      if(model.length > 0){
+                      done(null, {
+                        name:user.name,team:false,profilePhoto:model[0].profilePhoto
+                      });
+                      }
+                    }             
+                  
+                 })
+              }
+            }         
+        })
+      // }
+    },function(err, array){
+      console.log(array) ;
+        res.json(array) ;
+    })
     }
   });
 });

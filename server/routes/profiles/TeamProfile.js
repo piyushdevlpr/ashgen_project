@@ -260,12 +260,7 @@ router.post('/team/profile-photo',function(req,res)
                         throw err;
                     
                     res.setHeader('Content-Type', 'application/json');
-                    res.send(model);
-                    User.findOneAndUpdate({username : model.author.username},{profilePhoto:profilePhoto},function(err,cuser){
-                        if(err){
-                            console.log(err) ;    
-                        }
-                    })
+                    // res.send(model);
                     console.log(profilePhoto);
                     res.send(profilePhoto);
 
