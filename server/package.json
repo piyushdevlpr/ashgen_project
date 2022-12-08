@@ -15,7 +15,7 @@
     "cors": "^2.8.5",
     "dropbox": "^4.0.17",
     "ejs": "^2.6.1",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "express-session": "^1.11.3",
     "moment": "^2.24.0",
     "mongoose": "^4.1.12",
